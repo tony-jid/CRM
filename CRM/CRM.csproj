@@ -5,9 +5,26 @@
     <UserSecretsId>aspnet-CRM-3F801212-7AA0-4ED9-8991-C70EB232D04D</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Data\Migrations\20180724100422_TransactionType.cs" />
+    <Compile Remove="Data\Migrations\20180724100422_TransactionType.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180724101219_TransactionType-SelfRecursiveRelationship.cs" />
+    <Compile Remove="Data\Migrations\20180724101219_TransactionType-SelfRecursiveRelationship.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180724102043_TransactionType-SelfRecursiveRelationship.cs" />
+    <Compile Remove="Data\Migrations\20180724102043_TransactionType-SelfRecursiveRelationship.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180724103008_TransactionType-SelfRecursiveRelationship.cs" />
+    <Compile Remove="Data\Migrations\20180724103008_TransactionType-SelfRecursiveRelationship.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180724133010_TransactionType.cs" />
+    <Compile Remove="Data\Migrations\20180724133010_TransactionType.Designer.cs" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="2.1.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.3" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.4" PrivateAssets="All" />
   </ItemGroup>
@@ -16,6 +33,10 @@
     <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.3" />
     <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.2" />
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Enum\" />
   </ItemGroup>
 
 </Project>

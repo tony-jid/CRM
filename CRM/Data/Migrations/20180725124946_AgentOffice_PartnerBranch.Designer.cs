@@ -4,55 +4,21 @@ using CRM.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CRM.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180725124946_AgentOffice_PartnerBranch")]
+    partial class AgentOffice_PartnerBranch
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.1.1-rtm-30846")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("CRM.Models.Action", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("ActionName");
-
-                    b.Property<string>("ControllerName");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Action");
-                });
-
-            modelBuilder.Entity("CRM.Models.Address", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("PostCode")
-                        .HasMaxLength(4);
-
-                    b.Property<string>("State")
-                        .HasMaxLength(4);
-
-                    b.Property<string>("StreetAddress")
-                        .HasMaxLength(256);
-
-                    b.Property<string>("Suburb")
-                        .HasMaxLength(64);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Address");
-                });
 
             modelBuilder.Entity("CRM.Models.Agent", b =>
                 {
@@ -183,28 +149,6 @@ namespace CRM.Data.Migrations
                     b.ToTable("Lead");
                 });
 
-            modelBuilder.Entity("CRM.Models.LeadAssignment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<Guid>("LeadId");
-
-                    b.Property<Guid>("PartnerBranchId");
-
-                    b.Property<int>("StateId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("LeadId");
-
-                    b.HasIndex("PartnerBranchId");
-
-                    b.HasIndex("StateId");
-
-                    b.ToTable("LeadAssignment");
-                });
-
             modelBuilder.Entity("CRM.Models.LeadType", b =>
                 {
                     b.Property<int>("Id")
@@ -223,12 +167,18 @@ namespace CRM.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("AddressId");
+                    b.Property<string>("Postcode");
+
+                    b.Property<string>("State")
+                        .HasMaxLength(4);
+
+                    b.Property<string>("StreetAddress")
+                        .HasMaxLength(256);
+
+                    b.Property<string>("Suburb")
+                        .HasMaxLength(128);
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AddressId")
-                        .IsUnique();
 
                     b.ToTable("Office");
                 });
@@ -237,8 +187,6 @@ namespace CRM.Data.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
-
-                    b.Property<byte[]>("Logo");
 
                     b.Property<string>("Name")
                         .IsRequired();
@@ -253,8 +201,6 @@ namespace CRM.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("AddressId");
-
                     b.Property<string>("ContactNumber")
                         .IsRequired();
 
@@ -263,43 +209,22 @@ namespace CRM.Data.Migrations
 
                     b.Property<Guid>("PartnerId");
 
-                    b.HasKey("Id");
+                    b.Property<string>("Postcode");
 
-                    b.HasIndex("AddressId")
-                        .IsUnique();
+                    b.Property<string>("State")
+                        .HasMaxLength(4);
+
+                    b.Property<string>("StreetAddress")
+                        .HasMaxLength(256);
+
+                    b.Property<string>("Suburb")
+                        .HasMaxLength(128);
+
+                    b.HasKey("Id");
 
                     b.HasIndex("PartnerId");
 
                     b.ToTable("PartnerBranch");
-                });
-
-            modelBuilder.Entity("CRM.Models.State", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Name");
-
-                    b.Property<string>("Owner");
-
-                    b.Property<int>("Seq");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("State");
-                });
-
-            modelBuilder.Entity("CRM.Models.StateAction", b =>
-                {
-                    b.Property<int>("StateId");
-
-                    b.Property<int>("ActionId");
-
-                    b.HasKey("StateId", "ActionId");
-
-                    b.HasIndex("ActionId");
-
-                    b.ToTable("StateAction");
                 });
 
             modelBuilder.Entity("CRM.Models.Transaction", b =>
@@ -478,55 +403,11 @@ namespace CRM.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
-            modelBuilder.Entity("CRM.Models.LeadAssignment", b =>
-                {
-                    b.HasOne("CRM.Models.Lead", "Lead")
-                        .WithMany("LeadAssignments")
-                        .HasForeignKey("LeadId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("CRM.Models.PartnerBranch", "PartnerBranch")
-                        .WithMany("LeadAssignments")
-                        .HasForeignKey("PartnerBranchId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("CRM.Models.State", "State")
-                        .WithMany("LeadAssignments")
-                        .HasForeignKey("StateId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("CRM.Models.Office", b =>
-                {
-                    b.HasOne("CRM.Models.Address", "Address")
-                        .WithOne("Office")
-                        .HasForeignKey("CRM.Models.Office", "AddressId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
             modelBuilder.Entity("CRM.Models.PartnerBranch", b =>
                 {
-                    b.HasOne("CRM.Models.Address", "Address")
-                        .WithOne("PartnerBranch")
-                        .HasForeignKey("CRM.Models.PartnerBranch", "AddressId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("CRM.Models.Partner", "Partner")
                         .WithMany("Branches")
                         .HasForeignKey("PartnerId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("CRM.Models.StateAction", b =>
-                {
-                    b.HasOne("CRM.Models.Action", "Action")
-                        .WithMany("StateActions")
-                        .HasForeignKey("ActionId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("CRM.Models.State", "State")
-                        .WithMany("StateActions")
-                        .HasForeignKey("StateId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 

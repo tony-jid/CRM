@@ -4,14 +4,16 @@ using CRM.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CRM.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180726125047_StateAction_LeadAssignment_StateAction")]
+    partial class StateAction_LeadAssignment_StateAction
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,28 +32,6 @@ namespace CRM.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Action");
-                });
-
-            modelBuilder.Entity("CRM.Models.Address", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("PostCode")
-                        .HasMaxLength(4);
-
-                    b.Property<string>("State")
-                        .HasMaxLength(4);
-
-                    b.Property<string>("StreetAddress")
-                        .HasMaxLength(256);
-
-                    b.Property<string>("Suburb")
-                        .HasMaxLength(64);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Address");
                 });
 
             modelBuilder.Entity("CRM.Models.Agent", b =>
@@ -188,11 +168,23 @@ namespace CRM.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<DateTime>("CreateDateTime");
+
+                    b.Property<Guid>("CreateUserId");
+
+                    b.Property<DateTime>("DeleteDateTime");
+
+                    b.Property<Guid>("DeleteUserId");
+
                     b.Property<Guid>("LeadId");
 
                     b.Property<Guid>("PartnerBranchId");
 
                     b.Property<int>("StateId");
+
+                    b.Property<DateTime>("UpdateDateTime");
+
+                    b.Property<Guid>("UpdateUserId");
 
                     b.HasKey("Id");
 
@@ -223,12 +215,18 @@ namespace CRM.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("AddressId");
+                    b.Property<string>("Postcode");
+
+                    b.Property<string>("State")
+                        .HasMaxLength(4);
+
+                    b.Property<string>("StreetAddress")
+                        .HasMaxLength(256);
+
+                    b.Property<string>("Suburb")
+                        .HasMaxLength(128);
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AddressId")
-                        .IsUnique();
 
                     b.ToTable("Office");
                 });
@@ -253,8 +251,6 @@ namespace CRM.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("AddressId");
-
                     b.Property<string>("ContactNumber")
                         .IsRequired();
 
@@ -263,10 +259,18 @@ namespace CRM.Data.Migrations
 
                     b.Property<Guid>("PartnerId");
 
-                    b.HasKey("Id");
+                    b.Property<string>("Postcode");
 
-                    b.HasIndex("AddressId")
-                        .IsUnique();
+                    b.Property<string>("State")
+                        .HasMaxLength(4);
+
+                    b.Property<string>("StreetAddress")
+                        .HasMaxLength(256);
+
+                    b.Property<string>("Suburb")
+                        .HasMaxLength(128);
+
+                    b.HasKey("Id");
 
                     b.HasIndex("PartnerId");
 
@@ -496,21 +500,8 @@ namespace CRM.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
-            modelBuilder.Entity("CRM.Models.Office", b =>
-                {
-                    b.HasOne("CRM.Models.Address", "Address")
-                        .WithOne("Office")
-                        .HasForeignKey("CRM.Models.Office", "AddressId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
             modelBuilder.Entity("CRM.Models.PartnerBranch", b =>
                 {
-                    b.HasOne("CRM.Models.Address", "Address")
-                        .WithOne("PartnerBranch")
-                        .HasForeignKey("CRM.Models.PartnerBranch", "AddressId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("CRM.Models.Partner", "Partner")
                         .WithMany("Branches")
                         .HasForeignKey("PartnerId")
