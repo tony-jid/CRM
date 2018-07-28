@@ -16,6 +16,8 @@
     <Compile Remove="Data\Migrations\20180724103008_TransactionType-SelfRecursiveRelationship.Designer.cs" />
     <Compile Remove="Data\Migrations\20180724133010_TransactionType.cs" />
     <Compile Remove="Data\Migrations\20180724133010_TransactionType.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180727101129_test-IPerson.cs" />
+    <Compile Remove="Data\Migrations\20180727101129_test-IPerson.Designer.cs" />
   </ItemGroup>
 
 

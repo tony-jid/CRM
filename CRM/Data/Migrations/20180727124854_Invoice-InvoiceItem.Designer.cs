@@ -4,14 +4,16 @@ using CRM.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CRM.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180727124854_Invoice-InvoiceItem")]
+    partial class InvoiceInvoiceItem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -245,8 +247,6 @@ namespace CRM.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Comment");
-
                     b.Property<string>("CreatedBy");
 
                     b.Property<DateTime>("CreatedDateTime");
@@ -254,8 +254,6 @@ namespace CRM.Data.Migrations
                     b.Property<Guid>("LeadId");
 
                     b.Property<Guid>("PartnerBranchId");
-
-                    b.Property<int>("Rating");
 
                     b.HasKey("Id");
 

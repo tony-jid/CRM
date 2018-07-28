@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CRM.Models
 {
-    public class LeadType
+    public class Company
     {
         [Key]
         public int Id { get; set; }
@@ -15,9 +15,11 @@ namespace CRM.Models
         public string Name { get; set; }
 
         [Required]
-        [DataType(DataType.Currency)]
-        public double Price { get; set; }
+        public string ABN { get; set; }
 
-        public IEnumerable<Lead> Leads { get; set; }
+        [Required]
+        public double GST { get; set; }
+
+        public IEnumerable<Office> Offices { get; set; }
     }
 }

@@ -14,6 +14,9 @@ namespace CRM.Models
         public int AddressId { get; set; }
         public Address Address { get; set; }
 
+        public int CompanyId { get; set; }
+        public Company Company { get; set; }
+
         public IEnumerable<Agent> Agents { get; set; }
     }
 }

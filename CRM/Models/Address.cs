@@ -27,5 +27,7 @@ namespace CRM.Models
         public Office Office { get; set; }
 
         public PartnerBranch PartnerBranch { get; set; }
+
+        public Customer Customer { get; set; }
     }
 }

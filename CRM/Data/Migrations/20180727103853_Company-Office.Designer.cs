@@ -4,14 +4,16 @@ using CRM.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CRM.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180727103853_Company-Office")]
+    partial class CompanyOffice
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -137,13 +139,9 @@ namespace CRM.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("ABN")
-                        .IsRequired();
+                    b.Property<string>("ABN");
 
-                    b.Property<double>("GST");
-
-                    b.Property<string>("Name")
-                        .IsRequired();
+                    b.Property<string>("Name");
 
                     b.HasKey("Id");
 
@@ -178,51 +176,10 @@ namespace CRM.Data.Migrations
                     b.ToTable("Customer");
                 });
 
-            modelBuilder.Entity("CRM.Models.Invoice", b =>
-                {
-                    b.Property<int>("No")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("CreatedBy");
-
-                    b.Property<DateTime>("CreatedDateTime");
-
-                    b.Property<DateTime>("DueDate");
-
-                    b.Property<double>("GST");
-
-                    b.Property<double>("SubTotal");
-
-                    b.Property<double>("Total");
-
-                    b.HasKey("No");
-
-                    b.ToTable("Invoice");
-                });
-
-            modelBuilder.Entity("CRM.Models.InvoiceItem", b =>
-                {
-                    b.Property<int>("InvoiceNo");
-
-                    b.Property<int>("LeadAssignmentId");
-
-                    b.Property<bool>("Reinvoiced");
-
-                    b.HasKey("InvoiceNo", "LeadAssignmentId");
-
-                    b.HasIndex("LeadAssignmentId");
-
-                    b.ToTable("InvoiceItem");
-                });
-
             modelBuilder.Entity("CRM.Models.Lead", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
-
-                    b.Property<string>("CreatedBy");
-
-                    b.Property<DateTime>("CreatedDateTime");
 
                     b.Property<Guid>("CustomerId");
 
@@ -245,17 +202,9 @@ namespace CRM.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Comment");
-
-                    b.Property<string>("CreatedBy");
-
-                    b.Property<DateTime>("CreatedDateTime");
-
                     b.Property<Guid>("LeadId");
 
                     b.Property<Guid>("PartnerBranchId");
-
-                    b.Property<int>("Rating");
 
                     b.HasKey("Id");
 
@@ -315,8 +264,6 @@ namespace CRM.Data.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired();
-
-                    b.Property<double>("Price");
 
                     b.HasKey("Id");
 
@@ -561,19 +508,6 @@ namespace CRM.Data.Migrations
                     b.HasOne("CRM.Models.Address", "Address")
                         .WithOne("Customer")
                         .HasForeignKey("CRM.Models.Customer", "AddressId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("CRM.Models.InvoiceItem", b =>
-                {
-                    b.HasOne("CRM.Models.Invoice", "Invoice")
-                        .WithMany("InvoiceItems")
-                        .HasForeignKey("InvoiceNo")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("CRM.Models.LeadAssignment", "LeadAssignment")
-                        .WithMany("InvoiceItems")
-                        .HasForeignKey("LeadAssignmentId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 

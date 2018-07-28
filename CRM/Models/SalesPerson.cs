@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CRM.Models
 {
-    public class Agent : IPerson
+    public class SalesPerson : IPerson
     {
         [Key]
         public Guid Id { get; set; }
@@ -22,7 +22,7 @@ namespace CRM.Models
         [DataType(DataType.EmailAddress)]
         public string EMail { get; set; }
 
-        public int OfficeId { get; set; }
-        public Office Office { get; set; }
+        public Guid BranchId { get; set; }
+        public PartnerBranch Branch { get; set; }
     }
 }

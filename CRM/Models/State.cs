@@ -11,14 +11,26 @@ namespace CRM.Models
         [Key]
         public int Id { get; set; }
 
+        [Required]
         public string Owner { get; set; }
 
+        [Required]
         public int Seq { get; set; }
 
+        [Required]
         public string Name { get; set; }
+
+        [Required]
+        public bool Repeatable { get; set; }
 
         public IEnumerable<StateAction> StateActions { get; set; }
 
-        public IEnumerable<LeadAssignment> LeadAssignments { get; set; }
+        public IEnumerable<Action> ActionsWithNextSate { get; set; }
+
+
+        public IEnumerable<LeadAssignmentState> LeadAssignmentStates { get; set; }
+
+        public IEnumerable<LeadState> LeadStates { get; set; }
+
     }
 }

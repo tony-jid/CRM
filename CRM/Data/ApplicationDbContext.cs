@@ -36,27 +36,46 @@ namespace CRM.Data
                 .HasForeignKey(lead => lead.LeadTypeId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // ** No longer used
             // TransactionType - Self-Recursive Relationship for the next transaction
             // One-to-One Relationship
             //
-            builder.Entity<TransactionType>()
-                .HasOne(current => current.NextTransactionType)
-                .WithOne()
-                .HasForeignKey<TransactionType>(current => current.NextTransactionTypeId)
-                .OnDelete(DeleteBehavior.Restrict);
+            //builder.Entity<TransactionType>()
+            //    .HasOne(current => current.NextTransactionType)
+            //    .WithOne()
+            //    .HasForeignKey<TransactionType>(current => current.NextTransactionTypeId)
+            //    .OnDelete(DeleteBehavior.Restrict);
 
-            // Lead -> Transaction <- TransactionType
-            // Many-to-Many Relationship
+            // Removing to use M-M instead between State & Lead so that transactions can be tracked for the history
+            // Lead -> Transaction <- TransactionType : Many-to-Many Relationship
             //
-            builder.Entity<Transaction>()
-                .HasOne(tran => tran.Lead)
-                .WithMany(lead => lead.Transactions)
-                .HasForeignKey(tran => tran.LeadId)
-                .OnDelete(DeleteBehavior.Cascade);
-            builder.Entity<Transaction>()
-                .HasOne(tran => tran.TransactionType)
-                .WithMany(type => type.Transactions)
-                .HasForeignKey(tran => tran.TransactionTypeId)
+            //builder.Entity<Transaction>()
+            //    .HasOne(tran => tran.Lead)
+            //    .WithMany(lead => lead.Transactions)
+            //    .HasForeignKey(tran => tran.LeadId)
+            //    .OnDelete(DeleteBehavior.Cascade);
+            //builder.Entity<Transaction>()
+            //    .HasOne(tran => tran.TransactionType)
+            //    .WithMany(type => type.Transactions)
+            //    .HasForeignKey(tran => tran.TransactionTypeId)
+            //    .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<LeadState>().HasKey(key => new { key.StateId, key.LeadId, key.CreatedTimestamp });
+            builder.Entity<LeadState>()
+                .HasOne(ls => ls.State)
+                .WithMany(s => s.LeadStates)
+                .HasForeignKey(ls => ls.StateId)
+                .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<LeadState>()
+                .HasOne(ls => ls.Lead)
+                .WithMany(l => l.LeadStates)
+                .HasForeignKey(ls => ls.LeadId);
+
+            // Company 1-M Office
+            //
+            builder.Entity<Office>()
+                .HasOne(o => o.Company)
+                .WithMany(c => c.Offices)
+                .HasForeignKey(o => o.CompanyId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Agent M-1 Office
@@ -74,6 +93,13 @@ namespace CRM.Data
                 .HasForeignKey(branch => branch.PartnerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // PartnerBranch 1-M SalesPerson
+            builder.Entity<SalesPerson>()
+                .HasOne(s => s.Branch)
+                .WithMany(b => b.SalesPeople)
+                .HasForeignKey(s => s.BranchId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             // State 1-M StateAction M-1 Action
             builder.Entity<StateAction>().HasKey(key => new { key.StateId, key.ActionId });
             builder.Entity<StateAction>()
@@ -87,11 +113,23 @@ namespace CRM.Data
                 .HasForeignKey(sa => sa.ActionId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // ** Removing to use M-M instead between State & LeadAssignment so that transactions can be tracked for the history
             // LeadAssignment M-1 State
-            builder.Entity<LeadAssignment>()
-                .HasOne(la => la.State)
-                .WithMany(s => s.LeadAssignments)
-                .HasForeignKey(la => la.StateId)
+            //builder.Entity<LeadAssignment>()
+            //    .HasOne(la => la.State)
+            //    .WithMany(s => s.LeadAssignments)
+            //    .HasForeignKey(la => la.StateId)
+            //    .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<LeadAssignmentState>().HasKey(key => new { key.StateId, key.LeadAssignmentId, key.CreatedTimestamp });
+            builder.Entity<LeadAssignmentState>()
+                .HasOne(las => las.State)
+                .WithMany(s => s.LeadAssignmentStates)
+                .HasForeignKey(las => las.StateId)
+                .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<LeadAssignmentState>()
+                .HasOne(las => las.LeadAssignment)
+                .WithMany(la => la.LeadAssignmentStates)
+                .HasForeignKey(las => las.LeadAssignmentId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Lead 1-M LeadAssignment M-1 PartnerBranch
@@ -120,6 +158,34 @@ namespace CRM.Data
                 .HasForeignKey<PartnerBranch>(p => p.AddressId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // Address 1-1 Customer
+            builder.Entity<Address>()
+                .HasOne(a => a.Customer)
+                .WithOne(c => c.Address)
+                .HasForeignKey<Customer>(c => c.AddressId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Action M-1 NextState
+            //
+            builder.Entity<Models.Action>()
+                .HasOne(a => a.NextState)
+                .WithMany(ns => ns.ActionsWithNextSate)
+                .HasForeignKey(a => a.NextStateId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Invoice 1-M InvoiceItem M-1 LeadAssignment
+            //
+            builder.Entity<InvoiceItem>().HasKey(key => new { key.InvoiceNo, key.LeadAssignmentId });
+            builder.Entity<InvoiceItem>()
+                .HasOne(item => item.Invoice)
+                .WithMany(i => i.InvoiceItems)
+                .HasForeignKey(item => item.InvoiceNo)
+                .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<InvoiceItem>()
+                .HasOne(item => item.LeadAssignment)
+                .WithMany(la => la.InvoiceItems)
+                .HasForeignKey(item => item.LeadAssignmentId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

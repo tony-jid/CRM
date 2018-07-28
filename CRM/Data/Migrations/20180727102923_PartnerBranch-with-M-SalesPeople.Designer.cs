@@ -4,14 +4,16 @@ using CRM.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CRM.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180727102923_PartnerBranch-with-M-SalesPeople")]
+    partial class PartnerBranchwithMSalesPeople
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -132,24 +134,6 @@ namespace CRM.Data.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("CRM.Models.Company", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("ABN")
-                        .IsRequired();
-
-                    b.Property<double>("GST");
-
-                    b.Property<string>("Name")
-                        .IsRequired();
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Company");
-                });
-
             modelBuilder.Entity("CRM.Models.Customer", b =>
                 {
                     b.Property<Guid>("Id")
@@ -178,51 +162,10 @@ namespace CRM.Data.Migrations
                     b.ToTable("Customer");
                 });
 
-            modelBuilder.Entity("CRM.Models.Invoice", b =>
-                {
-                    b.Property<int>("No")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("CreatedBy");
-
-                    b.Property<DateTime>("CreatedDateTime");
-
-                    b.Property<DateTime>("DueDate");
-
-                    b.Property<double>("GST");
-
-                    b.Property<double>("SubTotal");
-
-                    b.Property<double>("Total");
-
-                    b.HasKey("No");
-
-                    b.ToTable("Invoice");
-                });
-
-            modelBuilder.Entity("CRM.Models.InvoiceItem", b =>
-                {
-                    b.Property<int>("InvoiceNo");
-
-                    b.Property<int>("LeadAssignmentId");
-
-                    b.Property<bool>("Reinvoiced");
-
-                    b.HasKey("InvoiceNo", "LeadAssignmentId");
-
-                    b.HasIndex("LeadAssignmentId");
-
-                    b.ToTable("InvoiceItem");
-                });
-
             modelBuilder.Entity("CRM.Models.Lead", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
-
-                    b.Property<string>("CreatedBy");
-
-                    b.Property<DateTime>("CreatedDateTime");
 
                     b.Property<Guid>("CustomerId");
 
@@ -245,17 +188,9 @@ namespace CRM.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Comment");
-
-                    b.Property<string>("CreatedBy");
-
-                    b.Property<DateTime>("CreatedDateTime");
-
                     b.Property<Guid>("LeadId");
 
                     b.Property<Guid>("PartnerBranchId");
-
-                    b.Property<int>("Rating");
 
                     b.HasKey("Id");
 
@@ -316,8 +251,6 @@ namespace CRM.Data.Migrations
                     b.Property<string>("Name")
                         .IsRequired();
 
-                    b.Property<double>("Price");
-
                     b.HasKey("Id");
 
                     b.ToTable("LeadType");
@@ -330,14 +263,10 @@ namespace CRM.Data.Migrations
 
                     b.Property<int>("AddressId");
 
-                    b.Property<int>("CompanyId");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AddressId")
                         .IsUnique();
-
-                    b.HasIndex("CompanyId");
 
                     b.ToTable("Office");
                 });
@@ -564,19 +493,6 @@ namespace CRM.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
-            modelBuilder.Entity("CRM.Models.InvoiceItem", b =>
-                {
-                    b.HasOne("CRM.Models.Invoice", "Invoice")
-                        .WithMany("InvoiceItems")
-                        .HasForeignKey("InvoiceNo")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("CRM.Models.LeadAssignment", "LeadAssignment")
-                        .WithMany("InvoiceItems")
-                        .HasForeignKey("LeadAssignmentId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
             modelBuilder.Entity("CRM.Models.Lead", b =>
                 {
                     b.HasOne("CRM.Models.Customer", "Customer")
@@ -634,11 +550,6 @@ namespace CRM.Data.Migrations
                     b.HasOne("CRM.Models.Address", "Address")
                         .WithOne("Office")
                         .HasForeignKey("CRM.Models.Office", "AddressId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("CRM.Models.Company", "Company")
-                        .WithMany("Offices")
-                        .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
