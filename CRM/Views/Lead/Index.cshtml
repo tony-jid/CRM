@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Lead";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Lead</h2>
+
+@(Html.DevExtreme().DateBox().Name("DatePicker1"))
+
+@(Html.DevExtreme().DataGrid<Lead>()
+        .DataSource(d => d.Mvc()
+            .Controller("Lead")
+            .LoadAction("Get_Leads")
+            .Key("Id")
+        )
+        .Columns(c => {
+            c.AddFor(i => i.Details);
+            c.AddFor(i => i.LeadType.Name);
+        })
+        .ShowBorders(true)
+    )

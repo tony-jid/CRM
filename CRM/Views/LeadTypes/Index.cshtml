@@ -1,0 +1,49 @@
+﻿@{
+    ViewData["Title"] = "LeadType";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@(Html.DevExtreme().DataGrid<LeadType>()
+    .ID("gridLeadTypes")
+    .ShowBorders(true)
+    .ShowRowLines(true)
+    .ShowColumnLines(false)
+    .RemoteOperations(true)
+    .FilterRow(f => f.Visible(false))
+    .Width(600)
+    .DataSource(ds => ds.Mvc()
+        .Controller(nameof(EnumController.LeadTypes))
+        .LoadAction("Get")
+        .InsertAction("Post")
+        .UpdateAction("Put")
+        .DeleteAction("Delete")
+        .Key("Id")
+    )
+    .Columns(columns =>
+    {
+        columns.AddFor(m => m.Name);
+        columns.AddFor(m => m.Price).Format(Format.Currency);
+    })
+    .Editing(e =>
+        e.Mode(GridEditMode.Popup)
+        .UseIcons(true)
+        .AllowAdding(true)
+        .AllowUpdating(true)
+        .AllowDeleting(true)
+        .Popup(p =>
+            p.Title(nameof(LeadType))
+            .ShowTitle(true)
+            .DragEnabled(false)
+            .Height(300)
+            .Width(500)
+            .CloseOnOutsideClick(true)
+            .Position(pos => pos
+                .My(HorizontalAlignment.Center, VerticalAlignment.Top)
+                .At(HorizontalAlignment.Center, VerticalAlignment.Top)
+                .Of(new JS("window"))
+            )
+        )
+    )
+)

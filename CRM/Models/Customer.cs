@@ -15,6 +15,7 @@ namespace CRM.Models
         [StringLength(256)]
         public string ContactName { get; set; }
         
+        [Required]
         [DataType(DataType.PhoneNumber)]
         public string ContactNumber { get; set; }
 

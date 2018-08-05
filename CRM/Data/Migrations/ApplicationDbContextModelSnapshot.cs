@@ -33,7 +33,7 @@ namespace CRM.Data.Migrations
 
                     b.HasIndex("NextStateId");
 
-                    b.ToTable("Action");
+                    b.ToTable("Actions");
                 });
 
             modelBuilder.Entity("CRM.Models.Address", b =>
@@ -55,7 +55,7 @@ namespace CRM.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Address");
+                    b.ToTable("Addresses");
                 });
 
             modelBuilder.Entity("CRM.Models.Agent", b =>
@@ -78,7 +78,7 @@ namespace CRM.Data.Migrations
 
                     b.HasIndex("OfficeId");
 
-                    b.ToTable("Agent");
+                    b.ToTable("Agents");
                 });
 
             modelBuilder.Entity("CRM.Models.ApplicationUser", b =>
@@ -175,7 +175,7 @@ namespace CRM.Data.Migrations
                     b.HasIndex("AddressId")
                         .IsUnique();
 
-                    b.ToTable("Customer");
+                    b.ToTable("Customers");
                 });
 
             modelBuilder.Entity("CRM.Models.Invoice", b =>
@@ -197,7 +197,7 @@ namespace CRM.Data.Migrations
 
                     b.HasKey("No");
 
-                    b.ToTable("Invoice");
+                    b.ToTable("Invoices");
                 });
 
             modelBuilder.Entity("CRM.Models.InvoiceItem", b =>
@@ -212,7 +212,7 @@ namespace CRM.Data.Migrations
 
                     b.HasIndex("LeadAssignmentId");
 
-                    b.ToTable("InvoiceItem");
+                    b.ToTable("InvoiceItems");
                 });
 
             modelBuilder.Entity("CRM.Models.Lead", b =>
@@ -237,7 +237,7 @@ namespace CRM.Data.Migrations
 
                     b.HasIndex("LeadTypeId");
 
-                    b.ToTable("Lead");
+                    b.ToTable("Leads");
                 });
 
             modelBuilder.Entity("CRM.Models.LeadAssignment", b =>
@@ -263,7 +263,7 @@ namespace CRM.Data.Migrations
 
                     b.HasIndex("PartnerBranchId");
 
-                    b.ToTable("LeadAssignment");
+                    b.ToTable("LeadAssignments");
                 });
 
             modelBuilder.Entity("CRM.Models.LeadAssignmentState", b =>
@@ -305,7 +305,7 @@ namespace CRM.Data.Migrations
 
                     b.HasIndex("LeadId");
 
-                    b.ToTable("LeadState");
+                    b.ToTable("LeadStates");
                 });
 
             modelBuilder.Entity("CRM.Models.LeadType", b =>
@@ -320,7 +320,7 @@ namespace CRM.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("LeadType");
+                    b.ToTable("LeadTypes");
                 });
 
             modelBuilder.Entity("CRM.Models.Office", b =>
@@ -339,7 +339,7 @@ namespace CRM.Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Office");
+                    b.ToTable("Offices");
                 });
 
             modelBuilder.Entity("CRM.Models.Partner", b =>
@@ -354,7 +354,7 @@ namespace CRM.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Partner");
+                    b.ToTable("Partners");
                 });
 
             modelBuilder.Entity("CRM.Models.PartnerBranch", b =>
@@ -373,7 +373,7 @@ namespace CRM.Data.Migrations
 
                     b.HasIndex("PartnerId");
 
-                    b.ToTable("PartnerBranch");
+                    b.ToTable("PartnerBranches");
                 });
 
             modelBuilder.Entity("CRM.Models.SalesPerson", b =>
@@ -396,7 +396,7 @@ namespace CRM.Data.Migrations
 
                     b.HasIndex("BranchId");
 
-                    b.ToTable("SalesPerson");
+                    b.ToTable("SalesPeople");
                 });
 
             modelBuilder.Entity("CRM.Models.State", b =>
@@ -416,7 +416,7 @@ namespace CRM.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("State");
+                    b.ToTable("States");
                 });
 
             modelBuilder.Entity("CRM.Models.StateAction", b =>
@@ -429,7 +429,7 @@ namespace CRM.Data.Migrations
 
                     b.HasIndex("ActionId");
 
-                    b.ToTable("StateAction");
+                    b.ToTable("StateActions");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

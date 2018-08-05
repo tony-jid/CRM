@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace CRM.Models
     {
         [Key]
         public int Id { get; set; }
-
+        
         [StringLength(256)]
         public string StreetAddress { get; set; }
 
@@ -24,10 +25,13 @@ namespace CRM.Models
         [StringLength(4)]
         public string PostCode { get; set; }
 
+        [JsonIgnore]
         public Office Office { get; set; }
 
+        [JsonIgnore]
         public PartnerBranch PartnerBranch { get; set; }
 
+        [JsonIgnore]
         public Customer Customer { get; set; }
     }
 }

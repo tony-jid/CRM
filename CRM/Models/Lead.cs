@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,8 +15,8 @@ namespace CRM.Models
         [Required]
         public string Details { get; set; }
 
-        [Required]
         [DataType(DataType.DateTime)]
+        [DefaultValue(typeof(DateTime), "")]
         public DateTime CreatedDateTime { get; set; }
 
         public string CreatedBy { get; set; }

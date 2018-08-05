@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace CRM.Models
 {
@@ -18,6 +19,7 @@ namespace CRM.Models
         [DataType(DataType.Currency)]
         public double Price { get; set; }
 
+        //[JsonIgnore]
         public IEnumerable<Lead> Leads { get; set; }
     }
 }

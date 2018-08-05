@@ -10,6 +10,26 @@ namespace CRM.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        public DbSet<Models.Action> Actions { get; set; }
+        public DbSet<Address> Addresses { get; set; }
+        public DbSet<Agent> Agents { get; set; }
+        public DbSet<Company> Company { get; set; }
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<Invoice> Invoices { get; set; }
+        public DbSet<InvoiceItem> InvoiceItems { get; set; }
+        public DbSet<Lead> Leads { get; set; }
+        public DbSet<LeadAssignment> LeadAssignments { get; set; }
+        public DbSet<LeadState> LeadStates { get; set; }
+        public DbSet<LeadType> LeadTypes { get; set; }
+        public DbSet<Office> Offices { get; set; }
+        public DbSet<Partner> Partners { get; set; }
+        public DbSet<PartnerBranch> PartnerBranches { get; set; }
+        public DbSet<SalesPerson> SalesPeople { get; set; }
+        public DbSet<Models.State> States { get; set; }
+        public DbSet<StateAction> StateActions { get; set; }
+
+
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {

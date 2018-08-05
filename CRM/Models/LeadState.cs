@@ -19,6 +19,8 @@ namespace CRM.Models
 
         public string Action { get; set; }
 
+        //public string Object { get; set; }
+
         public DateTime ActionTimestamp { get; set; }
     }
 }
