@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using CRM.Data;
 using CRM.Models;
 using CRM.Repositories;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -15,33 +13,39 @@ using Newtonsoft.Json;
 
 namespace CRM.Controllers
 {
-    public class LeadsController : BaseController
+    public class AgentsController : BaseController
     {
         private IUnitOfWork _uow;
-        private ILeadRepository _leadRepo;
+        private IAgentRepository _agentRepo;
 
-        public LeadsController(IUnitOfWork unitOfWork)
+        public AgentsController(IUnitOfWork unitOfWork)
         {
             _uow = unitOfWork;
-            _leadRepo = unitOfWork.LeadRepository;
+            _agentRepo = unitOfWork.AgentRepository;
         }
 
         [HttpGet]
         public object Get(DataSourceLoadOptions loadOptions)
         {
-            return DataSourceLoader.Load(_leadRepo.Get(), loadOptions);
+            return DataSourceLoader.Load(_agentRepo.Get(), loadOptions);
+        }
+
+        [HttpGet]
+        public object GetAgentsByOffice(int officeId, DataSourceLoadOptions loadOptions)
+        {
+            return DataSourceLoader.Load(_agentRepo.GetAgentsByOffice(officeId), loadOptions);
         }
 
         [HttpPost]
         public IActionResult Post(string values)
         {
-            var model = new Lead();
+            var model = new Agent();
             JsonConvert.PopulateObject(values, model);
 
             if (!TryValidateModel(model))
                 return BadRequest(GetFullErrorMessage(ModelState));
 
-            _leadRepo.Add(model);
+            _agentRepo.Add(model);
 
             return Ok();
         }
@@ -49,16 +53,16 @@ namespace CRM.Controllers
         [HttpPut]
         public IActionResult Put(Guid key, string values)
         {
-            var model = _leadRepo.GetByUid(key);
+            var model = _agentRepo.GetByUid(key);
             if (model == null)
-                return StatusCode(409, "Lead not found");
+                return StatusCode(409, "Agent not found");
 
             JsonConvert.PopulateObject(values, model);
 
             if (!TryValidateModel(model))
                 return BadRequest(GetFullErrorMessage(ModelState));
 
-            _leadRepo.Update(model);
+            _agentRepo.Update(model);
 
             return Ok();
         }
@@ -66,14 +70,9 @@ namespace CRM.Controllers
         [HttpDelete]
         public void Delete(Guid key)
         {
-            var model = _leadRepo.GetByUid(key);
+            var model = _agentRepo.GetByUid(key);
 
-            _leadRepo.Remove(model);
-        }
-
-        public object GetLeadsByCustomer(Guid customerId, DataSourceLoadOptions loadOptions)
-        {
-            return DataSourceLoader.Load(_leadRepo.GetLeadsByCustomer(customerId), loadOptions);
+            _agentRepo.Remove(model);
         }
     }
 }

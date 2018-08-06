@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using CRM.Data;
 using CRM.Models;
 using CRM.Repositories;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -15,65 +13,66 @@ using Newtonsoft.Json;
 
 namespace CRM.Controllers
 {
-    public class LeadsController : BaseController
+    public class OfficesController : BaseController
     {
         private IUnitOfWork _uow;
-        private ILeadRepository _leadRepo;
+        private IOfficeRepository _officeRepo;
 
-        public LeadsController(IUnitOfWork unitOfWork)
+        public OfficesController(IUnitOfWork unitOfWork)
         {
             _uow = unitOfWork;
-            _leadRepo = unitOfWork.LeadRepository;
+            _officeRepo = _uow.OfficeRepository;
         }
 
         [HttpGet]
         public object Get(DataSourceLoadOptions loadOptions)
         {
-            return DataSourceLoader.Load(_leadRepo.Get(), loadOptions);
+            return DataSourceLoader.Load(_officeRepo.Get(), loadOptions);
         }
 
         [HttpPost]
         public IActionResult Post(string values)
         {
-            var model = new Lead();
+            var model = new Office();
             JsonConvert.PopulateObject(values, model);
 
             if (!TryValidateModel(model))
                 return BadRequest(GetFullErrorMessage(ModelState));
 
-            _leadRepo.Add(model);
+            _officeRepo.Add(model);
 
             return Ok();
         }
 
         [HttpPut]
-        public IActionResult Put(Guid key, string values)
+        public IActionResult Put(int key, string values)
         {
-            var model = _leadRepo.GetByUid(key);
+            var model = _officeRepo.Get(key);
             if (model == null)
-                return StatusCode(409, "Lead not found");
+                return StatusCode(409, "Office not found");
 
             JsonConvert.PopulateObject(values, model);
 
             if (!TryValidateModel(model))
                 return BadRequest(GetFullErrorMessage(ModelState));
 
-            _leadRepo.Update(model);
+            _officeRepo.Update(model);
 
             return Ok();
         }
 
         [HttpDelete]
-        public void Delete(Guid key)
+        public void Delete(int key)
         {
-            var model = _leadRepo.GetByUid(key);
+            var model = _officeRepo.Get(key);
 
-            _leadRepo.Remove(model);
+            _officeRepo.Remove(model);
         }
 
-        public object GetLeadsByCustomer(Guid customerId, DataSourceLoadOptions loadOptions)
+        [HttpGet]
+        public object GetOfficesByCompany(int companyId, DataSourceLoadOptions loadOptions)
         {
-            return DataSourceLoader.Load(_leadRepo.GetLeadsByCustomer(customerId), loadOptions);
+            return DataSourceLoader.Load(_officeRepo.GetOfficesByCompany(companyId), loadOptions);
         }
     }
 }

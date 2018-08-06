@@ -46,3 +46,23 @@
 .address-form label {
     font-weight: bold;
 }
+
+.form-first-group,
+.form-second-group {
+    padding: 20px;
+}
+
+.form-second-group {
+    background-color: rgba(191, 191, 191, 0.15);
+}
+
+.form-avatar {
+    height: 118px;
+    width: 368px;
+    margin-right: 10px;
+    border-radius: 1%;
+    background-image: url('../images/company/logo.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}

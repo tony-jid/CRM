@@ -7,8 +7,14 @@ namespace CRM.Enum
 {
     public enum EnumController
     {
+        Company,
+        Offices,
+        Agents,
         Customers,
         Leads,
-        LeadTypes
+        LeadTypes,
+        Partners,
+        PartnerBranches,
+        SalesPeople
     }
 }

@@ -16,7 +16,7 @@ namespace CRM.Controllers
     {
         [Route("/[controller]")]
         [Route("/[controller]/[action]")]
-        public IActionResult Index()
+        public virtual IActionResult Index()
         {
             return View();
         }

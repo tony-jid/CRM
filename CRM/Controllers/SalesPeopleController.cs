@@ -2,46 +2,43 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using CRM.Data;
 using CRM.Models;
 using CRM.Repositories;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-// For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace CRM.Controllers
 {
-    public class LeadsController : BaseController
+    public class SalesPeopleController : BaseController
     {
         private IUnitOfWork _uow;
-        private ILeadRepository _leadRepo;
+        private ISalesPersonRepository _salesRepo;
 
-        public LeadsController(IUnitOfWork unitOfWork)
+        public SalesPeopleController(IUnitOfWork unitOfWork)
         {
             _uow = unitOfWork;
-            _leadRepo = unitOfWork.LeadRepository;
+            _salesRepo = unitOfWork.SalesPersonRepository;
         }
 
         [HttpGet]
         public object Get(DataSourceLoadOptions loadOptions)
         {
-            return DataSourceLoader.Load(_leadRepo.Get(), loadOptions);
+            return DataSourceLoader.Load(_salesRepo.Get(), loadOptions);
         }
 
         [HttpPost]
         public IActionResult Post(string values)
         {
-            var model = new Lead();
+            var model = new SalesPerson();
             JsonConvert.PopulateObject(values, model);
 
             if (!TryValidateModel(model))
                 return BadRequest(GetFullErrorMessage(ModelState));
 
-            _leadRepo.Add(model);
+            _salesRepo.Add(model);
 
             return Ok();
         }
@@ -49,16 +46,16 @@ namespace CRM.Controllers
         [HttpPut]
         public IActionResult Put(Guid key, string values)
         {
-            var model = _leadRepo.GetByUid(key);
+            var model = _salesRepo.GetByUid(key);
             if (model == null)
-                return StatusCode(409, "Lead not found");
+                return StatusCode(409, "Sales person of the branch not found");
 
             JsonConvert.PopulateObject(values, model);
 
             if (!TryValidateModel(model))
                 return BadRequest(GetFullErrorMessage(ModelState));
 
-            _leadRepo.Update(model);
+            _salesRepo.Update(model);
 
             return Ok();
         }
@@ -66,14 +63,14 @@ namespace CRM.Controllers
         [HttpDelete]
         public void Delete(Guid key)
         {
-            var model = _leadRepo.GetByUid(key);
-
-            _leadRepo.Remove(model);
+            var model = _salesRepo.GetByUid(key);
+            _salesRepo.Remove(model);
         }
 
-        public object GetLeadsByCustomer(Guid customerId, DataSourceLoadOptions loadOptions)
+        [HttpGet]
+        public object GetSalesPeopleByBranch(Guid branchId, DataSourceLoadOptions loadOptions)
         {
-            return DataSourceLoader.Load(_leadRepo.GetLeadsByCustomer(customerId), loadOptions);
+            return DataSourceLoader.Load(_salesRepo.GetSalesPeopleByBranch(branchId), loadOptions);
         }
     }
 }

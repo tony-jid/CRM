@@ -74,6 +74,13 @@
             .Template(new TemplateName("grid-details"))
             .AutoExpandAll(false)
         )
+        .Selection(s => s.Mode(SelectionMode.Single))
+        .OnSelectionChanged(@<text>
+            function(e) {
+                e.component.collapseAll(-1);
+                e.component.expandRow(e.currentSelectedRowKeys[0]);
+            }
+        </text>)
 )
 
 @using (Html.DevExtreme().NamedTemplate("grid-details"))
@@ -118,15 +125,26 @@
                 .Lookup(lookup =>
                     lookup.DataSource(d => d.Mvc()
                         .Controller(nameof(EnumController.LeadTypes))
-                        .LoadAction("Get")
+                        .LoadAction("Get").Key("Id")
                     ).DisplayExpr("Name").ValueExpr("Id")
                 )
                 .Caption("Type of lead");
             columns.AddFor(m => m.Details).AllowHeaderFiltering(false);
-            columns.AddFor(m => m.LeadStates).Caption("Status").AllowHeaderFiltering(false).FormItem(i => i.Visible(false));
-            columns.AddFor(m => m.LeadStates).Caption("Progress").AllowHeaderFiltering(false).FormItem(i => i.Visible(false));
-            columns.AddFor(m => m.CreatedDateTime).DataType(GridColumnDataType.DateTime).FormItem(f => f.Visible(false));
-            columns.AddFor(m => m.CreatedBy).FormItem(i => i.Visible(false));
+            columns.Add().CellTemplate(@<text>New</text>).Caption("Status").AllowHeaderFiltering(false).AllowEditing(false).FormItem(i => i.Visible(false));
+            columns.Add().CellTemplate(@<text>
+                @(Html.DevExtreme().ProgressBar()
+                    .ID("progressBarStatus")
+                    .Min(0)
+                    .Max(100)
+                    .Width("100%")
+                )
+            </text>).Caption("Progress").AllowHeaderFiltering(false).AllowEditing(false).FormItem(i => i.Visible(false));
+            columns.Add().CellTemplate(@<text><u>view</u></text>).Caption("History").AllowHeaderFiltering(false).AllowEditing(false).FormItem(i => i.Visible(false));
+            columns.Add().CellTemplate(@<text>
+                @(Html.DevExtreme().SelectBox())
+            </text>).Caption("Actions").AllowHeaderFiltering(false).AllowEditing(false).FormItem(i => i.Visible(false));
+            columns.AddFor(m => m.CreatedDateTime).Caption("Created When").DataType(GridColumnDataType.DateTime).AllowEditing(false).FormItem(f => f.Visible(false));
+            columns.AddFor(m => m.CreatedBy).AllowEditing(false).FormItem(i => i.Visible(false));
         })
         .Editing(e =>
             e.Mode(GridEditMode.Popup)
@@ -136,6 +154,7 @@
             .AllowDeleting(true)
             .Popup(p =>
                 p.Title(nameof(Lead))
+                .Width(600)
                 .ShowTitle(true)
                 .DragEnabled(false)
                 .CloseOnOutsideClick(true)
@@ -153,7 +172,7 @@
                 e.data.CreatedDateTime = new Date();
             }
         </text>)
-        // Passing "CustomerId" into parameters of InsertAction
+        // Passing "CustomerId" into the parameter "values" of InsertAction
         .OnRowInserting(@<text>
             function (e) {
                 e.data.customerId = tabExtras.customerId;
