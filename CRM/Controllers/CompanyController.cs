@@ -22,6 +22,7 @@ namespace CRM.Controllers
         
         public override IActionResult Index()
         {
+            base.SetViewDataModalTarget();
             return View(_comRepo.GetFirst());
         }
 

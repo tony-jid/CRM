@@ -7000,7 +7000,7 @@ input.dx-hidden {
   width: 100%;
 }
 .dx-layout-manager .dx-tabpanel .dx-multiview-item-content {
-  padding: 20px;
+  /*padding: 20px;*/
 }
 .dx-field-item-label-location-top {
   display: block;

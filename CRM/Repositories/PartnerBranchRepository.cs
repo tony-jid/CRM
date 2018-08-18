@@ -19,6 +19,9 @@ namespace CRM.Repositories
 
         public void Add(PartnerBranch entity)
         {
+            if (entity.Address == null)
+                entity.Address = new Address();
+
             _context.Addresses.Add(entity.Address);
 
             _context.PartnerBranches.Add(entity);

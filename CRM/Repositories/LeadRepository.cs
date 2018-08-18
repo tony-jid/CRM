@@ -25,7 +25,7 @@ namespace CRM.Repositories
             entity.CreatedDateTime = DateTime.Now;
 
             _context.Leads.Add(entity);
-            this.AddLeadState(entity.Id, EnumState.LeadNew, "admin", EnumStateAction.Created, EnumStateActionObject.Lead);
+            this.AddStateForNewLead(entity.Id, "admin");
 
             _context.SaveChanges();
         }
@@ -42,7 +42,10 @@ namespace CRM.Repositories
 
         public IEnumerable<Lead> Get()
         {
-            return _context.Leads.Include(i => i.LeadType);
+            return _context.Leads
+                .Include(i => i.Customer)
+                .Include(i => i.LeadType)
+                .Include(i => i.LeadStates).ThenInclude(i => i.State.StateActions).ThenInclude(i => i.Action);
         }
 
         public IEnumerable<Lead> GetLeadsByCustomer(Guid customerId)
@@ -65,16 +68,26 @@ namespace CRM.Repositories
             _context.SaveChanges();
         }
 
-        public void AddLeadState(Guid leadId, EnumState stateId, string actor, EnumStateAction action, EnumStateActionObject actionObject)
+        private void AddStateForNewLead(Guid leadId, string actor) 
+        {
+            var state = new LeadState();
+            state.LeadId = leadId;
+            state.StateId = (int)EnumState.LeadNew;
+            state.Actor = actor;
+            state.Action = nameof(EnumStateAction.Created);
+            state.ActionTimestamp = DateTime.Now;
+
+            _context.LeadStates.Add(state);
+        }
+        public void AddLeadState(Guid leadId, EnumState stateId, string actor, EnumStateAction action)
         {
             var state = new LeadState();
             state.LeadId = leadId;
             state.StateId = (int)stateId;
             state.Actor = actor;
-            state.Action = nameof(action);
+            state.Action = nameof(stateId);
             //state.Object = nameof(actionObject);
             state.ActionTimestamp = DateTime.Now;
-            state.CreatedTimestamp = DateTime.Now;
 
             _context.LeadStates.Add(state);
         }

@@ -165,7 +165,8 @@ namespace CRM.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(256);
 
-                    b.Property<string>("ContactNumber");
+                    b.Property<string>("ContactNumber")
+                        .IsRequired();
 
                     b.Property<string>("EMail")
                         .IsRequired();
@@ -293,15 +294,13 @@ namespace CRM.Data.Migrations
 
                     b.Property<Guid>("LeadId");
 
-                    b.Property<DateTime>("CreatedTimestamp");
+                    b.Property<DateTime>("ActionTimestamp");
 
                     b.Property<string>("Action");
 
-                    b.Property<DateTime>("ActionTimestamp");
-
                     b.Property<string>("Actor");
 
-                    b.HasKey("StateId", "LeadId", "CreatedTimestamp");
+                    b.HasKey("StateId", "LeadId", "ActionTimestamp");
 
                     b.HasIndex("LeadId");
 
@@ -312,6 +311,8 @@ namespace CRM.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Image");
 
                     b.Property<string>("Name")
                         .IsRequired();

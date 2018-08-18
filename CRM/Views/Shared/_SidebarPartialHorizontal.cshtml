@@ -1,0 +1,47 @@
+﻿@{
+    var pageName = ViewContext.RouteData.Values["controller"].ToString();
+    var classActiveLink = "active";
+}
+
+<nav class="sidebar-horizontal navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="navbar-collapse" id="navbar-header-menu-outer">
+        <ul class="navbar-nav navbar-header-menu mr-auto">
+            <li class="nav-item">
+                <a class="nav-link @(pageName == nameof(EnumController.Dashboard) ? classActiveLink : "")" href="#">
+                    <i class="batch-icon batch-icon-browser-alt"></i>
+                    Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(pageName == nameof(EnumController.Company) ? classActiveLink : "")" asp-area="" asp-controller="@(nameof(EnumController.Company))" asp-action="">
+                    <i class="batch-icon batch-icon-home"></i>
+                    Company
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(pageName == nameof(EnumController.Customers) ? classActiveLink : "")" asp-area="" asp-controller="@(nameof(EnumController.Customers))" asp-action="">
+                    <i class="batch-icon batch-icon-users"></i>
+                    Customers
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(pageName == nameof(EnumController.Leads) ? classActiveLink : "")" asp-area="" asp-controller="@(nameof(EnumController.Leads))" asp-action="">
+                    <i class="batch-icon batch-icon-podcast"></i>
+                    Leads
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(pageName == nameof(EnumController.LeadTypes) ? classActiveLink : "")" asp-area="" asp-controller="@(nameof(EnumController.LeadTypes))" asp-action="">
+                    <i class="batch-icon batch-icon-clipboard"></i>
+                    Lead Types
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(pageName == nameof(EnumController.Partners) ? classActiveLink : "")" asp-area="" asp-controller="@(nameof(EnumController.Partners))" asp-action="">
+                    <i class="batch-icon batch-icon-store"></i>
+                    Partners
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>

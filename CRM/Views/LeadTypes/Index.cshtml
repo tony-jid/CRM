@@ -1,18 +1,19 @@
 ﻿@{
-    ViewData["Title"] = "LeadTypes";
+    ViewData[nameof(EnumViewData.Title)] = "Types of Lead";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<h2>@ViewData["Title"]</h2>
 
 @(Html.DevExtreme().DataGrid<LeadType>()
     .ID("gridLeadTypes")
     .ShowBorders(true)
     .ShowRowLines(true)
     .ShowColumnLines(false)
-    .RemoteOperations(true)
+    .RowAlternationEnabled(true)
+    .HoverStateEnabled(true)
+    .RemoteOperations(false)
     .FilterRow(f => f.Visible(false))
-    .Width(600)
+    .Paging(DXGridConfigs.MasterPaging())
+    .Pager(DXGridConfigs.Pager())
     .DataSource(ds => ds.Mvc()
         .Controller(nameof(EnumController.LeadTypes))
         .LoadAction("Get")
@@ -32,18 +33,16 @@
         .AllowAdding(true)
         .AllowUpdating(true)
         .AllowDeleting(true)
-        .Popup(p =>
-            p.Title(nameof(LeadType))
-            .ShowTitle(true)
-            .DragEnabled(false)
-            .Height(300)
-            .Width(500)
-            .CloseOnOutsideClick(true)
-            .Position(pos => pos
-                .My(HorizontalAlignment.Center, VerticalAlignment.Top)
-                .At(HorizontalAlignment.Center, VerticalAlignment.Top)
-                .Of(new JS("window"))
-            )
-        )
+        .Popup(DXGridConfigs.EditingPopup(nameof(LeadType)))
     )
+    .OnContentReady(@<text>
+        function(e) {
+            CustomGridEvent.onContentReady(e, "Types");
+        }
+    </text>)
+    .OnToolbarPreparing(@<text>
+        function(e) {
+            CustomGridEvent.onToolbarPreparing(e, "Types");
+        }
+    </text>)
 )

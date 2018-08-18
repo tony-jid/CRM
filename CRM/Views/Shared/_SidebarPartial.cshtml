@@ -1,0 +1,125 @@
+﻿@{
+    var pageName = ViewContext.RouteData.Values["controller"].ToString();
+    var classActiveLink = "active";
+}
+
+<nav id="sidebar" class="px-0 bg-dark bg-gradient sidebar">
+    <ul class="nav nav-pills flex-column">
+        <li class="logo-nav-item">
+            <a class="navbar-brand" href="#">
+                <img src="~/images/company/logo-light.png" width="151" height="47" alt="">
+            </a>
+
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(pageName == nameof(EnumController.Dashboard) ? classActiveLink : "")" href="#">
+                <i class="batch-icon batch-icon-browser-alt"></i>
+                Dashboard
+            </a>
+        </li>
+    </ul>
+    <ul class="nav nav-pills flex-column">
+        <li>
+            <h6 class="nav-header">Management</h6>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(pageName == nameof(EnumController.Company) ? classActiveLink : "")" asp-area="" asp-controller="@(nameof(EnumController.Company))" asp-action="">
+                <i class="batch-icon batch-icon-star"></i>
+                Company
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(pageName == nameof(EnumController.Customers) ? classActiveLink : "")" asp-area="" asp-controller="@(nameof(EnumController.Customers))" asp-action="">
+                <i class="batch-icon batch-icon-star"></i>
+                Customers
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(pageName == nameof(EnumController.LeadTypes) ? classActiveLink : "")" asp-area="" asp-controller="@(nameof(EnumController.LeadTypes))" asp-action="">
+                <i class="batch-icon batch-icon-star"></i>
+                Lead Types
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(pageName == nameof(EnumController.Partners) ? classActiveLink : "")" asp-area="" asp-controller="@(nameof(EnumController.Partners))" asp-action="">
+                <i class="batch-icon batch-icon-star"></i>
+                Partners
+            </a>
+        </li>
+    </ul>
+    <ul class="nav nav-pills flex-column">
+        <li>
+            <h6 class="nav-header">Reports</h6>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="batch-icon batch-icon-document"></i>
+                Report
+            </a>
+            <a class="nav-link" href="#">
+                <i class="batch-icon batch-icon-document"></i>
+                Report
+            </a>
+            <a class="nav-link" href="#">
+                <i class="batch-icon batch-icon-document"></i>
+                Report
+            </a>
+            <a class="nav-link" href="#">
+                <i class="batch-icon batch-icon-document"></i>
+                Report
+            </a>
+            <a class="nav-link" href="#">
+                <i class="batch-icon batch-icon-document"></i>
+                Report
+            </a>
+            <a class="nav-link" href="#">
+                <i class="batch-icon batch-icon-document"></i>
+                Report
+            </a>
+        </li>
+        
+    </ul>
+    @*<ul class="nav nav-pills flex-column">
+            <li class="logo-nav-item">
+                <a class="navbar-brand" href="#">
+                    <img src="~/images/company/logo.png" width="151px" height="47px" alt="">
+                </a>
+
+            </li>
+            <li>
+                <h6 class="nav-header">General</h6>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="index.html">
+                    <i class="batch-icon batch-icon-browser-alt"></i>
+                    Dashboard <span class="sr-only">(current)</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link nav-parent active" href="#">
+                    <i class="batch-icon batch-icon-layout-content-left"></i>
+                    Layout
+                </a>
+                <ul class="nav nav-pills flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="layout-left-menu-hidden.html">Left Menu - Hidden</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="layout-left-menu-normal.html">Left Menu - Normal</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="layout-top-menu-fixed.html">Top Menu - Fixed</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="layout-top-menu-normal.html">Top Menu - Normal</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="starter-kit.html">
+                    <i class="batch-icon batch-icon-star"></i>
+                    Starter Kit
+                </a>
+            </li>
+        </ul>*@
+</nav>

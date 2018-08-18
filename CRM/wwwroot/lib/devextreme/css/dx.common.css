@@ -891,7 +891,7 @@
   vertical-align: middle;
 }
 .dx-button-content {
-  overflow: hidden;
+  /*overflow: hidden;*/ /*fixing problem of icons display as ...*/
   -o-text-overflow: ellipsis;
   -ms-text-overflow: ellipsis;
   text-overflow: ellipsis;

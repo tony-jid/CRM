@@ -1,6 +1,10 @@
 ﻿body {
-    padding-top: 50px;
     padding-bottom: 20px;
+}
+
+footer {
+    padding-top: 20px;
+    text-align: center;
 }
 
 /* Wrapping element */
@@ -61,7 +65,7 @@
     width: 368px;
     margin-right: 10px;
     border-radius: 1%;
-    background-image: url('../images/company/logo.png');
+    background-image: url('../images/company/logo-dark.png');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;

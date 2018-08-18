@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>CRM - @ViewData["Title"]</title>
+
+	<!-- Fonts -->
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,700&amp;subset=latin-ext" rel="stylesheet">
+
+	<!-- Start - CSS Section -->
+	<link rel="stylesheet" href="~/css/site.css" />
+	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+	@*<link rel="stylesheet" href="~/lib/bootswatch-dist/css/bootstrap.min.css" />*@
+
+	@*DevExpress CSS*@
+	<link href="~/lib/devextreme/css/dx.common.css" rel="stylesheet" />
+	<link href="~/lib/devextreme/css/dx.softblue.css" rel="stylesheet" />
+
+	<!-- Batch Icons -->
+	<link rel="stylesheet" href="~/quillpro/fonts/batch-icons/css/batch-icons.css">
+	<!-- Material Design Bootstrap -->
+	<link rel="stylesheet" href="~/quillpro/css/bootstrap/mdb.min.css">
+	<!-- Custom Scrollbar -->
+	<link rel="stylesheet" href="~/quillpro/plugins/custom-scrollbar/jquery.mCustomScrollbar.min.css">
+	<!-- Hamburger Menu -->
+	<link rel="stylesheet" href="~/quillpro/css/hamburgers/hamburgers.css">
+	<!-- Font Awesome -->
+	<link rel="stylesheet" href="~/quillpro/fonts/font-awesome/css/font-awesome.min.css">
+
+	<!-- QuillPro Styles -->
+	<link rel="stylesheet" href="~/quillpro/css/quillpro/quillpro.css">
+	<!-- End - CSS Section -->
+
+	<!-- Start - Script Section -->
+	<script src="~/lib/jquery/dist/jquery.min.js"></script>
+	<script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+	@*<script src="~/lib/bootswatch-dist/js/bootstrap.min.js"></script>*@
+	<script src="~/js/site.js" asp-append-version="true"></script>
+
+	@*DevExtreme Scripts*@
+	<script src="~/lib/devextreme/js/dx.all.js"></script>
+	<script src="~/lib/devextreme-aspnet-data/js/dx.aspnet.data.js"></script>
+	<script src="~/lib/devextreme/js/dx.aspnet.mvc.js"></script>
+	<!-- End - Script Section -->
+</head>
+<body>
+	@await Html.PartialAsync(nameof(EnumPartialPages._NavbarPartial))
+	<div class="container body-content">
+		@RenderBody()
+		<hr />
+		<footer>
+			<p>&copy; 2018 - CRM</p>
+		</footer>
+	</div>
+
+	@RenderSection("Scripts", required: false)
+</body>
+</html>

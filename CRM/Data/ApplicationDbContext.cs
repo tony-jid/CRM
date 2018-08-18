@@ -79,7 +79,7 @@ namespace CRM.Data
             //    .WithMany(type => type.Transactions)
             //    .HasForeignKey(tran => tran.TransactionTypeId)
             //    .OnDelete(DeleteBehavior.Restrict);
-            builder.Entity<LeadState>().HasKey(key => new { key.StateId, key.LeadId, key.CreatedTimestamp });
+            builder.Entity<LeadState>().HasKey(key => new { key.StateId, key.LeadId, key.ActionTimestamp });
             builder.Entity<LeadState>()
                 .HasOne(ls => ls.State)
                 .WithMany(s => s.LeadStates)

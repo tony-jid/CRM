@@ -19,6 +19,11 @@ namespace CRM.Repositories
 
         public void Add(Customer entity)
         {
+            // Address can be null because properties in Address are not required.
+            // So, must initialize it when they are not entered.
+            if (entity.Address == null)
+                entity.Address = new Address();
+
             // *** entity.AddressId will be assigned automatically after the address is added
             //
             _context.Addresses.Add(entity.Address);

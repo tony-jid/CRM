@@ -1,102 +1,120 @@
 ﻿
 @{
-    ViewData["Title"] = Model.Name;
+    ViewData[nameof(EnumViewData.Title)] = nameof(EnumController.Company);
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@(Html.DevExtreme().Form<Company>()
-        .ID("form")
-        .Items(items =>
-        {
-            items.AddGroup()
-                .CssClass("form-first-group")
-                .ColCount(3)
-                .Items(groupItems =>
-                {
-                    groupItems.AddSimple().Template("<div class='form-avatar'></div>");
-                    groupItems.AddGroup().Items(secondGroupItems =>
+<div class="row mb-4">
+    <div class="col-md-12 mb-5 mb-">
+        <div class="card">
+            <div class="card-body pt-0">
+                @(Html.DevExtreme().Form<Company>()
+                    .ID("Company")
+                    .Items(items =>
                     {
-                        secondGroupItems.AddSimpleFor(m => m.Name);
-                        secondGroupItems.AddSimpleFor(m => m.ABN);
-                        secondGroupItems.AddSimpleFor(m => m.GST)
-                            .Editor(e => e
-                                .NumberBox().ShowSpinButtons(true)
-                            );
-                    });
-                });
-            items.AddGroup()
-                .CssClass("form-second-group")
-                //.ColCount(2)
-                .Caption("Offices")
-                .Items(groupItems => {
-                    groupItems.AddSimple().Template(new TemplateName("grid-offices"));
-                });
-        })
-        .FormData(@Model)
-)
-
+                        items.AddGroup()
+                            .CssClass("form-first-group")
+                            .ColCount(3)
+                            .Items(groupItems =>
+                            {
+                                groupItems.AddSimple().Template("<div class='form-avatar'></div>");
+                                groupItems.AddGroup().Items(secondGroupItems =>
+                                {
+                                    secondGroupItems.AddSimpleFor(m => m.Name);
+                                    secondGroupItems.AddSimpleFor(m => m.ABN);
+                                    secondGroupItems.AddSimpleFor(m => m.GST)
+                                        .Editor(e => e
+                                            .NumberBox().ShowSpinButtons(true)
+                                        );
+                                });
+                            });
+                        items.AddGroup()
+                            .Items(groupItems =>
+                            {
+                                groupItems.AddSimple().Template(new TemplateName("grid-offices"));
+                            });
+                    })
+                    .FormData(@Model)
+                )
+            </div>
+        </div>
+    </div>
+</div>
+        
 @using (Html.DevExtreme().NamedTemplate("grid-offices"))
 {
-    @(Html.DevExtreme().DataGrid<Office>()
-        .ID("gridOffices")
-        .ShowBorders(true)
-        .HeaderFilter(f => f.Visible(false))
-        .DataSource(d => d.Mvc()
-            .Controller(nameof(EnumController.Offices))
-            .LoadAction("GetOfficesByCompany")
-            .LoadParams(new
-            {
-                companyId = @Model.Id
-            })
-            .InsertAction("Post")
-            .UpdateAction("Put")
-            .DeleteAction("Delete")
-            .Key("Id")
-        )
-        .Paging(p => p.PageSize(5))
-        .Columns(columns =>
-        {
-            columns.AddFor(m => m.Address.StreetAddress).Caption("Address");
-            columns.AddFor(m => m.Address.Suburb).Caption("Suburb");
-            columns.AddFor(m => m.Address.State).Caption("State");
-            columns.AddFor(m => m.Address.PostCode).Caption("Postcode");
-        })
-        .Editing(e =>
-            e.Mode(GridEditMode.Popup)
-            .UseIcons(true)
-            .AllowAdding(true)
-            .AllowUpdating(true)
-            .AllowDeleting(true)
-            .Popup(p =>
-                p.Title(nameof(Office))
-                .ShowTitle(true)
-                .DragEnabled(false)
-                .CloseOnOutsideClick(true)
-                .Position(pos => pos
-                    .My(HorizontalAlignment.Center, VerticalAlignment.Top)
-                    .At(HorizontalAlignment.Center, VerticalAlignment.Top)
-                    .Of(new JS("window"))
+    <div class="card">
+        <div class="card-header">
+            Offices
+        </div>
+        <div class="card-body pt-0">
+            @(Html.DevExtreme().DataGrid<Office>()
+                .ID("gridOffices")
+                .ShowBorders(true)
+                .ShowRowLines(true)
+                .ShowColumnLines(false)
+                .RowAlternationEnabled(true)
+                .HoverStateEnabled(true)
+                .RemoteOperations(false)
+                .HeaderFilter(f => f.Visible(false))
+                .DataSource(d => d.Mvc()
+                    .Controller(nameof(EnumController.Offices))
+                    .LoadAction("GetOfficesByCompany")
+                    .LoadParams(new
+                    {
+                        companyId = @Model.Id
+                    })
+                    .InsertAction("Post")
+                    .UpdateAction("Put")
+                    .DeleteAction("Delete")
+                    .Key("Id")
                 )
+                .Paging(DXGridConfigs.DetailsPaging())
+                .Pager(DXGridConfigs.Pager())
+                .Columns(columns =>
+                {
+                    columns.AddFor(m => m.Address.StreetAddress).Caption("Address");
+                    columns.AddFor(m => m.Address.Suburb).Caption("Suburb");
+                    columns.AddFor(m => m.Address.State).Caption("State");
+                    columns.AddFor(m => m.Address.PostCode).Caption("Postcode");
+                })
+                .Editing(e =>
+                    e.Mode(GridEditMode.Popup)
+                    .UseIcons(true)
+                    .AllowAdding(true)
+                    .AllowUpdating(true)
+                    .AllowDeleting(true)
+                    .Popup(DXGridConfigs.EditingPopup(ViewData[nameof(EnumViewData.Title)].ToString()))
+                )
+                .MasterDetail(m => m
+                    .Enabled(true)
+                    .Template(new TemplateName("grid-office-details"))
+                    .AutoExpandAll(false)
+                )
+                .OnRowInserting(@<text>
+                    function (e) {
+                        e.data.companyId = @Model.Id
+                    }
+                </text>)
+                .Selection(s => s.Mode(SelectionMode.Single))
+                .OnSelectionChanged(@<text>
+                    function(e) {
+                        CustomGridEvent.onSelectionChangedExpandDetails(e);
+                    }
+                </text>)
+                .OnContentReady(@<text>
+                    function(e) {
+                        CustomGridEvent.onContentReady(e, "Offices");
+                    }
+                </text>)
+                .OnToolbarPreparing(@<text>
+                    function(e) {
+                        CustomGridEvent.onToolbarPreparing(e, "Offices");
+                    }
+                </text>)
             )
-        )
-        .MasterDetail(m => m
-            .Enabled(true)
-            .Template(new TemplateName("grid-office-details"))
-            .AutoExpandAll(false)
-        )
-        .Selection(s => s.Mode(SelectionMode.Single))
-        .OnSelectionChanged(@<text>
-            function(e) {
-                e.component.collapseAll(-1);
-                e.component.expandRow(e.currentSelectedRowKeys[0]);
-            }
-        </text>)
-        .OnRowInserting(@<text>
-            function (e) {
-                e.data.companyId = @Model.Id
-            }
-        </text>)
-    )
+        </div>
+    </div>
 }
 
 @using (Html.DevExtreme().NamedTemplate("grid-office-details"))
@@ -120,6 +138,11 @@
     @(Html.DevExtreme().DataGrid<Agent>()
         .ID("grid-office-agents-" + new JS("masterOffice.officeId"))
         .ShowBorders(true)
+        .ShowRowLines(true)
+        .ShowColumnLines(false)
+        .RowAlternationEnabled(true)
+        .HoverStateEnabled(true)
+        .RemoteOperations(false)
         .HeaderFilter(f => f.Visible(false))
         .DataSource(d => d.Mvc()
             .Controller(nameof(EnumController.Agents))
@@ -133,7 +156,8 @@
             .DeleteAction("Delete")
             .Key("Id")
         )
-        .Paging(p => p.PageSize(5))
+        .Paging(DXGridConfigs.DetailsPaging())
+        .Pager(DXGridConfigs.Pager())
         .Columns(columns =>
         {
             columns.AddFor(m => m.ContactName);
@@ -146,21 +170,21 @@
             .AllowAdding(true)
             .AllowUpdating(true)
             .AllowDeleting(true)
-            .Popup(p =>
-                p.Title(nameof(Agent))
-                .ShowTitle(true)
-                .DragEnabled(false)
-                .CloseOnOutsideClick(true)
-                .Position(pos => pos
-                    .My(HorizontalAlignment.Center, VerticalAlignment.Top)
-                    .At(HorizontalAlignment.Center, VerticalAlignment.Top)
-                    .Of(new JS("window"))
-                )
-            )
+            .Popup(DXGridConfigs.EditingPopup(nameof(Agent)))
         )
         .OnRowInserting(@<text>
             function (e) {
                 e.data.officeId = masterOffice.officeId;
+            }
+        </text>)
+        .OnContentReady(@<text>
+            function(e) {
+                CustomGridEvent.onContentReady(e, "Agents");
+            }
+        </text>)
+        .OnToolbarPreparing(@<text>
+            function(e) {
+                CustomGridEvent.onToolbarPreparing(e, "Agents");
             }
         </text>)
     )

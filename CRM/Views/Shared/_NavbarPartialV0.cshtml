@@ -1,0 +1,31 @@
+﻿@{ 
+    var pageName = ViewContext.RouteData.Values["controller"].ToString();
+}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">
+        <img src="~/images/company/logo.png" width="113px" height="35px" alt="" />
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" 
+            data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item @(pageName == nameof(EnumController.Company) ? "active" : "")">
+                <a class="nav-link" asp-area="" asp-controller="Company" asp-action="">Company</a>
+            </li>
+            <li class="nav-item @(pageName == nameof(EnumController.Customers) ? "active" : "")">
+                <a class="nav-link" asp-area="" asp-controller="Customers" asp-action="">Customers</a>
+            </li>
+            <li class="nav-item @(pageName == nameof(EnumController.LeadTypes) ? "active" : "")">
+                <a class="nav-link" asp-area="" asp-controller="LeadTypes" asp-action="">Lead Types</a>
+            </li>
+            <li class="nav-item @(pageName == nameof(EnumController.Partners) ? "active" : "")">
+                <a class="nav-link" asp-area="" asp-controller="Partners" asp-action="">Partners</a>
+            </li>
+        </ul>
+        @await Html.PartialAsync(nameof(EnumPartialPages._LoginPartial))
+    </div>
+</nav>

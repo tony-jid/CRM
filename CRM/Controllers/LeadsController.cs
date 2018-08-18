@@ -4,12 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using CRM.Data;
 using CRM.Models;
+using CRM.Models.ViewModels;
 using CRM.Repositories;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using CRM.Helpers;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -30,6 +32,59 @@ namespace CRM.Controllers
         public object Get(DataSourceLoadOptions loadOptions)
         {
             return DataSourceLoader.Load(_leadRepo.Get(), loadOptions);
+        }
+
+        [HttpGet]
+        public object GetViewModel(DataSourceLoadOptions loadOptions)
+        {
+            List<LeadViewModel> leadVMs = new List<LeadViewModel>();
+
+            var leads = _leadRepo.Get();
+            foreach (var item in leads)
+            {
+                var itemVM = new LeadViewModel();
+                itemVM.Id = item.Id;
+                itemVM.Details = item.Details;
+                itemVM.CreatedWhen= item.CreatedDateTime;
+                itemVM.CreatedBy = item.CreatedBy;
+
+                itemVM.LeadTypeId = item.LeadType.Id;
+                itemVM.LeadTypeName = item.LeadType.Name;
+                itemVM.LeadTypeImage= ImageHelper.PATH_LEAD_TYPE + item.LeadType.Image;
+
+                itemVM.CustomerId = item.Customer.Id;
+                itemVM.CustomerName= item.Customer.ContactName;
+                itemVM.CustomerBusinessName = item.Customer.BusinessName;
+                itemVM.CustomerContactNumber= item.Customer.ContactNumber;
+                itemVM.CustomerEmail = item.Customer.EMail;
+
+                // Current status
+                var currentStatus = item.LeadStates.OrderByDescending(o => o.ActionTimestamp).FirstOrDefault();
+                itemVM.StatusId = currentStatus.State.Id;
+                itemVM.StatusName = currentStatus.State.Name;
+                itemVM.StatusTag = StatusHelper.GetHtmlSmallBadge(currentStatus.State.Id);
+
+                // Actions of current status
+                var actions = currentStatus.State.StateActions.Select(s => new ActionViewModel {
+                    Controller = s.Action.ControllerName,
+                    Action = s.Action.ActionName,
+                    NextStateId = s.Action.NextStateId
+                }).ToList();
+
+                itemVM.Actions = actions;
+
+                // Histories
+                var histories = item.LeadStates
+                    //.Where(w => w.StateId != currentStatus.StateId) // *show all
+                    .Select(s => HistoryHelper.GetHtmlHistoryLine(s.ActionTimestamp, s.Action.ToLower(), s.Actor));
+
+                itemVM.History = HistoryHelper.GetHtmlHistoryTag(histories.ToList());
+
+                leadVMs.Add(itemVM);
+            }
+
+
+            return DataSourceLoader.Load(leadVMs, loadOptions);
         }
 
         [HttpPost]

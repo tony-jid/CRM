@@ -13,7 +13,7 @@ namespace CRM.Models
         public int StateId { get; set; }
         public State State { get; set; }
 
-        public DateTime CreatedTimestamp { get; set; }
+        //public DateTime CreatedTimestamp { get; set; } // use ActionTimestamp
 
         public string Actor { get; set; }
 

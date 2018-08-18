@@ -1,0 +1,10 @@
+﻿[
+  {
+    "outputFile": "wwwroot/quillpro/css/quillpro/quillpro.css",
+    "inputFile": "wwwroot/quillpro/sass/quillpro/quillpro.scss"
+  },
+  {
+    "outputFile": "wwwroot/lib/bootstrap/scss/_tooltip.css",
+    "inputFile": "wwwroot/lib/bootstrap/scss/_tooltip.scss"
+  }
+]

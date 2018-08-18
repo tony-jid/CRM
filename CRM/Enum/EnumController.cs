@@ -7,6 +7,7 @@ namespace CRM.Enum
 {
     public enum EnumController
     {
+        Dashboard,
         Company,
         Offices,
         Agents,

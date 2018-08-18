@@ -7,7 +7,12 @@ namespace CRM.Enum
 {
     public enum EnumPartialPages
     {
+        _StylesPartial,
+        _ScriptsPartial,
         _LoginPartial,
-        _NavbarPartial
+        _SidebarPartial,
+        _NavbarPartial,
+        _SidebarPartialHorizontal,
+        _NavbarPartialHorizontal
     }
 }

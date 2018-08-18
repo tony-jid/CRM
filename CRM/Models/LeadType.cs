@@ -19,6 +19,9 @@ namespace CRM.Models
         [DataType(DataType.Currency)]
         public double Price { get; set; }
 
+        [DataType(DataType.ImageUrl)]
+        public string Image { get; set; }
+
         //[JsonIgnore]
         public IEnumerable<Lead> Leads { get; set; }
     }

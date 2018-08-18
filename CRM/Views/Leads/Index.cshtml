@@ -1,0 +1,75 @@
+﻿
+@{
+    ViewData[nameof(EnumViewData.Title)] = nameof(EnumController.Leads);
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row mb-4">
+    <div class="col-md-12 mb-5 mb-">
+        <div class="card">
+            <div class="card-body pt-0">
+                @(Html.DevExtreme().DataGrid<LeadViewModel>()
+                    .CommonConfigs("gridLeads")
+                    .DataSource(ds => ds.Mvc()
+                        .Controller(nameof(EnumController.Leads))
+                        .LoadAction("GetViewModel")
+                        .InsertAction("Post")
+                        .UpdateAction("Put")
+                        .DeleteAction("Delete")
+                        .Key("Id")
+                    )
+                    .Columns(c => {
+                        c.AddFor(m => m.CustomerName)
+                            .GroupIndex(0);
+                        c.Add().Caption("Type")
+                            .CellTemplate(@<text>
+                                <div>
+                                    <img src="<%= data.LeadTypeImage %>" width="32" height="32" /> 
+                                    <%= data.LeadTypeName %>
+                                </div>
+                            </text>);
+                        c.AddFor(m => m.Details);
+                        //c.AddFor(m => HtmlEncoder.Encode(m.Status));
+                        c.Add().Caption("Status")
+                            .CellTemplate(@<text>
+                                <%= data.StatusTag %>
+                                <a href="#/" data-toggle="tooltip" 
+                                   data-placement="bottom" 
+                                   data-html="true" 
+                                   title="<%= data.History %>">
+									<span class="batch-icon batch-icon-zoom-in"></span>
+								</a>
+                            </text>);
+                        c.AddFor(m => m.Actions);
+                    })
+                    .Editing(e => e
+                        .Mode(GridEditMode.Popup)
+                        .UseIcons(true)
+                        .AllowAdding(true)
+                        .AllowUpdating(true)
+                        .AllowDeleting(true)
+                        .Popup(DXGridConfigs.EditingPopup(nameof(Lead)))
+                    )
+                    .Selection(s => s.Mode(SelectionMode.None))
+                    .OnSelectionChanged(@<text>
+                        function(e) {
+                            //CustomGridEvent.onSelectionChangedExpandDetails(e);
+                        }
+                    </text>)
+                    .OnContentReady(@<text>
+                        function(e) {
+                            CustomGridEvent.onContentReady(e, "Leads");
+                            $('[data-toggle="tooltip"]').tooltip();
+                        }
+                    </text>)
+                    .OnToolbarPreparing(@<text>
+                        function(e) {
+                            CustomGridEvent.onToolbarPreparing(e, "Leads");
+                        }
+                    </text>)
+                )
+            </div>
+        </div>
+    </div>
+</div>
+
