@@ -24,5 +24,7 @@ namespace CRM.Models
 
         //[JsonIgnore]
         public IEnumerable<Lead> Leads { get; set; }
+
+        public IEnumerable<PartnerService> PartnerServices { get; set; }
     }
 }

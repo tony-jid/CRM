@@ -31,7 +31,7 @@
                     .text(0),
                 $("<span />")
                     .addClass("name")
-                    .text("Total " + itemUnit)
+                    .text("Total Items")
         );
     },
     count: function (e, itemUnit) {

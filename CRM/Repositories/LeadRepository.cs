@@ -25,7 +25,7 @@ namespace CRM.Repositories
             entity.CreatedDateTime = DateTime.Now;
 
             _context.Leads.Add(entity);
-            this.AddStateForNewLead(entity.Id, "admin");
+            this.SetNewState(entity.Id, entity.CreatedBy);
 
             _context.SaveChanges();
         }
@@ -37,7 +37,11 @@ namespace CRM.Repositories
 
         public Lead GetByUid(Guid uid)
         {
-            return _context.Leads.Include(i => i.LeadType).FirstOrDefault(w => w.Id == uid);
+            return _context.Leads.Where(w => w.Id == uid)
+                .Include(i => i.Customer)
+                .Include(i => i.LeadType)
+                .Include(i => i.LeadStates).ThenInclude(i => i.State.StateActions).ThenInclude(i => i.Action)
+                .FirstOrDefault();
         }
 
         public IEnumerable<Lead> Get()
@@ -68,7 +72,7 @@ namespace CRM.Repositories
             _context.SaveChanges();
         }
 
-        private void AddStateForNewLead(Guid leadId, string actor) 
+        private void SetNewState(Guid leadId, string actor) 
         {
             var state = new LeadState();
             state.LeadId = leadId;

@@ -17,8 +17,6 @@ namespace CRM.Models
         public Guid PartnerId { get; set; }
         public Partner Partner { get; set; }
 
-        //public IEnumerable<LeadType> LeadTypes { get; set; }
-
         public IEnumerable<SalesPerson> SalesPeople { get; set; }
         
         public IEnumerable<LeadAssignment> LeadAssignments { get; set; }

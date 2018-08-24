@@ -59,6 +59,17 @@ namespace CRM.Repositories
             }
         }
 
+        private ILeadAssignmentRepository _leadAssRepo;
+        public ILeadAssignmentRepository LeadAssignmentRepository
+        {
+            get
+            {
+                if (_leadAssRepo == null)
+                    _leadAssRepo = new LeadAssignmentRepository(_context);
+                return _leadAssRepo;
+            }
+        }
+
         private ILeadTypeRepository _leadTypeRepo;
         public ILeadTypeRepository LeadTypeRepository
         {
@@ -106,6 +117,7 @@ namespace CRM.Repositories
         
 
         private ISalesPersonRepository _salesPersonRepo;
+
         public ISalesPersonRepository SalesPersonRepository
         {
             get

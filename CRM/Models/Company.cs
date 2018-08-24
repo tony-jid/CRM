@@ -20,6 +20,9 @@ namespace CRM.Models
         [Required]
         public double GST { get; set; }
 
+        [DataType(DataType.ImageUrl)]
+        public string Logo { get; set; }
+
         public IEnumerable<Office> Offices { get; set; }
     }
 }

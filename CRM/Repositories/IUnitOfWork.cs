@@ -16,6 +16,8 @@ namespace CRM.Repositories
 
         ILeadRepository LeadRepository { get; }
 
+        ILeadAssignmentRepository LeadAssignmentRepository { get; }
+
         ILeadTypeRepository LeadTypeRepository { get; }
 
         ICustomerRepository CustomerRepository { get; }

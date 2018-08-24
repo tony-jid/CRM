@@ -8,7 +8,7 @@ namespace CRM.Helpers
 {
     public static class StatusHelper
     {
-        public const string SMALL_BADGE_FORMAT = "<span class=\"badge badge-{0}\">{1}</span>";
+        public const string SMALL_BADGE_FORMAT = "<span class=\"badge badge-{0} badge-status\">{1}</span>";
 
         public static string GetHtmlSmallBadge(int statusId)
         {

@@ -28,6 +28,13 @@ namespace CRM.Controllers
             _leadRepo = unitOfWork.LeadRepository;
         }
 
+        [HttpGet("{leadId}")]
+        public IActionResult Assignments(Guid leadId)
+        {
+            var lead = _leadRepo.GetByUid(leadId);
+            return View(lead);
+        }
+
         [HttpGet]
         public object Get(DataSourceLoadOptions loadOptions)
         {
@@ -85,6 +92,54 @@ namespace CRM.Controllers
             _leadRepo.Remove(model);
         }
 
+        protected LeadViewModel GetLeadViewModel(Lead item)
+        {
+            var itemVM = new LeadViewModel();
+            itemVM.Id = item.Id;
+            itemVM.Details = item.Details;
+            itemVM.CreatedWhen = item.CreatedDateTime;
+            itemVM.CreatedBy = item.CreatedBy;
+
+            itemVM.LeadTypeId = item.LeadType.Id;
+            itemVM.LeadTypeName = item.LeadType.Name;
+            itemVM.LeadTypeImage = ImageHelper.PATH_LEAD_TYPE + item.LeadType.Image;
+
+            itemVM.CustomerId = item.Customer.Id;
+            itemVM.CustomerName = item.Customer.ContactName;
+            itemVM.CustomerBusinessName = item.Customer.BusinessName;
+            itemVM.CustomerContactNumber = item.Customer.ContactNumber;
+            itemVM.CustomerEmail = item.Customer.EMail;
+
+            // Current status
+            var currentStatus = item.LeadStates.OrderByDescending(o => o.ActionTimestamp).FirstOrDefault();
+            itemVM.StatusId = currentStatus.State.Id;
+            itemVM.StatusName = currentStatus.State.Name;
+            itemVM.StatusTag = StatusHelper.GetHtmlSmallBadge(currentStatus.State.Id);
+
+            // Actions of current status
+            var actions = currentStatus.State.StateActions.Select(s => new ActionViewModel
+            {
+                CustomerId = itemVM.CustomerId,
+                LeadId = itemVM.Id,
+                ControllerName = s.Action.ControllerName,
+                ActionName = s.Action.ActionName,
+                DisplayName = s.Action.DisplayName,
+                Icon = s.Action.Icon,
+                NextStateId = s.Action.NextStateId
+            }).ToList();
+
+            itemVM.Actions = actions;
+
+            // Histories
+            var histories = item.LeadStates
+                //.Where(w => w.StateId != currentStatus.StateId) // *show all
+                .Select(s => HistoryHelper.GetHtmlHistoryLine(s.ActionTimestamp, s.Action.ToLower(), s.Actor));
+
+            itemVM.History = HistoryHelper.GetHtmlHistoryTag(histories.ToList());
+
+            return itemVM;
+        }
+
         protected List<LeadViewModel> GetLeadViewModels()
         {
             List<LeadViewModel> leadVMs = new List<LeadViewModel>();
@@ -92,50 +147,7 @@ namespace CRM.Controllers
             var leads = _leadRepo.Get();
             foreach (var item in leads)
             {
-                var itemVM = new LeadViewModel();
-                itemVM.Id = item.Id;
-                itemVM.Details = item.Details;
-                itemVM.CreatedWhen = item.CreatedDateTime;
-                itemVM.CreatedBy = item.CreatedBy;
-
-                itemVM.LeadTypeId = item.LeadType.Id;
-                itemVM.LeadTypeName = item.LeadType.Name;
-                itemVM.LeadTypeImage = ImageHelper.PATH_LEAD_TYPE + item.LeadType.Image;
-
-                itemVM.CustomerId = item.Customer.Id;
-                itemVM.CustomerName = item.Customer.ContactName;
-                itemVM.CustomerBusinessName = item.Customer.BusinessName;
-                itemVM.CustomerContactNumber = item.Customer.ContactNumber;
-                itemVM.CustomerEmail = item.Customer.EMail;
-
-                // Current status
-                var currentStatus = item.LeadStates.OrderByDescending(o => o.ActionTimestamp).FirstOrDefault();
-                itemVM.StatusId = currentStatus.State.Id;
-                itemVM.StatusName = currentStatus.State.Name;
-                itemVM.StatusTag = StatusHelper.GetHtmlSmallBadge(currentStatus.State.Id);
-
-                // Actions of current status
-                var actions = currentStatus.State.StateActions.Select(s => new ActionViewModel
-                {
-                    CustomerId = itemVM.CustomerId,
-                    LeadId = itemVM.Id,
-                    ControllerName = s.Action.ControllerName,
-                    ActionName = s.Action.ActionName,
-                    DisplayName = s.Action.DisplayName,
-                    Icon = s.Action.Icon,
-                    NextStateId = s.Action.NextStateId
-                }).ToList();
-
-                itemVM.Actions = actions;
-
-                // Histories
-                var histories = item.LeadStates
-                    //.Where(w => w.StateId != currentStatus.StateId) // *show all
-                    .Select(s => HistoryHelper.GetHtmlHistoryLine(s.ActionTimestamp, s.Action.ToLower(), s.Actor));
-
-                itemVM.History = HistoryHelper.GetHtmlHistoryTag(histories.ToList());
-
-                leadVMs.Add(itemVM);
+                leadVMs.Add(this.GetLeadViewModel(item));
             }
 
             return leadVMs;

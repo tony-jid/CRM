@@ -27,7 +27,7 @@
             {
                 columns.AddFor(m => m.Logo).Visible(false);
                 columns.Add().CellTemplate(@<text>
-                    <img src="~/images/partners/hp.png" />
+                    <img src="@ImageHelper.PATH_PARTNER<%= data.Logo %>" class="grid-partner-logo" />
                 </text>)
                     .FormItem(f => f.Visible(false)); ;
                 columns.AddFor(m => m.Name);

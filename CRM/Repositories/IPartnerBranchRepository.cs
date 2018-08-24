@@ -9,5 +9,7 @@ namespace CRM.Repositories
     public interface IPartnerBranchRepository : IRepository<PartnerBranch>
     {
         IEnumerable<PartnerBranch> GetBranchesByPartner(Guid partnerId);
+
+        IEnumerable<PartnerBranch> GetBranchesByLeadType(int leadTypeId);
     }
 }

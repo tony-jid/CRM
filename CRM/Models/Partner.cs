@@ -14,7 +14,10 @@ namespace CRM.Models
         [Required]
         public string Name { get; set; }
 
-        public byte[] Logo { get; set; }
+        [DataType(DataType.ImageUrl)]
+        public string Logo { get; set; }
+
+        public IEnumerable<PartnerService> PartnerServices { get; set; }
 
         public IEnumerable<PartnerBranch> Branches { get; set; }
     }

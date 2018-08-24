@@ -19,11 +19,13 @@ namespace CRM.Data
         public DbSet<InvoiceItem> InvoiceItems { get; set; }
         public DbSet<Lead> Leads { get; set; }
         public DbSet<LeadAssignment> LeadAssignments { get; set; }
+        public DbSet<LeadAssignmentState> LeadAssignmentStates { get; set; }
         public DbSet<LeadState> LeadStates { get; set; }
         public DbSet<LeadType> LeadTypes { get; set; }
         public DbSet<Office> Offices { get; set; }
         public DbSet<Partner> Partners { get; set; }
         public DbSet<PartnerBranch> PartnerBranches { get; set; }
+        public DbSet<PartnerService> PartnerServices { get; set; }
         public DbSet<SalesPerson> SalesPeople { get; set; }
         public DbSet<Models.State> States { get; set; }
         public DbSet<StateAction> StateActions { get; set; }
@@ -205,6 +207,20 @@ namespace CRM.Data
                 .HasOne(item => item.LeadAssignment)
                 .WithMany(la => la.InvoiceItems)
                 .HasForeignKey(item => item.LeadAssignmentId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Partner 1-M PartnerService M-1 LeadType
+            //
+            builder.Entity<PartnerService>().HasKey(key => new { key.PartnerId, key.LeadTypeId });
+            builder.Entity<PartnerService>()
+                .HasOne(service => service.Partner)
+                .WithMany(partner => partner.PartnerServices)
+                .HasForeignKey(service => service.PartnerId)
+                .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<PartnerService>()
+                .HasOne(service => service.LeadType)
+                .WithMany(type => type.PartnerServices)
+                .HasForeignKey(service => service.LeadTypeId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

@@ -8,5 +8,6 @@ namespace CRM.Helpers
     public static class ImageHelper
     {
         public const string PATH_LEAD_TYPE = "/images/leadtypes/";
+        public const string PATH_PARTNER = "/images/partners/";
     }
 }

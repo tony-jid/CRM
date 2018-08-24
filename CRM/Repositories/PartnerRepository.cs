@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CRM.Data;
 using CRM.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CRM.Repositories
 {

@@ -16,6 +16,7 @@ namespace CRM.Enum
         LeadTypes,
         Partners,
         PartnerBranches,
-        SalesPeople
+        SalesPeople,
+        LeadAssignments
     }
 }

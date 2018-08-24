@@ -74,5 +74,11 @@ namespace CRM.Controllers
         {
             return DataSourceLoader.Load(_partnerBranchRepo.GetBranchesByPartner(partnerId), loadOptions);
         }
+
+        [HttpGet]
+        public object GetBranchesByLeadType(int leadTypeId, DataSourceLoadOptions loadOptions)
+        {
+            return DataSourceLoader.Load(_partnerBranchRepo.GetBranchesByLeadType(leadTypeId), loadOptions);
+        }
     }
 }
