@@ -7,8 +7,12 @@ namespace CRM.Models.ViewModels
 {
     public class ActionViewModel : IAction
     {
-        public string Controller { get; set; }
-        public string Action { get; set; }
+        public Guid CustomerId { get; set; }
+        public Guid LeadId { get; set; }
+        public string ControllerName { get; set; }
+        public string ActionName { get; set; }
+        public string DisplayName { get; set; }
+        public string Icon { get; set; }
         public int NextStateId { get; set; }
     }
 }

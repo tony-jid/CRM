@@ -79,17 +79,5 @@ namespace CRM.Repositories
 
             _context.LeadStates.Add(state);
         }
-        public void AddLeadState(Guid leadId, EnumState stateId, string actor, EnumStateAction action)
-        {
-            var state = new LeadState();
-            state.LeadId = leadId;
-            state.StateId = (int)stateId;
-            state.Actor = actor;
-            state.Action = nameof(stateId);
-            //state.Object = nameof(actionObject);
-            state.ActionTimestamp = DateTime.Now;
-
-            _context.LeadStates.Add(state);
-        }
     }
 }

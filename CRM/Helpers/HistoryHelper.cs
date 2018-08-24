@@ -12,12 +12,12 @@ namespace CRM.Helpers
     <span class='batch-icon batch-icon-search'></span>
     History
 </button>";
-        public const string HISTORY_LINE_FORMAT = "On {0}, {1} by <u>{2}</u>";
+        public const string HISTORY_LINE_FORMAT = "On {0} at {1}, {2} by <u>{3}</u>";
         public const string HISTORY_SEPARATOR = "<br/>";
 
         public static string GetHtmlHistoryLine(DateTime when, string action, string actor)
         {
-            return String.Format(HistoryHelper.HISTORY_LINE_FORMAT, when.ToShortDateString() + " " + when.ToShortTimeString(), action, actor);
+            return String.Format(HistoryHelper.HISTORY_LINE_FORMAT, when.ToShortDateString(), when.ToShortTimeString(), action, actor);
         }
 
         public static string GetHtmlHistoryTag(List<string> historyLines)

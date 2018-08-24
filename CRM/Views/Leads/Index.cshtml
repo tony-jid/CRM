@@ -19,28 +19,35 @@
                         .Key("Id")
                     )
                     .Columns(c => {
-                        c.AddFor(m => m.CustomerName)
-                            .GroupIndex(0);
-                        c.Add().Caption("Type")
-                            .CellTemplate(@<text>
-                                <div>
-                                    <img src="<%= data.LeadTypeImage %>" width="32" height="32" /> 
-                                    <%= data.LeadTypeName %>
-                                </div>
-                            </text>);
-                        c.AddFor(m => m.Details);
-                        //c.AddFor(m => HtmlEncoder.Encode(m.Status));
-                        c.Add().Caption("Status")
-                            .CellTemplate(@<text>
-                                <%= data.StatusTag %>
-                                <a href="#/" data-toggle="tooltip" 
-                                   data-placement="bottom" 
-                                   data-html="true" 
-                                   title="<%= data.History %>">
-									<span class="batch-icon batch-icon-zoom-in"></span>
-								</a>
-                            </text>);
-                        c.AddFor(m => m.Actions);
+                    c.AddFor(m => m.CustomerName).GroupIndex(0);
+                    c.Add().Caption("Type")
+                        .Width("25%")
+                        .CellTemplate(@<text>
+                            <div>
+                                <img src="<%= data.LeadTypeImage %>" width="32" height="32" /> 
+                                <%= data.LeadTypeName %>
+                            </div>
+                        </text>);
+                    c.AddFor(m => m.Details);
+                    c.Add().Caption("Status")
+                        .Width("10%")
+                        .CellTemplate(@<text>
+                            <%= data.StatusTag %>
+                            <a href="#/" data-toggle="tooltip" 
+                                data-placement="bottom" 
+                                data-html="true" 
+                                title="<%= data.History %>">
+								<span class="batch-icon batch-icon-zoom-in"></span>
+							</a>
+                        </text>);
+                    c.Add()
+                        .Width("20%")
+                        .CellTemplate(@<text>
+                            @(Html.DevExtreme().SelectBox()
+                                .DataSource(new JS("data.Actions"))
+                                .ActionCommonConfigs()
+                            )
+                        </text>);
                     })
                     .Editing(e => e
                         .Mode(GridEditMode.Popup)
@@ -50,12 +57,6 @@
                         .AllowDeleting(true)
                         .Popup(DXGridConfigs.EditingPopup(nameof(Lead)))
                     )
-                    .Selection(s => s.Mode(SelectionMode.None))
-                    .OnSelectionChanged(@<text>
-                        function(e) {
-                            //CustomGridEvent.onSelectionChangedExpandDetails(e);
-                        }
-                    </text>)
                     .OnContentReady(@<text>
                         function(e) {
                             CustomGridEvent.onContentReady(e, "Leads");

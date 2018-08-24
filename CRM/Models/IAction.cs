@@ -7,9 +7,13 @@ namespace CRM.Models
 {
     public interface IAction
     {
-        string Controller { get; set; }
+        string ControllerName { get; set; }
 
-        string Action { get; set; }
+        string ActionName { get; set; }
+
+        string DisplayName { get; set; }
+
+        string Icon { get; set; }
 
         int NextStateId { get; set; }
     }
