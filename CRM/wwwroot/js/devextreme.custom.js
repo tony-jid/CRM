@@ -21,7 +21,7 @@
     },
 
     toolbarCountTemplate: function (e, itemUnit) {
-        this.count(e, itemUnit);
+        //this.count(e, itemUnit);
 
         return $("<div/>")
             .addClass("informer")
@@ -41,8 +41,12 @@
             .store
             .load()
             .done(function (data) {
-                $('#grid-' + itemUnit + '-toolbar-count').text(data.length);
+                CustomGrid.setToolbarTotalItems(itemUnit, data);
+                //$('#grid-' + itemUnit + '-toolbar-count').text(data.length);
             });
+    },
+    setToolbarTotalItems: function (gridName, dataSource) {
+        $('#grid-' + gridName + '-toolbar-count').text(dataSource.length);
     }
 }
 

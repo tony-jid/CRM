@@ -4498,11 +4498,13 @@ input[type=date].valid, input[type=date]:focus.valid, input[type=datetime-local]
     text-align: left !important; }
   .card .card-user-profile .profile-page-left {
     float: left;
-    width: 280px; }
+    /*width: 280px;*/
+    width: 350px; }
   .card .card-user-profile .profile-page-center {
     float: left;
-    min-height: 810px;
-    width: calc(100% - 280px);
+    /*min-height: 810px;*/
+    /*width: calc(100% - 280px);*/
+    width: calc(100% - 350px);
     border-right: 1px solid rgba(0, 0, 0, 0.09);
     border-left: 1px solid rgba(0, 0, 0, 0.09); }
     .card .card-user-profile .profile-page-center > ul > li.media .profile-picture {

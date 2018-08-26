@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CRM.Data;
+using CRM.Enum;
 using CRM.Models;
 using CRM.Repositories;
 using DevExtreme.AspNet.Data;
@@ -17,11 +18,13 @@ namespace CRM.Controllers
     {
         private IUnitOfWork _uow;
         private IPartnerBranchRepository _partnerBranchRepo;
+        private ILeadAssignmentRepository _leadAssRepo;
 
         public PartnerBranchesController(IUnitOfWork unitOfWork)
         {
             _uow = unitOfWork;
             _partnerBranchRepo = _uow.PartnerBranchRepository;
+            _leadAssRepo = _uow.LeadAssignmentRepository;
         }
 
         [HttpGet]
@@ -79,6 +82,35 @@ namespace CRM.Controllers
         public object GetBranchesByLeadType(int leadTypeId, DataSourceLoadOptions loadOptions)
         {
             return DataSourceLoader.Load(_partnerBranchRepo.GetBranchesByLeadType(leadTypeId), loadOptions);
+        }
+
+        [HttpGet]
+        public object GetBranchesFilteredByLead(Guid leadId, int leadTypeId, DataSourceLoadOptions loadOptions)
+        {
+            return DataSourceLoader.Load(this.FilterBranchesByLead(leadId, leadTypeId), loadOptions);
+        }
+
+        protected IEnumerable<PartnerBranch> FilterBranchesByLead(Guid leadId, int leadTypeId)
+        {
+            var assignments = _leadAssRepo.GetByLead(leadId);
+            List<Guid> partnerWaitingAssignments = new List<Guid>();
+            List<Guid> partnerAcceptedAssignments = new List<Guid>();
+
+            foreach (var item in assignments)
+            {
+                var currentState = item.LeadAssignmentStates.OrderByDescending(o => o.ActionTimestamp).FirstOrDefault();
+
+                if (currentState == null)
+                    throw new Exception("An assignment must have at least 1 status!");
+
+                if (currentState.StateId == (int)EnumState.LeadAssignmentConsidering)
+                    partnerWaitingAssignments.Add(item.PartnerBranchId);
+                else if (currentState.StateId == (int)EnumState.LeadAssignmentAccepted)
+                    partnerAcceptedAssignments.Add(item.PartnerBranchId);
+            }
+
+            return _partnerBranchRepo.GetBranchesByLeadType(leadTypeId)
+                .Where(w => !partnerWaitingAssignments.Contains(w.Id) && !partnerAcceptedAssignments.Contains(w.Id));
         }
     }
 }

@@ -18,6 +18,8 @@ namespace CRM.Helpers
             {
                 case EnumState.LeadNew:
                     return GetHtmlSmallBadgeNewStatus();
+                case EnumState.LeadAssignmentConsidering:
+                    return GetHtmlSmallBadgeConsideringStatus();
                 default:
                     return String.Empty;
             }
@@ -26,6 +28,11 @@ namespace CRM.Helpers
         public static string GetHtmlSmallBadgeNewStatus()
         {
             return String.Format(StatusHelper.SMALL_BADGE_FORMAT, "danger", "New");
+        }
+
+        public static string GetHtmlSmallBadgeConsideringStatus()
+        {
+            return String.Format(StatusHelper.SMALL_BADGE_FORMAT, "warning", "Considering");
         }
     }
 }

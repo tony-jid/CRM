@@ -73,5 +73,15 @@ namespace CRM.DXConfigurators
                 );
             };
         }
+
+        public static Action<DataGridSelectionBuilder> SelectionCheckBoxMode()
+        {
+            return selection =>
+            {
+                selection.AllowSelectAll(true);
+                selection.ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always);
+                selection.Mode(SelectionMode.Multiple);
+            };
+        }
     }
 }

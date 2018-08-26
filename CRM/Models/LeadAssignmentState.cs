@@ -10,8 +10,6 @@ namespace CRM.Models
         public int LeadAssignmentId { get; set; }
         public LeadAssignment LeadAssignment { get; set; }
 
-        public DateTime CreatedTimestamp { get; set; }
-
         public int StateId { get; set; }
         public State State { get; set; }
 

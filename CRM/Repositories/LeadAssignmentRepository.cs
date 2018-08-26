@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using CRM.Data;
 using CRM.Enum;
 using CRM.Models;
+using CRM.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace CRM.Repositories
@@ -18,13 +19,29 @@ namespace CRM.Repositories
             _context = context;
         }
 
+        public void AddByViewModel(LeadAssignmentSelectedPartnerViewModel viewModel)
+        {
+            var userName = "admin";
+
+            foreach (var branchId in viewModel.PartnerBranchIds)
+            {
+                var assignment = new LeadAssignment() { LeadId = viewModel.LeadId, PartnerBranchId = branchId };
+                _context.LeadAssignments.Add(assignment);
+                this.SetConsideringState(assignment.Id, userName);
+            }
+
+            //_context.LeadAssignments.Add(entity);
+            //this.SetConsideringState(entity.Id, userName);
+
+            _context.SaveChanges();
+        }
+
         public void Add(LeadAssignment entity)
         {
-            entity.CreatedBy = "admin";
-            entity.CreatedDateTime = DateTime.Now;
+            var userName = "admin";
 
             _context.LeadAssignments.Add(entity);
-            this.SetWaitingState(entity.Id, entity.CreatedBy);
+            this.SetConsideringState(entity.Id, userName);
 
             _context.SaveChanges();
         }
@@ -34,6 +51,7 @@ namespace CRM.Repositories
             return _context.LeadAssignments
                 .Where(w => w.LeadId == leadId)
                 .Include(i => i.PartnerBranch).ThenInclude(i => i.Partner)
+                .Include(i => i.PartnerBranch).ThenInclude(i => i.Address)
                 .Include(i => i.LeadAssignmentStates).ThenInclude(i => i.State.StateActions).ThenInclude(i => i.Action);
         }
 
@@ -44,7 +62,9 @@ namespace CRM.Repositories
 
         public LeadAssignment Get(int id)
         {
-            throw new NotImplementedException();
+            return _context.LeadAssignments
+                //.Include(i => i.LeadAssignmentStates)
+                .Where(w => w.Id == id).SingleOrDefault();
         }
 
         public LeadAssignment GetByUid(Guid uid)
@@ -63,11 +83,11 @@ namespace CRM.Repositories
             throw new NotImplementedException();
         }
 
-        private void SetWaitingState(int assignmentId, string actor)
+        private void SetConsideringState(int assignmentId, string actor)
         {
             var state = new LeadAssignmentState();
             state.LeadAssignmentId = assignmentId;
-            state.StateId = (int)EnumState.LeadAssignmentWaiting;
+            state.StateId = (int)EnumState.LeadAssignmentConsidering;
             state.Actor = actor;
             state.Action = nameof(EnumStateAction.Assigned);
             state.ActionTimestamp = DateTime.Now;

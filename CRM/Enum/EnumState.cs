@@ -11,7 +11,7 @@ namespace CRM.Enum
         LeadRead = 2,
         LeadAssigned = 3,
         LeadReAssigned = 4,
-        LeadAssignmentWaiting = 5,
+        LeadAssignmentConsidering = 5,
         LeadAssignmentAccepted = 6,
         LeadAssignmentRejected = 7,
         LeadAssignmentInvoiced = 8,

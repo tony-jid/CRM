@@ -9,7 +9,9 @@ namespace CRM.Helpers
     {
         public static string MergeAddress(string street, string suburb, string state, string postcode)
         {
-            return (street != string.Empty ? street + ", " : "") + (suburb != string.Empty ? suburb + ", " : "") + state + " " + postcode;
+            return (string.IsNullOrEmpty(street) ? "" : street + ", ")
+                + (string.IsNullOrEmpty(suburb)? "" : suburb + ", ") 
+                + state + " " + postcode;
         }
     }
 }

@@ -21,11 +21,10 @@ namespace CRM.Repositories
 
         public void Add(Lead entity)
         {
-            entity.CreatedBy = "admin";
-            entity.CreatedDateTime = DateTime.Now;
+            var userName = "admin";
 
             _context.Leads.Add(entity);
-            this.SetNewState(entity.Id, entity.CreatedBy);
+            this.SetNewState(entity.Id, userName);
 
             _context.SaveChanges();
         }

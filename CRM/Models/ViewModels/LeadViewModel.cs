@@ -11,10 +11,6 @@ namespace CRM.Models.ViewModels
 
         public string Details { get; set; }
 
-        public DateTime CreatedWhen { get; set; }
-
-        public string CreatedBy { get; set; }
-
         public int StatusId { get; set; }
         public string StatusName { get; set; }
         public string StatusTag { get; set; }

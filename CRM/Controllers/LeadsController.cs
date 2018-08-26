@@ -97,8 +97,6 @@ namespace CRM.Controllers
             var itemVM = new LeadViewModel();
             itemVM.Id = item.Id;
             itemVM.Details = item.Details;
-            itemVM.CreatedWhen = item.CreatedDateTime;
-            itemVM.CreatedBy = item.CreatedBy;
 
             itemVM.LeadTypeId = item.LeadType.Id;
             itemVM.LeadTypeName = item.LeadType.Name;

@@ -6,16 +6,10 @@ using System.Threading.Tasks;
 
 namespace CRM.Models
 {
-    public class LeadAssignment : IDataTimestamp, IAssessable
+    public class LeadAssignment : IAssessable
     {
         [Key]
         public int Id { get; set; }
-
-        [Required]
-        [DataType(DataType.DateTime)]
-        public DateTime CreatedDateTime { get; set; }
-
-        public string CreatedBy { get; set; }
 
         public int Rating { get; set; }
         public string Comment { get; set; }

@@ -90,7 +90,8 @@ namespace CRM.Data
             builder.Entity<LeadState>()
                 .HasOne(ls => ls.Lead)
                 .WithMany(l => l.LeadStates)
-                .HasForeignKey(ls => ls.LeadId);
+                .HasForeignKey(ls => ls.LeadId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Company 1-M Office
             //
@@ -142,7 +143,7 @@ namespace CRM.Data
             //    .WithMany(s => s.LeadAssignments)
             //    .HasForeignKey(la => la.StateId)
             //    .OnDelete(DeleteBehavior.Restrict);
-            builder.Entity<LeadAssignmentState>().HasKey(key => new { key.StateId, key.LeadAssignmentId, key.CreatedTimestamp });
+            builder.Entity<LeadAssignmentState>().HasKey(key => new { key.StateId, key.LeadAssignmentId, key.ActionTimestamp });
             builder.Entity<LeadAssignmentState>()
                 .HasOne(las => las.State)
                 .WithMany(s => s.LeadAssignmentStates)
@@ -152,7 +153,7 @@ namespace CRM.Data
                 .HasOne(las => las.LeadAssignment)
                 .WithMany(la => la.LeadAssignmentStates)
                 .HasForeignKey(las => las.LeadAssignmentId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Lead 1-M LeadAssignment M-1 PartnerBranch
             builder.Entity<LeadAssignment>()

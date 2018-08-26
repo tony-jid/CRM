@@ -9,6 +9,10 @@ namespace CRM.Models.ViewModels
     {
         public Guid CustomerId { get; set; }
         public Guid LeadId { get; set; }
+
+        public Guid PartnerBranchId { get; set; }
+        public int LeadAssignmentId { get; set; }
+
         public string ControllerName { get; set; }
         public string ActionName { get; set; }
         public string DisplayName { get; set; }

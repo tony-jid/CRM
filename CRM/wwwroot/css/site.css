@@ -76,7 +76,7 @@ footer {
 }
 
 .icon-xxx-large {
-    font-size: 120px;
+    font-size: 10em;
 }
 
 .grid-partner-logo {
@@ -84,6 +84,14 @@ footer {
     height: 40px;
     border-radius: 50%;
     border: 1px solid rgba(191, 191, 191, 0.15);
+}
+
+.lead-type-img {
+    width: 40px;
+    height: 40px;
+    padding: 2px;
+    border-radius: 30%;
+    border: 1px solid rgb(0, 0, 0);
 }
 
 .badge-status {

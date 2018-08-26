@@ -7,19 +7,13 @@ using System.Threading.Tasks;
 
 namespace CRM.Models
 {
-    public class Lead : IDataTimestamp
+    public class Lead
     {
         [Key]
         public Guid Id { get; set; }
 
         [Required]
         public string Details { get; set; }
-
-        [DataType(DataType.DateTime)]
-        [DefaultValue(typeof(DateTime), "")]
-        public DateTime CreatedDateTime { get; set; }
-
-        public string CreatedBy { get; set; }
 
         public Guid CustomerId { get; set; }
         public Customer Customer { get; set; }
