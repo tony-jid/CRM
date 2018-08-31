@@ -4,6 +4,12 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@section Scripts {
+    <script type="text/javascript" src="~/js/ajax.js"></script>
+    <script type="text/javascript" src="~/js/action.js"></script>
+    <script type="text/javascript" src="~/js/lead.js"></script>
+}
+
 <div class="row mb-4">
     <div class="col-md-12 mb-5">
         <div class="card">
@@ -46,6 +52,7 @@
                                 @(Html.DevExtreme().SelectBox()
                                     .DataSource(new JS("data.Actions"))
                                     .ActionCommonConfigs()
+                                    .OnSelectionChanged("lead.events.onActionChanged")
                                 )
                             </text>);
                     })

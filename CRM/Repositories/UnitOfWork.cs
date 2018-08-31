@@ -16,6 +16,22 @@ namespace CRM.Repositories
             _context = context;
         }
 
+        public bool Commit()
+        {
+            try
+            {
+                _context.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                // Environment: Development => simply throw an exception
+                //              Production => returning "false" and writing log
+                throw ex;
+                return false;
+            }
+        }
+
         private ICompanyRepository _companyRepo;
         public ICompanyRepository CompanyRepository {
             get {

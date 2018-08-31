@@ -8,6 +8,8 @@ namespace CRM.Repositories
 {
     public interface IUnitOfWork
     {
+        bool Commit();
+
         ICompanyRepository CompanyRepository { get; }
 
         IOfficeRepository OfficeRepository { get; }

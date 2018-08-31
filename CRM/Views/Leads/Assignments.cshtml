@@ -10,6 +10,7 @@
     <script type="text/javascript" src="~/js/viewmodels/LeadAssignmentSelectedPartnerViewModel.js"></script>
     <script type="text/javascript" src="~/js/assignment.js"></script>
     <script type="text/javascript" src="~/js/ajax.js"></script>
+    <script type="text/javascript" src="~/js/action.js"></script>
 }
 
 <input type="hidden" id="__leadId" value="@Model.Id" />
@@ -20,16 +21,18 @@
             <div class="card-user-profile">
                 <div class="profile-page-left">
                     <h4><i class="batch-icon batch-icon-podcast"></i> Type of Lead</h4>
-                    <h5>
+                    <h5 class="pl-4">
                         <img src="@ImageHelper.PATH_LEAD_TYPE@Model.LeadType.Image" class="lead-type-img" />
                         @Model.LeadType.Name
                     </h5>
                     <hr />
                     <h4><i class="batch-icon batch-icon-notes"></i> Lead Details</h4>
-                    <h5>@Model.Details</h5>
+                    <h5 class="pl-4">@Model.Details</h5>
                     <hr />
                     <h4><i class="batch-icon batch-icon-user-alt"></i> Customer Info</h4>
-                    <h5></h5>
+                    <h5 class="pl-4">@Model.Customer.ContactName &#64; @Model.Customer.BusinessName</h5>
+                    <h5 class="pl-4"><i class="fa fa-phone"></i> @Model.Customer.ContactNumber</h5>
+                    <h5 class="pl-4"><i class="fa fa-map-marker"></i> @AddressHelper.MergeAddress(Model.Customer.Address.StreetAddress, Model.Customer.Address.Suburb, Model.Customer.Address.State, Model.Customer.Address.PostCode)</h5>
                     <hr />
                 </div>
                 <div class="profile-page-center">
@@ -232,16 +235,6 @@
                 <button type="button" id="btnAssign" class="btn btn-block btn-primary btn-lg">
                     <i class="fa fa-save"></i> Assign Partners
                 </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row mb-4">
-    <div class="col-md-12 mb-5">
-        <div class="card">
-            <div class="card-body pt-0">
-                
             </div>
         </div>
     </div>

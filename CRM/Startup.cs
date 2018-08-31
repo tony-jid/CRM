@@ -13,6 +13,7 @@ using CRM.Models;
 using CRM.Services;
 using CRM.Repositories;
 using Newtonsoft.Json.Serialization;
+using CRM.Services.AuthOptions;
 
 namespace CRM
 {
@@ -58,8 +59,11 @@ namespace CRM
                 options.User.RequireUniqueEmail = Boolean.Parse(_configuration["IdentityOptions:User:RequireUniqueEmail"]);
             });
 
+            // Add authentication options of third parties (e.g. SendGrid)
+            services.Configure<EmailSenderAuthOptions>(_configuration.GetSection(nameof(EmailSenderSendGrid)));
+
             // Add application services.
-            services.AddTransient<IEmailSender, EmailSender>();
+            services.AddSingleton<IEmailSender, EmailSenderSendGrid>();
 
             // Add application repositories via UnitOfWOrk
             services.AddScoped<IUnitOfWork, UnitOfWork>();

@@ -11,6 +11,10 @@ namespace CRM.Models
 
         string ActionName { get; set; }
 
+        string ActionTarget { get; set; } // "Window", "Modal", "Ajax"
+
+        string RequestType { get; set; } // "Get", "Post", "Put", "Delete"
+
         string DisplayName { get; set; }
 
         string Icon { get; set; }

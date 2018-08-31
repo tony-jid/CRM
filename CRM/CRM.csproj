@@ -28,6 +28,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.3" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.4" PrivateAssets="All" />
+    <PackageReference Include="Sendgrid" Version="9.9.0" />
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.3" />
@@ -35,7 +36,7 @@
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.4" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="wwwroot\js\customers.js" />
+    <None Include="wwwroot\js\customer.js" />
     <None Include="wwwroot\quillpro\css\bootstrap\bootstrap-rtl.min.css.map" />
     <None Include="wwwroot\quillpro\css\bootstrap\bootstrap.min.css.map" />
     <None Include="wwwroot\quillpro\css\hamburgers\hamburgers.css.map" />

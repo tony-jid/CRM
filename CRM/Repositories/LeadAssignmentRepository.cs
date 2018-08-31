@@ -21,29 +21,19 @@ namespace CRM.Repositories
 
         public void AddByViewModel(LeadAssignmentSelectedPartnerViewModel viewModel)
         {
-            var userName = "admin";
-
             foreach (var branchId in viewModel.PartnerBranchIds)
             {
                 var assignment = new LeadAssignment() { LeadId = viewModel.LeadId, PartnerBranchId = branchId };
                 _context.LeadAssignments.Add(assignment);
-                this.SetConsideringState(assignment.Id, userName);
+                this.SetState(assignment.Id, EnumState.LeadAssignmentConsidering, EnumStateAction.Assigned);
             }
 
-            //_context.LeadAssignments.Add(entity);
-            //this.SetConsideringState(entity.Id, userName);
-
-            _context.SaveChanges();
+            //_context.SaveChanges(); // will be commit at Controller
         }
 
         public void Add(LeadAssignment entity)
         {
-            var userName = "admin";
-
-            _context.LeadAssignments.Add(entity);
-            this.SetConsideringState(entity.Id, userName);
-
-            _context.SaveChanges();
+            throw new NotImplementedException();
         }
 
         public IEnumerable<LeadAssignment> GetByLead(Guid leadId)
@@ -75,7 +65,7 @@ namespace CRM.Repositories
         public void Remove(LeadAssignment entity)
         {
             _context.Remove(entity);
-            _context.SaveChanges();
+            //_context.SaveChanges();
         }
 
         public void Update(LeadAssignment entity)
@@ -83,16 +73,20 @@ namespace CRM.Repositories
             throw new NotImplementedException();
         }
 
-        private void SetConsideringState(int assignmentId, string actor)
+        public void SetState(int assignmentId, EnumState state, EnumStateAction action)
         {
-            var state = new LeadAssignmentState();
-            state.LeadAssignmentId = assignmentId;
-            state.StateId = (int)EnumState.LeadAssignmentConsidering;
-            state.Actor = actor;
-            state.Action = nameof(EnumStateAction.Assigned);
-            state.ActionTimestamp = DateTime.Now;
+            var userName = "admin";
 
-            _context.LeadAssignmentStates.Add(state);
+            var itemSate = new LeadAssignmentState
+            {
+                LeadAssignmentId = assignmentId,
+                StateId = (int)state,
+                Actor = userName,
+                Action = action.ToString(),
+                ActionTimestamp = DateTime.Now
+            };
+
+            _context.LeadAssignmentStates.Add(itemSate);
         }
     }
 }

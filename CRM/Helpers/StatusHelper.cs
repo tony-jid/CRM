@@ -17,22 +17,21 @@ namespace CRM.Helpers
             switch(state)
             {
                 case EnumState.LeadNew:
-                    return GetHtmlSmallBadgeNewStatus();
+                    return GetHtmlSmallBadge("New", "danger");
+                case EnumState.LeadAssigned:
+                    return GetHtmlSmallBadge("Assigned", "success");
+                case EnumState.LeadReAssigned:
+                    return GetHtmlSmallBadge("Reassigned", "success");
                 case EnumState.LeadAssignmentConsidering:
-                    return GetHtmlSmallBadgeConsideringStatus();
+                    return GetHtmlSmallBadge("Considering", "warning");
                 default:
                     return String.Empty;
             }
         }
 
-        public static string GetHtmlSmallBadgeNewStatus()
+        private static string GetHtmlSmallBadge(string statusText, string color)
         {
-            return String.Format(StatusHelper.SMALL_BADGE_FORMAT, "danger", "New");
-        }
-
-        public static string GetHtmlSmallBadgeConsideringStatus()
-        {
-            return String.Format(StatusHelper.SMALL_BADGE_FORMAT, "warning", "Considering");
+            return String.Format(StatusHelper.SMALL_BADGE_FORMAT, color, statusText);
         }
     }
 }

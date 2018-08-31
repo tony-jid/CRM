@@ -21,12 +21,10 @@ namespace CRM.Repositories
 
         public void Add(Lead entity)
         {
-            var userName = "admin";
-
             _context.Leads.Add(entity);
-            this.SetNewState(entity.Id, userName);
+            this.SetState(entity.Id, EnumState.LeadNew, EnumStateAction.Created);
 
-            _context.SaveChanges();
+            //_context.SaveChanges(); will be committed at Controller
         }
 
         public Lead Get(int id)
@@ -37,7 +35,7 @@ namespace CRM.Repositories
         public Lead GetByUid(Guid uid)
         {
             return _context.Leads.Where(w => w.Id == uid)
-                .Include(i => i.Customer)
+                .Include(i => i.Customer).ThenInclude(i => i.Address)
                 .Include(i => i.LeadType)
                 .Include(i => i.LeadStates).ThenInclude(i => i.State.StateActions).ThenInclude(i => i.Action)
                 .FirstOrDefault();
@@ -62,25 +60,43 @@ namespace CRM.Repositories
         public void Update(Lead entity)
         {
             _context.Update(entity);
-            _context.SaveChanges();
+            //_context.SaveChanges(); will be committed at Controller
         }
 
         public void Remove(Lead entity)
         {
             _context.Remove(entity);
-            _context.SaveChanges();
+            //_context.SaveChanges(); will be committed at Controller
         }
 
-        private void SetNewState(Guid leadId, string actor) 
+        public void SetLeadAssignedState(Guid leadId)
         {
-            var state = new LeadState();
-            state.LeadId = leadId;
-            state.StateId = (int)EnumState.LeadNew;
-            state.Actor = actor;
-            state.Action = nameof(EnumStateAction.Created);
-            state.ActionTimestamp = DateTime.Now;
+            var currentStatus = this.GetLeadCurrentStatus(leadId);
 
-            _context.LeadStates.Add(state);
+            if (currentStatus.StateId == (int)EnumState.LeadNew)
+                this.SetState(leadId, EnumState.LeadAssigned, EnumStateAction.Assigned);
+            else
+                this.SetState(leadId, EnumState.LeadReAssigned, EnumStateAction.Reassigned);
+        }
+
+        public LeadState GetLeadCurrentStatus(Guid leadId)
+        {
+            var lead = this.GetByUid(leadId);
+            return lead.LeadStates.OrderByDescending(o => o.ActionTimestamp).FirstOrDefault();
+        }
+
+        public void SetState(Guid leadId, EnumState state, EnumStateAction action)
+        {
+            var userName = "admin";
+
+            var leadState = new LeadState();
+            leadState.LeadId = leadId;
+            leadState.StateId = (int)state;
+            leadState.Actor = userName;
+            leadState.Action = action.ToString();
+            leadState.ActionTimestamp = DateTime.Now;
+
+            _context.LeadStates.Add(leadState);
         }
     }
 }

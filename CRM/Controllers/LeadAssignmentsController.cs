@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CRM.Enum;
 using CRM.Helpers;
 using CRM.Models;
 using CRM.Models.ViewModels;
 using CRM.Repositories;
+using CRM.Services;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Http;
@@ -17,12 +19,17 @@ namespace CRM.Controllers
     public class LeadAssignmentsController : BaseController
     {
         private IUnitOfWork _uow;
+        private ILeadRepository _leadRepo;
         private ILeadAssignmentRepository _leadAssRepo;
+        private IEmailSender _emailSender;
 
-        public LeadAssignmentsController(IUnitOfWork unitOfWork)
+        public LeadAssignmentsController(IUnitOfWork unitOfWork, IEmailSender emailSender)
         {
             _uow = unitOfWork;
             _leadAssRepo = unitOfWork.LeadAssignmentRepository;
+            _leadRepo = unitOfWork.LeadRepository;
+
+            _emailSender = emailSender;
         }
 
         [HttpGet]
@@ -39,14 +46,29 @@ namespace CRM.Controllers
             var model = _leadAssRepo.Get(key);
 
             _leadAssRepo.Remove(model);
+            _uow.Commit();
         }
 
         [HttpPost]
         public JsonResult AjaxPostToAssignPartners([FromBody]LeadAssignmentSelectedPartnerViewModel data)
         {
             _leadAssRepo.AddByViewModel(data);
+            _leadRepo.SetLeadAssignedState(data.LeadId);
             
-            return Json(Ok());
+            if (_uow.Commit())
+            {
+                this.SendAssignmentEmailToPartners(data.PartnerBranchIds);
+                return Json(Ok());
+            }
+            else
+            {
+                return Json(StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status500InternalServerError));
+            }
+        }
+
+        protected void SendAssignmentEmailToPartners(List<Guid> partnerBranchIds)
+        {
+            _emailSender.SendEmailAsync("thawatchai.j14@gmail.com", "Lead assignment from ComparisonAdvantage", "{lead_type} lead is assigned to you guys.");
         }
 
         protected LeadAssignmentViewModel GetLeadAssignmentViewModel(LeadAssignment item)
@@ -72,12 +94,14 @@ namespace CRM.Controllers
             itemVM.StatusTag = StatusHelper.GetHtmlSmallBadge(currentStatus.State.Id);
 
             // Actions of current status
-            var actions = currentStatus.State.StateActions.Select(s => new ActionViewModel
+            var actions = currentStatus.State.StateActions.Select(s => new ActionLeadAssignmentViewModel
             {
                 PartnerBranchId = itemVM.PartnerBranchId,
                 LeadAssignmentId = itemVM.Id,
                 ControllerName = s.Action.ControllerName,
                 ActionName = s.Action.ActionName,
+                ActionTarget = s.Action.ActionTarget,
+                RequestType = s.Action.RequestType,
                 DisplayName = s.Action.DisplayName,
                 Icon = s.Action.Icon,
                 NextStateId = s.Action.NextStateId

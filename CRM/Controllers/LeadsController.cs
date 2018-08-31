@@ -64,7 +64,7 @@ namespace CRM.Controllers
 
             _leadRepo.Add(model);
 
-            return Ok();
+            return _uow.Commit() ? Ok() : StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status500InternalServerError);
         }
 
         [HttpPut]
@@ -80,8 +80,9 @@ namespace CRM.Controllers
                 return BadRequest(GetFullErrorMessage(ModelState));
 
             _leadRepo.Update(model);
+            _uow.Commit();
 
-            return Ok();
+            return _uow.Commit() ? Ok() : StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status500InternalServerError);
         }
 
         [HttpDelete]
@@ -90,6 +91,7 @@ namespace CRM.Controllers
             var model = _leadRepo.GetByUid(key);
 
             _leadRepo.Remove(model);
+            _uow.Commit();
         }
 
         protected LeadViewModel GetLeadViewModel(Lead item)
@@ -115,12 +117,14 @@ namespace CRM.Controllers
             itemVM.StatusTag = StatusHelper.GetHtmlSmallBadge(currentStatus.State.Id);
 
             // Actions of current status
-            var actions = currentStatus.State.StateActions.Select(s => new ActionViewModel
+            var actions = currentStatus.State.StateActions.Select(s => new ActionLeadViewModel
             {
                 CustomerId = itemVM.CustomerId,
                 LeadId = itemVM.Id,
                 ControllerName = s.Action.ControllerName,
                 ActionName = s.Action.ActionName,
+                ActionTarget = s.Action.ActionTarget,
+                RequestType = s.Action.RequestType,
                 DisplayName = s.Action.DisplayName,
                 Icon = s.Action.Icon,
                 NextStateId = s.Action.NextStateId

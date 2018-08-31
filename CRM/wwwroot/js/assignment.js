@@ -29,11 +29,13 @@
         clickBtnAssign: function () {
             $(assignment.ids.btnAssign).unbind();
             $(assignment.ids.btnAssign).click(function () {
-                ajax.callers.crm(
-                    ajax.controllers.assignment.name
-                    , ajax.controllers.assignment.actions.assignPartners
-                    , assignment.getViewModel()
-                    , assignment.events.onAssignmentSuccess);
+                if (assignment.selectedBranches.length) {
+                    ajax.callers.crm(
+                        ajax.controllers.assignment.name
+                        , ajax.controllers.assignment.actions.assignPartners
+                        , assignment.getViewModel()
+                        , assignment.events.onAssignmentSuccess);
+                }
             });
         },
     },
@@ -57,6 +59,8 @@
 
             assignment.refreshGridSearchBranches();
             assignment.refreshGridLeadAssignments();
+
+            $(window).scrollTop(0);
         },
     },
 
