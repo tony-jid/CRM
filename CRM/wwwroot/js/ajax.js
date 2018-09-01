@@ -4,6 +4,15 @@
     },
 
     controllers: {
+        message: {
+            name: 'Message',
+            actions: {
+                sendMessage: {
+                    type: 'POST',
+                    name: 'Send'
+                }
+            }
+        },
         assignment: {
             name: 'LeadAssignments',
             actions: {

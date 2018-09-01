@@ -2912,7 +2912,7 @@ input[type=date].valid, input[type=date]:focus.valid, input[type=datetime-local]
 	letter-spacing: 0.03rem;
 	padding: 1rem 3rem !important;
 	box-shadow: 0 2px 23px 0 rgba(0,0,0,.10), 0 2px 49px 0 rgba(0,0,0,.06);
-	z-index: 9000;
+	z-index: 1400;
 	@include qp-border-radius(0);
 	> .navbar-collapse{
 		// display: flex;
@@ -3325,7 +3325,7 @@ input[type=date].valid, input[type=date]:focus.valid, input[type=datetime-local]
 	background-color: $qp-color-darkblue;
 	width: 225px;
 	position: fixed;
-	z-index: 9001;
+	z-index: 1401;
 	left: -240px;
 	box-shadow: 2px 0 10px 0 rgba(0,0,0,.12), 2px 0 15px 0 rgba(0,0,0,.09);
 	@include qp-transition(left .225s ease-in-out, height .225s ease-in-out !important);
@@ -3485,7 +3485,7 @@ input[type=date].valid, input[type=date]:focus.valid, input[type=datetime-local]
 .navbar-sidebar-horizontal{
 	width: 100%;
 	color: $qp-color-white;
-	z-index: 9001;
+	z-index: 1401;
 	// z-index: 1031;
 	background-color: $qp-color-darkblue;
 }

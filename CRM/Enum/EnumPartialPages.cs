@@ -13,6 +13,7 @@ namespace CRM.Enum
         _SidebarPartial,
         _NavbarPartial,
         _SidebarPartialHorizontal,
-        _NavbarPartialHorizontal
+        _NavbarPartialHorizontal,
+        _MessageComposePartial
     }
 }

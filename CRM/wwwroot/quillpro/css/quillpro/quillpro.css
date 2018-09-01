@@ -3231,7 +3231,7 @@ input[type=date].valid, input[type=date]:focus.valid, input[type=datetime-local]
   letter-spacing: 0.03rem;
   padding: 1rem 3rem !important;
   box-shadow: 0 2px 23px 0 rgba(0, 0, 0, 0.1), 0 2px 49px 0 rgba(0, 0, 0, 0.06);
-  z-index: 9000;
+  z-index: 1400;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
   -ms-border-radius: 0;
@@ -3594,7 +3594,7 @@ input[type=date].valid, input[type=date]:focus.valid, input[type=datetime-local]
   background-color: #122f3b;
   width: 225px;
   position: fixed;
-  z-index: 9001;
+  z-index: 1401;
   left: -240px;
   box-shadow: 2px 0 10px 0 rgba(0, 0, 0, 0.12), 2px 0 15px 0 rgba(0, 0, 0, 0.09);
   -webkit-transition: left 0.225s ease-in-out, height 0.225s ease-in-out !important;
@@ -3756,7 +3756,7 @@ input[type=date].valid, input[type=date]:focus.valid, input[type=datetime-local]
 .navbar-sidebar-horizontal {
   width: 100%;
   color: #FFFFFF;
-  z-index: 9001;
+  z-index: 1401;
   background-color: #122f3b; }
 
 .navbar-sidebar-horizontal.bg-dark.fixed-top + .right-column,

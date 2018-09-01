@@ -10,6 +10,8 @@ namespace CRM.Repositories
     {
         bool Commit();
 
+        IMessageRepository MessageRepository { get; }
+
         ICompanyRepository CompanyRepository { get; }
 
         IOfficeRepository OfficeRepository { get; }

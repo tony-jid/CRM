@@ -32,6 +32,17 @@ namespace CRM.Repositories
             }
         }
 
+        private IMessageRepository _msgRepo;
+        public IMessageRepository MessageRepository
+        {
+            get
+            {
+                if (_msgRepo == null)
+                    _msgRepo = new MessageRepository(_context);
+                return _msgRepo;
+            }
+        }
+
         private ICompanyRepository _companyRepo;
         public ICompanyRepository CompanyRepository {
             get {

@@ -1,0 +1,79 @@
+﻿<script type="text/javascript" src="~/js/email.js"></script>
+<script type="text/javascript" src="~/js/viewmodels/MessageViewModel.js"></script>
+<script type="text/javascript" src="~/js/viewmodels/RecipientViewModel.js"></script>
+<!-- CKEditor -->
+<script type="text/javascript" src="~/quillpro/plugins/ckeditor/ckeditor.js"></script>
+<!-- This jQuery Adapter is REQUIRED for CKEditor to function properly -->
+<script type="text/javascript" src="~/quillpro/plugins/ckeditor/adapters/jquery.js"></script>
+
+@(Html.DevExtreme().Popup()
+    .ID("mail-compose-popup")
+    .ElementAttr("style", "overflow-y: auto")
+    .MaxWidth(700)
+    .ShowTitle(true)
+    .Visible(false)
+    .DragEnabled(false)
+    .CloseOnOutsideClick(true)
+    .Title("Message Compose")
+    .ContentTemplate(new TemplateName("mail-compose-popup-template"))
+)
+
+@using (Html.DevExtreme().NamedTemplate("mail-compose-popup-template"))
+{
+    <div class="row mb-0">
+        <div class="col-md-12">
+            <div class="row mb-2">
+                <label class="col-md-1">To:</label>
+                <div class="col-md-11">
+                    @*<input id="emailRecipients" type="text" value="" class="form-control email-recepient email-recepient-main">*@
+                    @(Html.DevExtreme().TagBox()
+                        .ID("emailRecipients")
+                        .DataSource(ds => ds.Mvc()
+                            .Controller(nameof(EnumController.Message))
+                            .LoadAction("GetRecipients")
+                            .Key("Email")
+                        )
+                        .Multiline(true)
+                        .SearchEnabled(true)
+                        .HideSelectedItems(true)
+                        .ShowDataBeforeSearch(false)
+                        //.MinSearchLength(2)
+                        .SearchMode(DropDownSearchMode.Contains)
+                        .ItemTemplate(@<text>
+                            <%= Name %> (<i><%= Email %></i>)
+                        </text>)
+                        .DisplayExpr("Name")
+                        .ValueExpr("Email")
+                        .Placeholder("Typing name or email...")
+                        .SearchExpr(new string[] { "Name", "Email" })
+                        .Hint("Typeing the person's name or email address")
+                    )
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-1">Subject:</div>
+                <div class="col-md-11 pr-0">
+                    <input id="emailSubject" type="text" value="" class="form-control email-subject">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <textarea id="emailEditor" class="form-control email-body load-ckeditor" rows="10">
+                    </textarea>
+                </div>
+            </div>
+
+            <div class="mailbox-controls clearfix">
+                <div class="email-pager-top">
+                    <div class="email-pager-container">
+                        <a id="btnSend" class="btn btn-primary" data-toggle="tooltip" title="Send Message">
+                            <i class="batch-icon batch-icon-mail"></i>
+                            Send Message
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+

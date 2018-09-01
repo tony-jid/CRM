@@ -10,6 +10,8 @@
     <script type="text/javascript" src="~/js/lead.js"></script>
 }
 
+@Html.Partial(nameof(EnumPartialPages._MessageComposePartial))
+
 <div class="row mb-4">
     <div class="col-md-12 mb-5">
         <div class="card">
@@ -52,7 +54,7 @@
                                 @(Html.DevExtreme().SelectBox()
                                     .DataSource(new JS("data.Actions"))
                                     .ActionCommonConfigs()
-                                    .OnSelectionChanged("lead.events.onActionChanged")
+                                    .OnSelectionChanged("lead.handlers.onActionChanged")
                                 )
                             </text>);
                     })
@@ -80,4 +82,3 @@
         </div>
     </div>
 </div>
-
