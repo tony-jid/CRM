@@ -8,6 +8,10 @@ namespace CRM.Repositories
 {
     public interface ICustomerRepository : IRepository<Customer>
     {
+        Customer GetByEmail(string email);
+
         IEnumerable<Customer> GetAllIncludeLeads();
+
+        bool IsCustomerExisted(string email);
     }
 }

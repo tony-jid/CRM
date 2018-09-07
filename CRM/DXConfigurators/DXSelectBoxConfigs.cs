@@ -19,7 +19,7 @@ namespace CRM.DXConfigurators
                 .SearchEnabled(false)
                 //.OnSelectionChanged("function(e) { alert(e.selectedItem.ActionName); e.component.reset(); }")
                 .DropDownButtonTemplate("<span class='batch-icon batch-icon-menu-pull-down text-danger' />")
-                .ItemTemplate("<span class='batch-icon batch-icon-envelope text-primary' /> <%= DisplayName %>");
+                .ItemTemplate("<span class='batch-icon batch-icon-<%= Icon %> text-primary' /> <%= DisplayName %>");
         }
     }
 }

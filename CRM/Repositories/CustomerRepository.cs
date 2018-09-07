@@ -32,8 +32,8 @@ namespace CRM.Repositories
             //
             //entity.Id = Guid.NewGuid();
 
-            _context.Customers.Add(entity);
-            _context.SaveChanges();
+            _context.Customers.Add(entity); // Id is generated when Add() is called
+            //_context.SaveChanges(); // commit by Controller
         }
 
         public Customer Get(int id)
@@ -45,6 +45,12 @@ namespace CRM.Repositories
         {
             // [P1]
             return _context.Customers.Include(i => i.Address).FirstOrDefault(w => w.Id == uid);
+        }
+
+        public Customer GetByEmail(string email)
+        {
+            // [P1]
+            return _context.Customers.Include(i => i.Address).FirstOrDefault(w => w.EMail == email);
         }
 
         public IEnumerable<Customer> Get()
@@ -70,6 +76,11 @@ namespace CRM.Repositories
         public IEnumerable<Customer> GetAllIncludeLeads()
         {
             return _context.Customers.Include(lead => lead.Leads).ThenInclude(type => type.LeadType);
+        }
+
+        public bool IsCustomerExisted(string email)
+        {
+            return _context.Customers.FirstOrDefault(w => w.EMail == email) != null ? true : false;
         }
     }
 }

@@ -38,6 +38,7 @@ namespace CRM.Controllers
                 return BadRequest(GetFullErrorMessage(ModelState));
 
             _cusRepo.Add(model);
+            _uow.Commit();
 
             return Ok();
         }

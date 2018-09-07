@@ -27,10 +27,11 @@
                     </h5>
                     <hr />
                     <h4><i class="batch-icon batch-icon-notes"></i> Lead Details</h4>
-                    <h5 class="pl-4">@Model.Details</h5>
+                    <h6 class="pl-4">@Html.Raw(Model.Details)</h6>
                     <hr />
                     <h4><i class="batch-icon batch-icon-user-alt"></i> Customer Info</h4>
                     <h5 class="pl-4">@Model.Customer.ContactName &#64; @Model.Customer.BusinessName</h5>
+                    <h5 class="pl-4"><i class="fa fa-envelope"></i> @Model.Customer.EMail</h5>
                     <h5 class="pl-4"><i class="fa fa-phone"></i> @Model.Customer.ContactNumber</h5>
                     <h5 class="pl-4"><i class="fa fa-map-marker"></i> @AddressHelper.MergeAddress(Model.Customer.Address.StreetAddress, Model.Customer.Address.Suburb, Model.Customer.Address.State, Model.Customer.Address.PostCode)</h5>
                     <hr />

@@ -24,6 +24,7 @@
     )
     .Columns(columns =>
     {
+        columns.Add().CellTemplate(@<text><%= data.Id %></text>).Caption("Id").FormItem(f => { f.Visible(false); });
         columns.AddFor(m => m.Name);
         columns.AddFor(m => m.Price).Format(Format.Currency);
     })

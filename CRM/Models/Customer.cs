@@ -22,8 +22,7 @@ namespace CRM.Models
         [Required]
         [DataType(DataType.EmailAddress)]
         public string EMail { get; set; }
-
-        [Required]
+        
         [StringLength(256)]
         public string BusinessName { get; set; }
 

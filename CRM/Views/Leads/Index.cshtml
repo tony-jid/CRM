@@ -27,7 +27,7 @@
                         .Key("Id")
                     )
                     .Columns(c => {
-                        c.AddFor(m => m.CustomerName).GroupIndex(0);
+                        c.AddFor(m => m.CustomerName);
                         c.Add().Caption("Type")
                             .Width("20%")
                             .CellTemplate(@<text>
@@ -36,7 +36,10 @@
                                     <%= data.LeadTypeName %>
                                 </div>
                             </text>);
-                        c.AddFor(m => m.Details);
+                        c.Add().Caption("Details")
+                            .CellTemplate(@<text>
+                                <%= data.Details %>
+                            </text>);
                         c.Add().Caption("Status")
                             .Width("15%")
                             .CellTemplate(@<text>
