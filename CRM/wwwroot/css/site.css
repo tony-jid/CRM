@@ -97,3 +97,13 @@ footer {
 .badge-status {
     font-size: 1em;
 }
+
+/* The class will hide the tabpanel's header if it is used for a tabpanel with 1 item */ 
+/* E.g. using tabpanel in grid master-details for passing parameter to template */
+.tabpanel-single-item { }
+.tabpanel-single-item .dx-tabs-wrapper { 
+    display: none;
+}
+.tabpanel-single-item .dx-datagrid .dx-datagrid-header-panel {
+    margin-top: 0px;
+}

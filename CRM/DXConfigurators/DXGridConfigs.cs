@@ -20,7 +20,11 @@ namespace CRM.DXConfigurators
                 .HoverStateEnabled(true)
                 .RemoteOperations(false)
                 .Paging(DXGridConfigs.MasterPaging())
-                .Pager(DXGridConfigs.Pager());
+                .Pager(DXGridConfigs.Pager())
+                .OnRowInserted("dxGrid.handlers.onRowInserted")
+                .OnRowUpdated("dxGrid.handlers.onRowUpdated")
+                .OnRowRemoved("dxGrid.handlers.onRowRemoved")
+            ;
         }
 
         public static Action<DataGridPagingBuilder> MasterPaging()

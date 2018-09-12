@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CRM.Models;
 using CRM.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -27,20 +28,19 @@ namespace CRM.Controllers
         }
 
         [HttpPut]
-        public IActionResult Put(int key, string values)
+        public JsonResult UpdateCompany([FromBody]Company data)
         {
             var model = _comRepo.GetFirst();
             if (model == null)
-                return StatusCode(409, "Company not found");
+                return Json(StatusCode(409, "Company not found"));
 
-            JsonConvert.PopulateObject(values, model);
-
-            if (!TryValidateModel(model))
-                return BadRequest(GetFullErrorMessage(ModelState));
+            model.Name = data.Name;
+            model.ABN = data.ABN;
+            model.GST = data.GST;
 
             _comRepo.Update(model);
 
-            return Ok();
+            return Json(_uow.Commit() ? Ok() : StatusCode(StatusCodes.Status500InternalServerError));
         }
     }
 }

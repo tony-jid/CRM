@@ -392,6 +392,9 @@
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="..\..\..\..\..\%2540Work\Freelance\ComparisonAdvantage\CRM\CRM\Views\SharedTemplates\" />
+  </ItemGroup>
   <ProjectExtensions>
     <VisualStudio>
       <UserProperties bower_1json__JSONSchema="http://json.schemastore.org/ansible-stable-2.5" DismissedDevExtremeVersion="18.1.4.0" />

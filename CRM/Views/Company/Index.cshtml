@@ -4,12 +4,16 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@section Scripts {
+    <script type="text/javascript" src="~/js/company.js"></script>
+}
+
 <div class="row mb-4">
     <div class="col-md-12 mb-5 mb-">
         <div class="card">
             <div class="card-body pt-0">
                 @(Html.DevExtreme().Form<Company>()
-                    .ID("Company")
+                    .ID("formCompany")
                     .Items(items =>
                     {
                         items.AddGroup()
@@ -26,6 +30,12 @@
                                         .Editor(e => e
                                             .NumberBox().ShowSpinButtons(true)
                                         );
+                                    secondGroupItems.AddButton()
+                                        .ButtonOptions(option => option
+                                            .Text("Update Company")
+                                            .Icon("fa fa-save")
+                                            .OnClick("company.handlers.clickBtnUpdate")
+                                        );
                                 });
                             });
                         items.AddGroup()
@@ -34,6 +44,7 @@
                                 groupItems.AddSimple().Template(new TemplateName("grid-offices"));
                             });
                     })
+                    .OnContentReady("company.handlers.contentReadyFormCompany")
                     .FormData(@Model)
                 )
             </div>
@@ -49,14 +60,8 @@
         </div>
         <div class="card-body pt-0">
             @(Html.DevExtreme().DataGrid<Office>()
-                .ID("gridOffices")
-                .ShowBorders(true)
-                .ShowRowLines(true)
-                .ShowColumnLines(false)
-                .RowAlternationEnabled(true)
-                .HoverStateEnabled(true)
-                .RemoteOperations(false)
-                .HeaderFilter(f => f.Visible(false))
+                .CommonConfigs("gridOffices")
+                .Pager(pager => { pager.Visible(false); })
                 .DataSource(d => d.Mvc()
                     .Controller(nameof(EnumController.Offices))
                     .LoadAction("GetOfficesByCompany")
@@ -69,13 +74,12 @@
                     .DeleteAction("Delete")
                     .Key("Id")
                 )
-                .Paging(DXGridConfigs.DetailsPaging())
-                .Pager(DXGridConfigs.Pager())
                 .Columns(columns =>
                 {
                     columns.AddFor(m => m.Address.StreetAddress).Caption("Address");
                     columns.AddFor(m => m.Address.Suburb).Caption("Suburb");
-                    columns.AddFor(m => m.Address.State).Caption("State");
+                    columns.AddFor(m => m.Address.State).Caption("State")
+                        .Lookup(lookup => lookup.DataSource(new JS("states"))); // data from /js/data/states.js
                     columns.AddFor(m => m.Address.PostCode).Caption("Postcode");
                 })
                 .Editing(e =>
@@ -136,14 +140,7 @@
 @using (Html.DevExtreme().NamedTemplate("grid-office-agents"))
 {
     @(Html.DevExtreme().DataGrid<Agent>()
-        .ID("grid-office-agents-" + new JS("masterOffice.officeId"))
-        .ShowBorders(true)
-        .ShowRowLines(true)
-        .ShowColumnLines(false)
-        .RowAlternationEnabled(true)
-        .HoverStateEnabled(true)
-        .RemoteOperations(false)
-        .HeaderFilter(f => f.Visible(false))
+        .CommonConfigs("grid-office-agents-" + new JS("masterOffice.officeId"))
         .DataSource(d => d.Mvc()
             .Controller(nameof(EnumController.Agents))
             .LoadAction("GetAgentsByOffice")

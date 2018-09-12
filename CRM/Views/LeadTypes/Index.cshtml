@@ -4,16 +4,7 @@
 }
 
 @(Html.DevExtreme().DataGrid<LeadType>()
-    .ID("gridLeadTypes")
-    .ShowBorders(true)
-    .ShowRowLines(true)
-    .ShowColumnLines(false)
-    .RowAlternationEnabled(true)
-    .HoverStateEnabled(true)
-    .RemoteOperations(false)
-    .FilterRow(f => f.Visible(false))
-    .Paging(DXGridConfigs.MasterPaging())
-    .Pager(DXGridConfigs.Pager())
+    .CommonConfigs("gridLeadTypes")
     .DataSource(ds => ds.Mvc()
         .Controller(nameof(EnumController.LeadTypes))
         .LoadAction("Get")

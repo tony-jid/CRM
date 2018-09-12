@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CRM.Helpers;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -12,11 +13,9 @@ namespace CRM.Models
         string ContactName { get; set; }
 
         [Required]
-        [DataType(DataType.PhoneNumber)]
         string ContactNumber { get; set; }
 
         [Required]
-        [DataType(DataType.EmailAddress)]
         string EMail { get; set; }
     }
 }

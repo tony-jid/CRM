@@ -49,7 +49,6 @@ namespace CRM.Repositories
         public void Update(Company entity)
         {
             _context.Update(entity);
-            _context.SaveChanges();
         }
     }
 }

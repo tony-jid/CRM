@@ -5,9 +5,8 @@ using System.Threading.Tasks;
 
 namespace CRM.Enum
 {
-    public enum EnumLayoutSections
+    public enum EnumSharedTemplates
     {
-        Scripts,
-        Templates
+        GridAssignments,
     }
 }

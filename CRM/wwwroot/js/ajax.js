@@ -4,14 +4,23 @@
     },
 
     controllers: {
+        company: {
+            name: 'Company',
+            actions: {
+                updateCompany: {
+                    type: 'PUT',
+                    name: 'UpdateCompany'
+                },
+            },
+        },
         message: {
             name: 'Message',
             actions: {
                 sendMessage: {
                     type: 'POST',
                     name: 'Send'
-                }
-            }
+                },
+            },
         },
         assignment: {
             name: 'LeadAssignments',
@@ -19,9 +28,9 @@
                 assignPartners: {
                     type: 'POST',
                     name: 'AjaxPostToAssignPartners'
-                }
-            }
-        }
+                },
+            },
+        },
     },
 
     callers: {
@@ -43,5 +52,5 @@
                 }
             });
         },
-    }
+    },
 };

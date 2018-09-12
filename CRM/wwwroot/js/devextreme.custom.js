@@ -1,4 +1,19 @@
-﻿var CustomGrid = {
+﻿var dxGrid = {
+    handlers: {
+        onRowInserted: function (e) {
+            notification.alert.showSuccess("Successfully added an item");
+        },
+        onRowUpdated: function (e) {
+            notification.alert.showSuccess("Successfully updated the item");
+        },
+        onRowRemoved: function (e) {
+            notification.alert.showSuccess("Successfully removed the item");
+        },
+    },
+}
+
+
+var CustomGrid = {
     toolbarCountId: 'grid-{0}-toolbar-count',
     
     toolbarBtnRefresh: function (e) {

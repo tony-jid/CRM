@@ -5,12 +5,15 @@
 }
 
 @section Scripts {
-    <script type="text/javascript" src="~/js/ajax.js"></script>
     <script type="text/javascript" src="~/js/action.js"></script>
     <script type="text/javascript" src="~/js/lead.js"></script>
 }
 
-@Html.Partial(nameof(EnumPartialPages._MessageComposePartial))
+@section Templates {
+    @Html.Partial(nameof(EnumPartialPages._TemplateGridAssignments))
+
+    @Html.Partial(nameof(EnumPartialPages._MessageComposePartial))
+}
 
 <div class="row mb-4">
     <div class="col-md-12 mb-5">
@@ -29,7 +32,7 @@
                     .Columns(c => {
                         c.AddFor(m => m.CustomerName);
                         c.Add().Caption("Type")
-                            .Width("20%")
+                            .Width("15%")
                             .CellTemplate(@<text>
                                 <div>
                                     <img src="<%= data.LeadTypeImage %>" width="32" height="32" /> 
@@ -37,6 +40,7 @@
                                 </div>
                             </text>);
                         c.Add().Caption("Details")
+                            .Width("35%")
                             .CellTemplate(@<text>
                                 <%= data.Details %>
                             </text>);
@@ -52,7 +56,7 @@
                                 </a>
                             </text>);
                         c.Add()
-                            .Width("20%")
+                            .Width("15%")
                             .CellTemplate(@<text>
                                 @(Html.DevExtreme().SelectBox()
                                     .DataSource(new JS("data.Actions"))
@@ -68,6 +72,10 @@
                         .AllowUpdating(true)
                         .AllowDeleting(true)
                         .Popup(DXGridConfigs.EditingPopup(nameof(Lead)))
+                    )
+                    .MasterDetail(m => m
+                        .Enabled(true) 
+                        .Template(new TemplateName("form-template-grid-assignments"))
                     )
                     .OnContentReady(@<text>
                         function(e) {
@@ -85,3 +93,28 @@
         </div>
     </div>
 </div>
+
+@using(Html.DevExtreme().NamedTemplate("form-template-grid-assignments"))
+{
+    // This does not work, parameter cannot be passed into the template
+    @*@(Html.DevExtreme().Form().ID("form-grid-assignments")
+        .Items(i =>
+        {
+            i.AddSimple().Template(new TemplateName("template-grid-assignments"))
+                .Option("templateData", new { LeadId = new JS("data.Id") });
+        })
+    )*@
+
+    @* Using tabpanel for passing parameter to the grid in the template *@
+    @(Html.DevExtreme().TabPanel()
+        .FocusStateEnabled(false)
+        .ElementAttr("class", "tabpanel-single-item") // Adding this class to hide tabpanel's header for a tabpanel with only 1 item
+        .Items(items =>
+        {
+            items.Add()
+                .Title("Assignments")
+                .Template(new TemplateName("template-grid-assignments"))
+                .Option("templateData", new { LeadId = new JS("data.Id") });
+        })
+    )
+}
