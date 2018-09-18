@@ -19,7 +19,7 @@
     <Compile Remove="Data\Migrations\20180727101129_test-IPerson.Designer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="DevExtreme.AspNet.Core" Version="18.1.4" />
+    <PackageReference Include="DevExtreme.AspNet.Core" Version="18.1.6" />
     <PackageReference Include="DevExtreme.AspNet.Data" Version="1.4.7" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.1.2" />
@@ -397,7 +397,7 @@
   </ItemGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties bower_1json__JSONSchema="http://json.schemastore.org/ansible-stable-2.5" DismissedDevExtremeVersion="18.1.4.0" />
+      <UserProperties bower_1json__JSONSchema="http://json.schemastore.org/ansible-stable-2.5" DismissedDevExtremeVersion="" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

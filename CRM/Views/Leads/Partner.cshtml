@@ -1,0 +1,34 @@
+﻿
+@{
+    ViewData[nameof(EnumViewData.Title)] = nameof(EnumController.Partners);
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Scripts {
+    <script type="text/javascript" src="~/js/viewmodels/LeadAssignmentResponseVM.js"></script>
+
+    <script type="text/javascript" src="~/js/action.js"></script>
+    <script type="text/javascript" src="~/js/assignment.js"></script>
+    <script type="text/javascript" src="~/js/partner.js"></script>
+}
+
+@section Templates {
+    @Html.Partial(nameof(EnumPartialPages._TemplateGridAssignments))
+
+    @Html.Partial(nameof(EnumPartialPages._MessageComposePartial))
+}
+
+@(Html.DevExtreme().TabPanel()
+    .FocusStateEnabled(false)
+    .ElementAttr("class", "tabpanel-single-item") // Adding this class to hide tabpanel's header for a tabpanel with only 1 item
+    .Items(items =>
+    {
+        items.Add()
+            .Title("Assignments")
+            .Template(new TemplateName("template-grid-assignments-by-partner"))
+            .Option("templateData", new
+            {
+                Id = @Model.Id
+            });
+    })
+)

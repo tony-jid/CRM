@@ -12,7 +12,13 @@ namespace CRM.Repositories
     {
         IEnumerable<LeadAssignment> GetByLead(Guid leadId);
 
+        IEnumerable<LeadAssignment> GetByPartner(Guid partnerId);
+
         void AddByViewModel(LeadAssignmentSelectedPartnerViewModel viewModel);
+
+        void AcceptAssignment(LeadAssignmentResponseVM responseVM);
+
+        void RejectAssignment(LeadAssignmentResponseVM responseVM);
 
         void SetState(int assignmentId, EnumState state, EnumStateAction action);
     }

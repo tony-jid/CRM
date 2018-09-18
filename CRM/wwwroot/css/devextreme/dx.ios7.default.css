@@ -1,7 +1,7 @@
 /*!
 * DevExtreme
-* Version: 18.1.4
-* Build date: Jun 19, 2018
+* Version: 18.1.6
+* Build date: Sep 3, 2018
 *
 * Copyright (c) 2012 - 2018 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -143,6 +143,12 @@
   white-space: normal;
   word-wrap: break-word;
 }
+.dx-datagrid .dx-column-lines > td:first-child {
+  border-left: none;
+}
+.dx-datagrid .dx-column-lines > td:last-child {
+  border-right: none;
+}
 .dx-datagrid-filter-panel {
   color: black;
   border-top: 1px solid #C8C8C8;
@@ -230,6 +236,14 @@
   -ms-transform: scale(1);
   -o-transform: scale(1);
   transform: scale(1);
+}
+.dx-rtl .dx-datagrid .dx-column-lines > td:first-child {
+  border-right: none;
+  border-left: 1px solid #C8C8C8;
+}
+.dx-rtl .dx-datagrid .dx-column-lines > td:last-child {
+  border-left: none;
+  border-right: 1px solid #C8C8C8;
 }
 .dx-rtl .dx-datagrid-form-buttons-container {
   float: left;
@@ -341,6 +355,16 @@
 }
 .dx-pivotgrid .dx-column-header .dx-pivotgrid-fields-area-head tr > td:first-child {
   padding-left: 0;
+}
+.dx-pivotgrid .dx-filter-header .dx-area-field-container {
+  border-spacing: 8px;
+  border-collapse: separate;
+}
+.dx-pivotgrid .dx-filter-header .dx-pivotgrid-fields-area-head td {
+  padding: 2px;
+}
+.dx-pivotgrid .dx-filter-header .dx-pivotgrid-fields-area-head tr > td:first-child {
+  padding-left: 2px;
 }
 .dx-pivotgrid .dx-area-field.dx-area-box {
   margin-bottom: 0;
@@ -526,6 +550,9 @@
 .dx-pivotgrid .dx-pivotgrid-border .dx-filter-header {
   border-top: 1px solid #CCCCCC;
 }
+.dx-pivotgrid .dx-pivotgrid-border .dx-filter-header td {
+  display: inline-block;
+}
 .dx-pivotgrid .dx-pivotgrid-border .dx-area-data-cell,
 .dx-pivotgrid .dx-pivotgrid-border .dx-area-row-cell {
   border-bottom: 1px solid #CCCCCC;
@@ -580,23 +607,48 @@
 }
 .dx-pivotgridfieldchooser .dx-area {
   padding: 5px;
+  display: -webkit-flex;
   display: flex;
-  height: 33.33%;
+  -webkit-flex-grow: 1;
+  flex-grow: 1;
+  -webkit-flex-direction: column;
   flex-direction: column;
 }
-.dx-pivotgridfieldchooser .dx-layout-2 .dx-fields-container {
-  height: 66%;
-}
-.dx-pivotgridfieldchooser .dx-layout-2 .dx-fields-container .dx-area {
-  height: 50%;
-}
-.dx-pivotgridfieldchooser .dx-area.dx-all-fields {
+.dx-pivotgridfieldchooser .dx-area > .dx-scrollable,
+.dx-pivotgridfieldchooser .dx-area > .dx-treeview,
+.dx-pivotgridfieldchooser .dx-area > .dx-treeview > .dx-scrollable {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-grow: 1;
   flex-grow: 1;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  height: 0;
+}
+.dx-pivotgridfieldchooser .dx-area > .dx-scrollable > .dx-scrollable-wrapper,
+.dx-pivotgridfieldchooser .dx-area > .dx-treeview > .dx-scrollable-wrapper,
+.dx-pivotgridfieldchooser .dx-area > .dx-treeview > .dx-scrollable > .dx-scrollable-wrapper {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-grow: 1;
+  flex-grow: 1;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  height: 0;
+}
+.dx-pivotgridfieldchooser .dx-area > .dx-scrollable > .dx-scrollable-wrapper > .dx-scrollable-container,
+.dx-pivotgridfieldchooser .dx-area > .dx-treeview > .dx-scrollable-wrapper > .dx-scrollable-container,
+.dx-pivotgridfieldchooser .dx-area > .dx-treeview > .dx-scrollable > .dx-scrollable-wrapper > .dx-scrollable-container {
+  height: auto;
 }
 .dx-pivotgridfieldchooser .dx-area .dx-area-fields {
   margin-top: 3px;
   border: 1px solid #CCCCCC;
-  height: 100%;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  height: 0;
 }
 .dx-pivotgridfieldchooser .dx-area-fields-header .dx-area-caption {
   align-self: center;
@@ -604,6 +656,7 @@
 .dx-pivotgridfieldchooser .dx-area-fields[group] {
   padding: 5px;
   background-color: #F7F7F7;
+  display: -webkit-flex;
   display: flex;
 }
 .dx-pivotgridfieldchooser .dx-area-fields.dx-drag-target {
@@ -732,6 +785,7 @@
   margin-right: 5px;
 }
 .dx-rtl.dx-pivotgrid .dx-pivotgridfieldchooser-container .dx-col {
+  display: -webkit-flex;
   display: flex;
 }
 .dx-rtl.dx-pivotgrid .dx-pivotgrid-border .dx-area-description-cell,
@@ -770,6 +824,12 @@
   border-top-width: 0;
   border-left: 1px solid #C8C8C8;
   border-right: 1px solid #C8C8C8;
+}
+.dx-treelist .dx-column-lines > td:first-child {
+  border-left: none;
+}
+.dx-treelist .dx-column-lines > td:last-child {
+  border-right: none;
 }
 .dx-treelist-container {
   color: black;
@@ -923,6 +983,14 @@
   word-wrap: break-word;
   color: white;
   margin-bottom: 20px;
+}
+.dx-rtl.dx-treelist .dx-column-lines > td:first-child {
+  border-right: none;
+  border-left: 1px solid #C8C8C8;
+}
+.dx-rtl.dx-treelist .dx-column-lines > td:last-child {
+  border-left: none;
+  border-right: 1px solid #C8C8C8;
 }
 .dx-rtl .dx-treelist-container .dx-treelist-rowsview .dx-data-row td.dx-pointer-events-none,
 .dx-rtl .dx-treelist-container .dx-treelist-rowsview .dx-freespace-row td.dx-pointer-events-none,
@@ -4775,6 +4843,9 @@
   opacity: 0.65;
 }
 .dx-state-disabled.dx-radiobutton {
+  opacity: 0.65;
+}
+.dx-state-disabled .dx-radiobutton.dx-state-disabled {
   opacity: 1;
 }
 .dx-state-active.dx-radiobutton .dx-radiobutton-icon:before {
@@ -6582,10 +6653,8 @@
 }
 .dx-treelist-select-all .dx-checkbox {
   position: absolute;
-  left: 0px;
+  left: 32px;
   margin-top: -2px;
-  background-color: #E5E5E5;
-  padding-left: 32px;
 }
 .dx-treelist-headers .dx-header-row > .dx-treelist-select-all {
   padding-left: 59px;
@@ -6605,10 +6674,7 @@
   float: right;
 }
 .dx-rtl .dx-treelist-select-all .dx-checkbox {
-  left: 100%;
-  padding-right: 32px;
-  margin-left: -52px;
-  padding-left: 0px;
+  left: calc(100% -  52px);
 }
 .dx-rtl .dx-treelist-headers .dx-header-row > .dx-treelist-select-all {
   padding-right: 59px;
@@ -7884,10 +7950,9 @@
   -ms-flex-flow: row nowrap;
   flex-flow: row nowrap;
 }
-.dx-scheduler-timeline-week .dx-scheduler-header-panel-week-cell,
-.dx-scheduler-timeline-work-week .dx-scheduler-header-panel-week-cell {
+.dx-scheduler-timeline-week .dx-scheduler-header-panel-cell,
+.dx-scheduler-timeline-work-week .dx-scheduler-header-panel-cell {
   flex-grow: 1;
-  flex-basis: 0;
   justify-content: center;
   display: -webkit-box;
   display: -webkit-flex;
@@ -7900,6 +7965,10 @@
   -ms-flex-wrap: nowrap;
   -ms-flex-flow: row nowrap;
   flex-flow: row nowrap;
+}
+.dx-scheduler-timeline-week .dx-scheduler-header-panel-week-cell,
+.dx-scheduler-timeline-work-week .dx-scheduler-header-panel-week-cell {
+  flex-basis: 0;
 }
 .dx-scheduler-timeline-week .dx-scheduler-header-row .dx-scheduler-header-panel-cell,
 .dx-scheduler-timeline-work-week .dx-scheduler-header-row .dx-scheduler-header-panel-cell {
@@ -7947,6 +8016,7 @@
   height: 100%;
   width: 100%;
   border-top: none;
+  float: left;
 }
 .dx-scheduler-work-space.dx-scheduler-work-space-grouped:not(.dx-scheduler-agenda) .dx-scheduler-all-day-title {
   border-top: 1px solid rgba(200, 200, 200, 0.6);
@@ -8315,6 +8385,7 @@
   -ms-flex-wrap: nowrap;
   -ms-flex-flow: row nowrap;
   flex-flow: row nowrap;
+  -ms-flex-align: center;
   padding: 0 10px 0 5px;
   height: auto;
   width: 100%;

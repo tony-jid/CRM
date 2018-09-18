@@ -22,7 +22,7 @@ namespace CRM.Repositories
         public void Add(Lead entity)
         {
             _context.Leads.Add(entity);
-            this.SetState(entity.Id, EnumState.LeadNew, EnumStateAction.Created);
+            this.SetState(entity.Id, EnumState.SL1, EnumStateAction.Created);
 
             //_context.SaveChanges(); will be committed at Controller
         }
@@ -73,10 +73,10 @@ namespace CRM.Repositories
         {
             var currentStatus = this.GetLeadCurrentStatus(leadId);
 
-            if (currentStatus.StateId == (int)EnumState.LeadNew)
-                this.SetState(leadId, EnumState.LeadAssigned, EnumStateAction.Assigned);
+            if (currentStatus.StateId == EnumState.SL1.ToString())
+                this.SetState(leadId, EnumState.SL2, EnumStateAction.Assigned);
             else
-                this.SetState(leadId, EnumState.LeadReAssigned, EnumStateAction.Reassigned);
+                this.SetState(leadId, EnumState.SL3, EnumStateAction.Reassigned);
         }
 
         public LeadState GetLeadCurrentStatus(Guid leadId)
@@ -89,12 +89,14 @@ namespace CRM.Repositories
         {
             var userName = "admin";
 
-            var leadState = new LeadState();
-            leadState.LeadId = leadId;
-            leadState.StateId = (int)state;
-            leadState.Actor = userName;
-            leadState.Action = action.ToString();
-            leadState.ActionTimestamp = DateTime.Now;
+            var leadState = new LeadState()
+            {
+                LeadId = leadId,
+                StateId = state.ToString(),
+                Actor = userName,
+                Action = action.ToString(),
+                ActionTimestamp = DateTime.Now
+            };
 
             _context.LeadStates.Add(leadState);
         }

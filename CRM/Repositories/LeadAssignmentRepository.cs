@@ -25,7 +25,7 @@ namespace CRM.Repositories
             {
                 var assignment = new LeadAssignment() { LeadId = viewModel.LeadId, PartnerBranchId = branchId };
                 _context.LeadAssignments.Add(assignment);
-                this.SetState(assignment.Id, EnumState.LeadAssignmentConsidering, EnumStateAction.Assigned);
+                this.SetState(assignment.Id, EnumState.SLA1, EnumStateAction.Assigned);
             }
 
             //_context.SaveChanges(); // will be commit at Controller
@@ -45,9 +45,19 @@ namespace CRM.Repositories
                 .Include(i => i.LeadAssignmentStates).ThenInclude(i => i.State.StateActions).ThenInclude(i => i.Action);
         }
 
+        public IEnumerable<LeadAssignment> GetByPartner(Guid partnerId)
+        {
+            return _context.LeadAssignments
+                .Include(i => i.PartnerBranch).ThenInclude(i => i.Partner).Where(w => w.PartnerBranch.PartnerId == partnerId)
+                .Include(i => i.PartnerBranch).ThenInclude(i => i.Address)
+                .Include(i => i.Lead).ThenInclude(i => i.LeadType)
+                .Include(i => i.Lead).ThenInclude(i => i.Customer).ThenInclude(i => i.Address)
+                .Include(i => i.LeadAssignmentStates).ThenInclude(i => i.State.StateActions).ThenInclude(i => i.Action);
+        }
+
         public IEnumerable<LeadAssignment> Get()
         {
-            throw new NotImplementedException();
+            return _context.LeadAssignments;
         }
 
         public LeadAssignment Get(int id)
@@ -73,20 +83,49 @@ namespace CRM.Repositories
             throw new NotImplementedException();
         }
 
-        public void SetState(int assignmentId, EnumState state, EnumStateAction action)
+        public void AcceptAssignment(LeadAssignmentResponseVM responseVM)
+        {
+            //var leadAssignment = this.Get(responseVM.LeadAssignmentId);
+            this.SetState(responseVM.LeadAssignmentId, responseVM.Action.NextStateId, EnumStateAction.Accepted);
+
+        }
+
+        public void RejectAssignment(LeadAssignmentResponseVM responseVM)
+        {
+            //var leadAssignment = this.Get(responseVM.LeadAssignmentId);
+            this.SetState(responseVM.LeadAssignmentId, responseVM.Action.NextStateId, EnumStateAction.Rejected);
+        }
+
+        public void SetState(int assignmentId, string stateId, EnumStateAction action)
         {
             var userName = "admin";
 
-            var itemSate = new LeadAssignmentState
+            var itemState = new LeadAssignmentState
             {
                 LeadAssignmentId = assignmentId,
-                StateId = (int)state,
+                StateId = stateId,
                 Actor = userName,
                 Action = action.ToString(),
                 ActionTimestamp = DateTime.Now
             };
 
-            _context.LeadAssignmentStates.Add(itemSate);
+            _context.LeadAssignmentStates.Add(itemState);
+        }
+
+        public void SetState(int assignmentId, EnumState state, EnumStateAction action)
+        {
+            var userName = "admin";
+
+            var itemState = new LeadAssignmentState
+            {
+                LeadAssignmentId = assignmentId,
+                StateId = state.ToString(),
+                Actor = userName,
+                Action = action.ToString(),
+                ActionTimestamp = DateTime.Now
+            };
+
+            _context.LeadAssignmentStates.Add(itemState);
         }
     }
 }

@@ -44,6 +44,45 @@ namespace CRM.Data
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);
 
+            builder.Entity<Company>().HasData( new Company { Id = 1, Name = "Comparison Advantage", ABN = "65 626 309 073", GST = 10, Logo = "logo-dark.png" });
+
+            // State data
+            builder.Entity<State>().HasData(
+                    new State { Id = "S0", Owner = "Unknown", Seq = 1, Name = "Unknown" },
+                    new State { Id = "SL1", Owner = "Lead", Seq = 1, Name = "New" },
+                    new State { Id = "SL2", Owner = "Lead", Seq = 2, Name = "Assigned" },
+                    new State { Id = "SL3", Owner = "Lead", Seq = 3, Name = "Re-assigned" },
+                    new State { Id = "SLA1", Owner = "LeadAssignment", Seq = 1, Name = "Considering" },
+                    new State { Id = "SLA2", Owner = "LeadAssignment", Seq = 1, Name = "Accepted" },
+                    new State { Id = "SLA3", Owner = "LeadAssignment", Seq = 1, Name = "Rejected" },
+                    new State { Id = "SLA4", Owner = "LeadAssignment", Seq = 1, Name = "Invoiced" },
+                    new State { Id = "SLA5", Owner = "LeadAssignment", Seq = 1, Name = "Re-invoiced" }
+                );
+            // Action data
+            builder.Entity<Models.Action>().HasData(
+                    new Models.Action { Id = "AL1", ControllerName = "Message", ActionName = "Send", NextStateId = "S0", Icon = "batch-icon batch-icon-envelope", DisplayName = "Send message", ActionTarget = "Message", RequestType = "Post" },
+                    new Models.Action { Id = "AL2", ControllerName = "Leads", ActionName = "Assignments", NextStateId = "SL2", Icon = "batch-icon batch-icon-user-alt-2", DisplayName = "Assign partners", ActionTarget = "Window", RequestType = "Get" },
+                    new Models.Action { Id = "AL3", ControllerName = "Leads", ActionName = "Assignments", NextStateId = "SL3", Icon = "batch-icon batch-icon-user-alt-2", DisplayName = "Re-assign partners", ActionTarget = "Window", RequestType = "Get" },
+                    new Models.Action { Id = "ALA1", ControllerName = "LeadAssignments", ActionName = "Comment", NextStateId = "S0", Icon = "batch-icon batch-icon-speech-bubble-left-tip-text", DisplayName = "Comment lead", ActionTarget = "Message", RequestType = "Post" },
+                    new Models.Action { Id = "ALA2", ControllerName = "LeadAssignments", ActionName = "Accept", NextStateId = "SLA2", Icon = "batch-icon batch-icon-tick", DisplayName = "Accept lead", ActionTarget = "Ajax", RequestType = "Put" },
+                    new Models.Action { Id = "ALA3", ControllerName = "LeadAssignments", ActionName = "Reject", NextStateId = "SLA3", Icon = "batch-icon batch-icon-cross", DisplayName = "Reject lead", ActionTarget = "Ajax", RequestType = "Put" },
+                    new Models.Action { Id = "ALA4", ControllerName = "LeadAssignments", ActionName = "SendInvoice", NextStateId = "SLA4", Icon = "fa fa-dollar", DisplayName = "Send invoice", ActionTarget = "Ajax", RequestType = "Post" },
+                    new Models.Action { Id = "ALA5", ControllerName = "LeadAssignments", ActionName = "ResendInvoice", NextStateId = "SLA5", Icon = "fa fa-dollar", DisplayName = "Re-send invoice", ActionTarget = "Ajax", RequestType = "Post" }
+                );
+            // State-Action data
+            builder.Entity<StateAction>().HasData(
+                    new StateAction { StateId = "SL1", ActionId = "AL1" },
+                    new StateAction { StateId = "SL1", ActionId = "AL2" },
+                    new StateAction { StateId = "SL2", ActionId = "AL1" },
+                    new StateAction { StateId = "SL2", ActionId = "AL3" },
+                    new StateAction { StateId = "SL3", ActionId = "AL1" },
+                    new StateAction { StateId = "SL3", ActionId = "AL3" },
+                    new StateAction { StateId = "SLA1", ActionId = "AL1" },
+                    new StateAction { StateId = "SLA1", ActionId = "ALA1" },
+                    new StateAction { StateId = "SLA1", ActionId = "ALA2" },
+                    new StateAction { StateId = "SLA1", ActionId = "ALA3" }
+                );
+
             // Customer -> Leads <- LeadType
             // Many-to-Many Relationship
             //
@@ -81,6 +120,7 @@ namespace CRM.Data
             //    .WithMany(type => type.Transactions)
             //    .HasForeignKey(tran => tran.TransactionTypeId)
             //    .OnDelete(DeleteBehavior.Restrict);
+
             builder.Entity<LeadState>().HasKey(key => new { key.StateId, key.LeadId, key.ActionTimestamp });
             builder.Entity<LeadState>()
                 .HasOne(ls => ls.State)

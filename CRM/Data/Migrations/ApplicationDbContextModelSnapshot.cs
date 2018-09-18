@@ -20,8 +20,9 @@ namespace CRM.Data.Migrations
 
             modelBuilder.Entity("CRM.Models.Action", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(5);
 
                     b.Property<string>("ActionName");
 
@@ -31,10 +32,9 @@ namespace CRM.Data.Migrations
 
                     b.Property<string>("DisplayName");
 
-                    b.Property<string>("Icon")
-                        .HasMaxLength(30);
+                    b.Property<string>("Icon");
 
-                    b.Property<int>("NextStateId");
+                    b.Property<string>("NextStateId");
 
                     b.Property<string>("RequestType");
 
@@ -43,6 +43,17 @@ namespace CRM.Data.Migrations
                     b.HasIndex("NextStateId");
 
                     b.ToTable("Actions");
+
+                    b.HasData(
+                        new { Id = "AL1", ActionName = "Send", ActionTarget = "Message", ControllerName = "Message", DisplayName = "Send message", Icon = "batch-icon batch-icon-envelope", NextStateId = "S0", RequestType = "Post" },
+                        new { Id = "AL2", ActionName = "Assignments", ActionTarget = "Window", ControllerName = "Leads", DisplayName = "Assign partners", Icon = "batch-icon batch-icon-user-alt-2", NextStateId = "SL2", RequestType = "Get" },
+                        new { Id = "AL3", ActionName = "Assignments", ActionTarget = "Window", ControllerName = "Leads", DisplayName = "Re-assign partners", Icon = "batch-icon batch-icon-user-alt-2", NextStateId = "SL3", RequestType = "Get" },
+                        new { Id = "ALA1", ActionName = "Comment", ActionTarget = "Message", ControllerName = "LeadAssignments", DisplayName = "Comment lead", Icon = "batch-icon batch-icon-speech-bubble-left-tip-text", NextStateId = "S0", RequestType = "Post" },
+                        new { Id = "ALA2", ActionName = "Accept", ActionTarget = "Ajax", ControllerName = "LeadAssignments", DisplayName = "Accept lead", Icon = "batch-icon batch-icon-tick", NextStateId = "SLA2", RequestType = "Put" },
+                        new { Id = "ALA3", ActionName = "Reject", ActionTarget = "Ajax", ControllerName = "LeadAssignments", DisplayName = "Reject lead", Icon = "batch-icon batch-icon-cross", NextStateId = "SLA3", RequestType = "Put" },
+                        new { Id = "ALA4", ActionName = "SendInvoice", ActionTarget = "Ajax", ControllerName = "LeadAssignments", DisplayName = "Send invoice", Icon = "fa fa-dollar", NextStateId = "SLA4", RequestType = "Post" },
+                        new { Id = "ALA5", ActionName = "ResendInvoice", ActionTarget = "Ajax", ControllerName = "LeadAssignments", DisplayName = "Re-send invoice", Icon = "fa fa-dollar", NextStateId = "SLA5", RequestType = "Post" }
+                    );
                 });
 
             modelBuilder.Entity("CRM.Models.Address", b =>
@@ -159,6 +170,10 @@ namespace CRM.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Company");
+
+                    b.HasData(
+                        new { Id = 1, ABN = "65 626 309 073", GST = 10.0, Logo = "logo-dark.png", Name = "Comparison Advantage" }
+                    );
                 });
 
             modelBuilder.Entity("CRM.Models.Customer", b =>
@@ -169,7 +184,6 @@ namespace CRM.Data.Migrations
                     b.Property<int>("AddressId");
 
                     b.Property<string>("BusinessName")
-                        .IsRequired()
                         .HasMaxLength(256);
 
                     b.Property<string>("ContactName")
@@ -272,7 +286,7 @@ namespace CRM.Data.Migrations
 
             modelBuilder.Entity("CRM.Models.LeadAssignmentState", b =>
                 {
-                    b.Property<int>("StateId");
+                    b.Property<string>("StateId");
 
                     b.Property<int>("LeadAssignmentId");
 
@@ -291,7 +305,7 @@ namespace CRM.Data.Migrations
 
             modelBuilder.Entity("CRM.Models.LeadState", b =>
                 {
-                    b.Property<int>("StateId");
+                    b.Property<string>("StateId");
 
                     b.Property<Guid>("LeadId");
 
@@ -416,8 +430,9 @@ namespace CRM.Data.Migrations
 
             modelBuilder.Entity("CRM.Models.State", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(5);
 
                     b.Property<string>("Name")
                         .IsRequired();
@@ -432,19 +447,44 @@ namespace CRM.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("States");
+
+                    b.HasData(
+                        new { Id = "S0", Name = "Unknown", Owner = "Unknown", Repeatable = false, Seq = 1 },
+                        new { Id = "SL1", Name = "New", Owner = "Lead", Repeatable = false, Seq = 1 },
+                        new { Id = "SL2", Name = "Assigned", Owner = "Lead", Repeatable = false, Seq = 2 },
+                        new { Id = "SL3", Name = "Re-assigned", Owner = "Lead", Repeatable = false, Seq = 3 },
+                        new { Id = "SLA1", Name = "Considering", Owner = "LeadAssignment", Repeatable = false, Seq = 1 },
+                        new { Id = "SLA2", Name = "Accepted", Owner = "LeadAssignment", Repeatable = false, Seq = 1 },
+                        new { Id = "SLA3", Name = "Rejected", Owner = "LeadAssignment", Repeatable = false, Seq = 1 },
+                        new { Id = "SLA4", Name = "Invoiced", Owner = "LeadAssignment", Repeatable = false, Seq = 1 },
+                        new { Id = "SLA5", Name = "Re-invoiced", Owner = "LeadAssignment", Repeatable = false, Seq = 1 }
+                    );
                 });
 
             modelBuilder.Entity("CRM.Models.StateAction", b =>
                 {
-                    b.Property<int>("StateId");
+                    b.Property<string>("StateId");
 
-                    b.Property<int>("ActionId");
+                    b.Property<string>("ActionId");
 
                     b.HasKey("StateId", "ActionId");
 
                     b.HasIndex("ActionId");
 
                     b.ToTable("StateActions");
+
+                    b.HasData(
+                        new { StateId = "SL1", ActionId = "AL1" },
+                        new { StateId = "SL1", ActionId = "AL2" },
+                        new { StateId = "SL2", ActionId = "AL1" },
+                        new { StateId = "SL2", ActionId = "AL3" },
+                        new { StateId = "SL3", ActionId = "AL1" },
+                        new { StateId = "SL3", ActionId = "AL3" },
+                        new { StateId = "SLA1", ActionId = "AL1" },
+                        new { StateId = "SLA1", ActionId = "ALA1" },
+                        new { StateId = "SLA1", ActionId = "ALA2" },
+                        new { StateId = "SLA1", ActionId = "ALA3" }
+                    );
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

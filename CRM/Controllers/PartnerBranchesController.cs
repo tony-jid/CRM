@@ -103,9 +103,9 @@ namespace CRM.Controllers
                 if (currentState == null)
                     throw new Exception("An assignment must have at least 1 status!");
 
-                if (currentState.StateId == (int)EnumState.LeadAssignmentConsidering)
+                if (currentState.StateId == EnumState.SLA1.ToString())
                     partnerWaitingAssignments.Add(item.PartnerBranchId);
-                else if (currentState.StateId == (int)EnumState.LeadAssignmentAccepted)
+                else if (currentState.StateId == EnumState.SLA2.ToString())
                     partnerAcceptedAssignments.Add(item.PartnerBranchId);
             }
 

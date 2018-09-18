@@ -13,30 +13,52 @@
         ajax: "Ajax"
     },
 
-    requests: {
+    requestTypes: {
         get: "Get",
         post: "Post",
         put: "Put",
         delete: "Delete"
     },
 
-    perform: function (source, data) {
-        let request = data.RequestType;
-        let target = data.ActionTarget;
+    perform: function (source, actionInstance, data, callback) {
+        let requestType = actionInstance.RequestType;
+        let target = actionInstance.ActionTarget;
+        let ajaxAction = {
+            type: actionInstance.RequestType,
+            name: actionInstance.ActionName
+        }
 
-        switch (request) {
-            case action.requests.get:
+        if (typeof (callback) !== 'function')
+            callback = function (response) { };
+
+        switch (requestType) {
+            case action.requestTypes.get:
                 if (source === action.sources.lead) {
                     // action-target = window
-                    window.open("/{0}/{1}/{2}/".format(data.ControllerName, data.ActionName, data.LeadId), "_blank");
+                    window.open("/{0}/{1}/{2}/".format(actionInstance.ControllerName, actionInstance.ActionName, actionInstance.LeadId), "_blank");
                 }
 
                 break;
-            case action.requests.post:
-                if (target === action.targets.message) {
-                    // using dynamic props to support "Message Compose"
-                    email.methods.showModal(data.Message.Recipients, "", "");
+            case action.requestTypes.post:
+                if (source === action.sources.lead) {
+                    if (target === action.targets.message) {
+                        // using dynamic data to support "Message Compose"
+                        email.methods.showModal(data.recipients, "", "");
+                    }
                 }
+                break;
+            case action.requestTypes.put:
+                if (source === action.sources.assignment) {
+                    if (target === action.targets.ajax) {
+                        ajax.callers.crm(
+                            actionInstance.ControllerName
+                            , ajaxAction
+                            , data
+                            , callback);
+                    }
+                }
+                break;
+            case action.requestTypes.delete:
                 break;
             default:
                 break;

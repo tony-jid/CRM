@@ -34,13 +34,14 @@
     },
 
     callers: {
-        crm: function (controller, action, values, onSuccess) {
+        crm: function (ajaxController, ajaxAction, values, onSuccess) {
+            var ajaxUrl = ajax.urls.crm.format(ajaxController, ajaxAction.name);
+
             $.ajax({
-                url: ajax.urls.crm.format(controller, action.name),
-                type: action.type,
+                url: ajaxUrl,
+                type: ajaxAction.type,
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
-                traditional: true,
                 data: JSON.stringify(values),
                 success: function (response) {
                     if (typeof (onSuccess) === "function") {
@@ -48,7 +49,7 @@
                     }
                 },
                 error: function (xhr, textStatus, errorThrown) {
-                    alert('Request Status: ' + xhr.status + '; Status Text: ' + textStatus + '; Error: ' + errorThrown);
+                    alert('Request Status: ' + xhr.status + '; Error: ' + errorThrown + '; Status Text: ' + textStatus);
                 }
             });
         },

@@ -9,7 +9,9 @@ namespace CRM.Models
     public class Action : IAction
     {
         [Key]
-        public int Id { get; set; }
+        [StringLength(5)]
+        public string Id { get; set; }
+
         public string ControllerName { get; set; }
         
         public string ActionName { get; set; }
@@ -19,11 +21,10 @@ namespace CRM.Models
         public string RequestType { get; set; }
 
         public string DisplayName { get; set; }
-
-        [StringLength(30)]
+        
         public string Icon { get; set; }
 
-        public int NextStateId { get; set; }
+        public string NextStateId { get; set; }
         public State NextState { get; set; }
 
         public IEnumerable<StateAction> StateActions { get; set; }

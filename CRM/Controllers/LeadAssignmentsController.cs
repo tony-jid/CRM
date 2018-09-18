@@ -33,11 +33,25 @@ namespace CRM.Controllers
         }
 
         [HttpGet]
-        public object Get(DataSourceLoadOptions loadOptions, Guid leadId)
+        public JsonResult Get()
         {
-            var leadAssignments = this.GetLeadAssignmentViewModels(leadId);
+            return Json(_leadAssRepo.Get());
+        }
 
-            return DataSourceLoader.Load(leadAssignments, loadOptions);
+        [HttpGet]
+        public object GetByLead(DataSourceLoadOptions loadOptions, Guid id)
+        {
+            var leadAssignments = _leadAssRepo.GetByLead(id);
+
+            return DataSourceLoader.Load(this.GetLeadAssignmentViewModels(leadAssignments), loadOptions);
+        }
+
+        [HttpGet]
+        public object GetByPartner(DataSourceLoadOptions loadOptions, Guid id)
+        {
+            var leadAssignments = _leadAssRepo.GetByPartner(id);
+            
+            return DataSourceLoader.Load(this.GetLeadAssignmentViewModels(leadAssignments), loadOptions);
         }
 
         [HttpDelete]
@@ -66,6 +80,36 @@ namespace CRM.Controllers
             }
         }
 
+        [HttpPut]
+        public JsonResult Accept([FromBody]LeadAssignmentResponseVM data) // can process "int id" too
+        {
+            _leadAssRepo.AcceptAssignment(data);
+
+            if (_uow.Commit())
+            {
+                return Json(Ok(data.LeadId));
+            }
+            else
+            {
+                return Json(StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status500InternalServerError));
+            }
+        }
+
+        [HttpPut]
+        public JsonResult Reject([FromBody]LeadAssignmentResponseVM data)
+        {
+            _leadAssRepo.RejectAssignment(data);
+
+            if (_uow.Commit())
+            {
+                return Json(Ok(data.LeadId));
+            }
+            else
+            {
+                return Json(StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status500InternalServerError));
+            }
+        }
+
         protected void SendAssignmentEmailToPartners(List<Guid> partnerBranchIds)
         {
             _emailSender.SendEmailAsync("thawatchai.j14@gmail.com", "Lead assignment from ComparisonAdvantage", "{lead_type} lead is assigned to you guys.");
@@ -75,6 +119,36 @@ namespace CRM.Controllers
         {
             var itemVM = new LeadAssignmentViewModel();
             itemVM.Id = item.Id;
+            itemVM.LeadId = item.LeadId;
+
+            if (item.Lead != null)
+            {
+                itemVM.LeadDetails = item.Lead.Details;
+
+                if (item.Lead.LeadType != null)
+                {
+                    itemVM.LeadTypeName = item.Lead.LeadType.Name;
+                    itemVM.LeadTypeImage = item.Lead.LeadType.Image;
+                }
+
+                if (item.Lead.Customer != null)
+                {
+                    itemVM.CustomerId = item.Lead.Customer.Id;
+                    itemVM.CustomerUnique = String.Format("{0} ({1})", item.Lead.Customer.ContactName, item.Lead.Customer.EMail);
+
+                    itemVM.CustomerName = item.Lead.Customer.ContactName;
+                    itemVM.CustomerBusinessName = item.Lead.Customer.BusinessName;
+                    itemVM.CustomerEMail = item.Lead.Customer.EMail;
+                    itemVM.CustomerContactNumber = item.Lead.Customer.ContactNumber;
+                    itemVM.CustomerStreetAddress = item.Lead.Customer.Address.StreetAddress;
+                    itemVM.CustomerSuburb = item.Lead.Customer.Address.Suburb;
+                    itemVM.CustomerState = item.Lead.Customer.Address.State;
+                    itemVM.CustomerPostCode = item.Lead.Customer.Address.PostCode;
+                    itemVM.CustomerAddress = AddressHelper.MergeAddress(itemVM.CustomerStreetAddress, itemVM.CustomerSuburb, itemVM.CustomerState, itemVM.CustomerPostCode);
+
+                    itemVM.CustomerDetails = String.Format("Business: <b>{0}</b><br>Tel: <b>{1}</b><br>Address: <b>{2}</b>", itemVM.CustomerBusinessName, itemVM.CustomerContactNumber, itemVM.CustomerAddress);
+                }
+            }
 
             itemVM.PartnerId = item.PartnerBranch.Partner.Id;
             itemVM.PartnerName = item.PartnerBranch.Partner.Name;
@@ -91,11 +165,12 @@ namespace CRM.Controllers
             var currentStatus = item.LeadAssignmentStates.OrderByDescending(o => o.ActionTimestamp).FirstOrDefault();
             itemVM.StatusId = currentStatus.State.Id;
             itemVM.StatusName = currentStatus.State.Name;
-            itemVM.StatusTag = StatusHelper.GetHtmlSmallBadge(currentStatus.State.Id);
+            itemVM.StatusTag = StatusHelper.GetHtmlBadge(currentStatus.State.Id, currentStatus.State.Name);
 
             // Actions of current status
-            var actions = currentStatus.State.StateActions.Select(s => new ActionLeadAssignmentViewModel
+            var actions = currentStatus.State.StateActions.Select(s => new ActionLeadAssignmentVM
             {
+                LeadId = itemVM.LeadId,
                 PartnerBranchId = itemVM.PartnerBranchId,
                 LeadAssignmentId = itemVM.Id,
                 ControllerName = s.Action.ControllerName,
@@ -118,11 +193,10 @@ namespace CRM.Controllers
             return itemVM;
         }
 
-        protected List<LeadAssignmentViewModel> GetLeadAssignmentViewModels(Guid leadId)
+        protected List<LeadAssignmentViewModel> GetLeadAssignmentViewModels(IEnumerable<LeadAssignment> leadAssignments)
         {
             List<LeadAssignmentViewModel> leadVMs = new List<LeadAssignmentViewModel>();
-
-            var leadAssignments = _leadAssRepo.GetByLead(leadId);
+            
             foreach (var item in leadAssignments)
             {
                 leadVMs.Add(this.GetLeadAssignmentViewModel(item));

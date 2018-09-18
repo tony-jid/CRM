@@ -1,20 +1,27 @@
-﻿@using (Html.DevExtreme().NamedTemplate("template-grid-assignments"))
+﻿@{ 
+    string leadId = new JS("templateData.Id").Value;
+}
+
+@using (Html.DevExtreme().NamedTemplate("template-grid-assignments-by-lead"))
 {
     @(Html.DevExtreme().DataGrid<LeadAssignmentViewModel>()
-        .CommonConfigs((new JS("templateData.LeadId")).ToString())
+        //.CommonConfigs((new JS("templateData.Id")).ToString()) // cannot get Id by using "new JS()"
+        .CommonConfigs("gridLeadAssignments")
+        .ID(new JS("'gridLeadAssignments'.concat(templateData.Id)"))
         .DataSource(ds => ds.Mvc()
             .Controller(nameof(EnumController.LeadAssignments))
-            .LoadAction("Get")
+            .LoadAction("GetByLead")
             .LoadParams(new
             {
-                leadId = new JS("templateData.LeadId")
+                id = new JS("templateData.Id")
             })
+            .DeleteAction("Delete")
             .Key("Id")
         )
         .Columns(c =>
         {
-            c.Add().CellTemplate(new TemplateName("template-grid-assignment-column-branch"));
-            c.Add().Caption("Status").CellTemplate(new TemplateName("template-grid-assignment-column-status"));
+            c.Add().CellTemplate(new TemplateName("template-grid-assignment-column-branch")).Caption("Partner");
+            c.Add().CellTemplate(new TemplateName("template-grid-assignment-column-status")).Caption("Status");
             c.Add().CellTemplate(new TemplateName("template-grid-assignment-column-action"));
         })
         .Editing(e => e
@@ -25,10 +32,67 @@
             .AllowDeleting(true)
             .Popup(DXGridConfigs.EditingPopup("LeadAssignment"))
         )
-        .OnContentReady("function(e) { CustomGridEvent.onContentReady(e, templateData.LeadId); $('[data-toggle=\"tooltip\"]').tooltip(); }")
-        .OnToolbarPreparing("function(e) { CustomGridEvent.onToolbarPreparing(e, templateData.LeadId); }")
+        .OnContentReady("function(e) { CustomGridEvent.onContentReady(e, templateData.Id); $('[data-toggle=\"tooltip\"]').tooltip(); }")
+        .OnToolbarPreparing("function(e) { CustomGridEvent.onToolbarPreparing(e, templateData.Id); }")
         .OnRowRemoved("function(e) { assignment.refreshGridSearchBranches(); }")
     )
+}
+
+@using (Html.DevExtreme().NamedTemplate("template-grid-assignments-by-partner"))
+{
+    @(Html.DevExtreme().DataGrid<LeadAssignmentViewModel>()
+        .CommonConfigs("gridLeadAssignments")
+        .DataSource(ds => ds.Mvc()
+            .Controller(nameof(EnumController.LeadAssignments))
+            .LoadAction("GetByPartner")
+            .LoadParams(new
+            {
+                id = new JS("templateData.Id")
+            })
+            .Key("Id")
+        )
+        .Columns(c =>
+        {
+            c.Add().CellTemplate(new TemplateName("template-grid-assignment-column-lead")).Caption("Lead").Width("50%");
+            c.Add().CellTemplate(new TemplateName("template-grid-assignment-column-customer")).Caption("Customer");
+            c.Add().CellTemplate(new TemplateName("template-grid-assignment-column-status")).Caption("Status");
+            c.Add().CellTemplate(new TemplateName("template-grid-assignment-column-action"));
+        })
+        .OnContentReady("function(e) { CustomGridEvent.onContentReady(e, templateData.Id); $('[data-toggle=\"tooltip\"]').tooltip(); }")
+        .OnToolbarPreparing("function(e) { CustomGridEvent.onToolbarPreparing(e, templateData.Id); }")
+        .OnRowRemoved("function(e) { assignment.refreshGridSearchBranches(); }")
+    )
+}
+
+@using (Html.DevExtreme().NamedTemplate("template-grid-assignment-column-lead"))
+{
+    <div class="d-flex justify-content-between">
+        <img src="<%= data.LeadTypeImage %>" class="lead-type-img" />
+
+        <span>
+            <%= data.LeadTypeName %>
+        </span>
+
+        <span>
+            <%= data.LeadDetails %>
+        </span>
+    </div>
+}
+
+@using (Html.DevExtreme().NamedTemplate("template-grid-assignment-column-customer"))
+{
+    <div class="d-flex">
+        <span>
+            <%= data.CustomerUnique %>
+
+            <a data-toggle="tooltip"
+               data-placement="bottom"
+               data-html="true"
+               title="<%= data.CustomerDetails %>">
+                <span class="batch-icon batch-icon-zoom-in-alt text-priamry"></span>
+            </a>
+        </span>
+    </div>
 }
 
 @using (Html.DevExtreme().NamedTemplate("template-grid-assignment-column-branch"))
@@ -66,5 +130,6 @@
     @(Html.DevExtreme().SelectBox()
         .DataSource(new JS("data.Actions"))
         .ActionCommonConfigs()
+        .OnSelectionChanged("assignment.handlers.onAssignmentActionChanged")
     )
 }

@@ -8,10 +8,10 @@ namespace CRM.Models
 {
     public class StateAction
     {
-        public int StateId { get; set; }
+        public string StateId { get; set; }
         public State State { get; set; }
         
-        public int ActionId { get; set; }
+        public string ActionId { get; set; }
         public Action Action { get; set; }
 
     }

@@ -5,8 +5,11 @@
 }
 
 @section Scripts {
+    <script type="text/javascript" src="~/js/viewmodels/LeadAssignmentResponseVM.js"></script>
+
     <script type="text/javascript" src="~/js/action.js"></script>
     <script type="text/javascript" src="~/js/lead.js"></script>
+    <script type="text/javascript" src="~/js/assignment.js"></script>
 }
 
 @section Templates {
@@ -113,8 +116,10 @@
         {
             items.Add()
                 .Title("Assignments")
-                .Template(new TemplateName("template-grid-assignments"))
-                .Option("templateData", new { LeadId = new JS("data.Id") });
+                .Template(new TemplateName("template-grid-assignments-by-lead"))
+                .Option("templateData", new {
+                    Id = new JS("data.Id")
+                });
         })
     )
 }

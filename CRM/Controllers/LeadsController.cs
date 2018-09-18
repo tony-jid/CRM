@@ -22,11 +22,13 @@ namespace CRM.Controllers
     {
         private IUnitOfWork _uow;
         private ILeadRepository _leadRepo;
+        private IPartnerRepository _partnerRepo;
 
         public LeadsController(IUnitOfWork unitOfWork)
         {
             _uow = unitOfWork;
             _leadRepo = unitOfWork.LeadRepository;
+            _partnerRepo = unitOfWork.PartnerRepository;
         }
 
         [HttpGet("{leadId}")]
@@ -34,6 +36,15 @@ namespace CRM.Controllers
         {
             var lead = _leadRepo.GetByUid(leadId);
             return View(lead);
+        }
+
+        //[HttpGet("{partnerId}")]
+        public IActionResult Partner(Guid partnerId)
+        {
+            partnerId = new Guid("C3D3E1DD-837F-4F84-7F4B-08D61A4AE951");
+
+            var partner = _partnerRepo.GetByUid(partnerId);
+            return View(partner);
         }
 
         [HttpGet]
@@ -115,10 +126,10 @@ namespace CRM.Controllers
             var currentStatus = item.LeadStates.OrderByDescending(o => o.ActionTimestamp).FirstOrDefault();
             itemVM.StatusId = currentStatus.State.Id;
             itemVM.StatusName = currentStatus.State.Name;
-            itemVM.StatusTag = StatusHelper.GetHtmlSmallBadge(currentStatus.State.Id);
+            itemVM.StatusTag = StatusHelper.GetHtmlBadge(currentStatus.State.Id, currentStatus.State.Name);
 
             // Actions of current status
-            var actions = currentStatus.State.StateActions.Select(s => new ActionLeadViewModel
+            var actions = currentStatus.State.StateActions.Select(s => new ActionLeadVM
             {
                 CustomerId = itemVM.CustomerId,
                 LeadId = itemVM.Id,

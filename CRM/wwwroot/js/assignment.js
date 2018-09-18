@@ -11,6 +11,11 @@
         gridLeadAssignments: '#gridLeadAssignments',
     },
 
+    actionNames: {
+        acceptLead: "Accept",
+        rejectLead: "Reject",
+    },
+
     handlers: {
         clickBtnAdd: function () {
             $(assignment.ids.btnAdd).unbind();
@@ -34,9 +39,30 @@
                         ajax.controllers.assignment.name
                         , ajax.controllers.assignment.actions.assignPartners
                         , assignment.getViewModel()
-                        , assignment.events.onAssignmentSuccess);
+                        , assignment.callbacks.onAssignmentSuccess);
                 }
             });
+        },
+        onAssignmentActionChanged: function (e) {
+            // have to check whether [selectedItem] is null, because [e.component.reset()] raises event [onSelectionChanged]
+            if (e.selectedItem !== null) {
+                var actionInstance = e.selectedItem;
+
+                if (actionInstance.ActionTarget === action.targets.ajax) {
+                    var actionVM = assignment.methods.getAssignmentResponseVM(actionInstance.LeadId, actionInstance.LeadAssignmentId, actionInstance);
+
+                    var callback = function () { };
+                    if (actionInstance.ActionName === assignment.actionNames.acceptLead)
+                        callback = assignment.callbacks.onAcceptLeadSuccess;
+                    else if (actionInstance.ActionName === assignment.actionNames.rejectLead)
+                        callback = assignment.callbacks.onRejectLeadSuccess;
+
+                    action.perform(action.sources.assignment, actionInstance, actionVM, callback);
+
+                } else if (actionInstance.ActionTarget === action.targets.message) {
+
+                }
+            }
         },
     },
 
@@ -47,12 +73,25 @@
         gridSelectedBranches: function () {
             return $(assignment.ids.gridSelectedBranches).dxDataGrid('instance');
         },
-        gridLeadAssignments: function () {
-            return $(assignment.ids.gridLeadAssignments).dxDataGrid('instance');
+        gridLeadAssignments: function (suffixId) {
+            if (typeof (suffixId) === "undefined") {
+                if ($(assignment.ids.leadId).length)
+                    suffixId = $(assignment.ids.leadId).val();
+                else
+                    suffixId = "";
+            }
+
+            var instance = $(assignment.ids.gridLeadAssignments.concat(suffixId)).dxDataGrid('instance');
+
+            if (typeof (instance) === "undefined") {
+                instance = $(assignment.ids.gridLeadAssignments).dxDataGrid('instance');
+            }
+
+            return instance;
         }
     },
 
-    events: {
+    callbacks: {
         onAssignmentSuccess: function (response) {
             assignment.clearSelectedBranches();
             assignment.refreshGridSelectedBranches();
@@ -62,6 +101,22 @@
 
             $(window).scrollTop(0);
         },
+        onAcceptLeadSuccess: function (response) {
+            // response.Value = LeadId
+            assignment.refreshGridLeadAssignments(response.Value);
+            notification.alert.showSuccess('Successfully accepted the lead');
+        },
+        onRejectLeadSuccess: function (response) {
+            // response.Value = LeadId
+            assignment.refreshGridLeadAssignments(response.Value);
+            notification.alert.showWarning('Successfully reject the lead');
+        }
+    },
+
+    methods: {
+        getAssignmentResponseVM: function (leadId, leadAssignmentId, action) {
+            return new LeadAssignmentResponseVM(leadId, leadAssignmentId, action);
+        }
     },
 
     getRowsFromSearchGrid: function () {
@@ -124,7 +179,7 @@
     },
 
     getViewModel: function () {
-        var viewModel = new LeadAssignmentSelectedPartnerViewModel($(assignment.ids.leadId).val());
+        var viewModel = new LeadAssignmentSelectedPartnerVM($(assignment.ids.leadId).val());
 
         for (var i = 0; i < assignment.selectedBranches.length; i++) {
             viewModel.addPartner(assignment.selectedBranches[i].Id);
@@ -134,13 +189,23 @@
     },
 
     refreshGridSearchBranches: function () {
-        assignment.instances.gridSearchBranches().refresh();
+        var instance = assignment.instances.gridSearchBranches();
+        if (typeof (instance) !== "undefined")
+            instance.refresh();
+        else
+            console.log("gridSearchBranches is not in this page.");
     },
     refreshGridSelectedBranches: function () {
-        assignment.instances.gridSelectedBranches().refresh();
-        CustomGrid.setToolbarTotalItems("SelectedBranches", assignment.selectedBranches);
+        var instance = assignment.instances.gridSelectedBranches();
+
+        if (typeof (instance) !== "undefined") {
+            instance.refresh();
+            CustomGrid.setToolbarTotalItems("SelectedBranches", assignment.selectedBranches);
+        }
+        else
+            console.log("gridSelectedBranches is not in this page.");
     },
-    refreshGridLeadAssignments: function () {
-        assignment.instances.gridLeadAssignments().refresh();
+    refreshGridLeadAssignments: function (suffixId) {
+        assignment.instances.gridLeadAssignments(suffixId).refresh();
     },
 };

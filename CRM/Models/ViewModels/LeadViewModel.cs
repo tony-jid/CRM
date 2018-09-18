@@ -11,10 +11,10 @@ namespace CRM.Models.ViewModels
 
         public string Details { get; set; }
 
-        public int StatusId { get; set; }
+        public string StatusId { get; set; }
         public string StatusName { get; set; }
         public string StatusTag { get; set; }
-        public List<ActionLeadViewModel> Actions { get; set; }
+        public List<ActionLeadVM> Actions { get; set; }
 
 
         public int LeadTypeId { get; set; }

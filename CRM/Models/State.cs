@@ -9,7 +9,8 @@ namespace CRM.Models
     public class State
     {
         [Key]
-        public int Id { get; set; }
+        [StringLength(5)]
+        public string Id { get; set; }
 
         [Required]
         public string Owner { get; set; }

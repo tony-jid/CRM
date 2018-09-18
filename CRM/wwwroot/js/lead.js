@@ -13,21 +13,23 @@
         onActionChanged: function (e) {
             // have to check whether [selectedItem] is null, because [e.component.reset()] raises event [onSelectionChanged]
             if (e.selectedItem !== null) {
-                var dataAction = e.selectedItem;
+                var actionInstance = e.selectedItem;
 
-                if (dataAction.ActionTarget === action.targets.message) {
+                if (actionInstance.ActionTarget === action.targets.message) {
                     lead.methods.loadDataSourceLeads().done(function (data) {
-                        var email = lead.methods.getMessageRecipient(dataAction.CustomerId, data);
+                        var email = lead.methods.getMessageRecipient(actionInstance.CustomerId, data);
                         //console.log(email);
 
-                        // creating dynamic props to support "Message Compose"
-                        dataAction.Message = { Recipients: [] };
-                        dataAction.Message.Recipients.push(email);
+                        // creating dynamic data to support "Message Compose"
+                        var messageData = {
+                            recipients: []
+                        };
+                        messageData.recipients.push(email);
 
-                        action.perform(action.sources.lead, dataAction);
+                        action.perform(action.sources.lead, actionInstance, messageData);
                     });
                 } else {
-                    action.perform(action.sources.lead, dataAction);
+                    action.perform(action.sources.lead, actionInstance);
                 }
 
                 e.component.reset();

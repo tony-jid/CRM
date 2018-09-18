@@ -7,9 +7,12 @@
 @*The Model is Lead instance*@
 
 @section Scripts {
-    <script type="text/javascript" src="~/js/viewmodels/LeadAssignmentSelectedPartnerViewModel.js"></script>
+    <script type="text/javascript" src="~/js/viewmodels/LeadAssignmentSelectedPartnerVM.js"></script>
+    <script type="text/javascript" src="~/js/viewmodels/LeadAssignmentResponseVM.js"></script>
+
     <script type="text/javascript" src="~/js/assignment.js"></script>
     <script type="text/javascript" src="~/js/action.js"></script>
+    <script type="text/javascript" src="~/js/partner.js"></script>
 }
 
 @section Templates {
@@ -50,8 +53,10 @@
                         {
                             items.Add()
                                 .Title("Assignments")
-                                .Template(new TemplateName("template-grid-assignments"))
-                                .Option("templateData", new { LeadId = @Model.Id });
+                                .Template(new TemplateName("template-grid-assignments-by-lead"))
+                                .Option("templateData", new {
+                                    Id = @Model.Id
+                                });
                         })
                     )
                 </div>

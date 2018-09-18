@@ -10,7 +10,7 @@ namespace CRM.Models
         public Guid LeadId { get; set; }
         public Lead Lead { get; set; }
 
-        public int StateId { get; set; }
+        public string StateId { get; set; }
         public State State { get; set; }
 
         //public DateTime CreatedTimestamp { get; set; } // use ActionTimestamp

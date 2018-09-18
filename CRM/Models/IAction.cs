@@ -19,6 +19,6 @@ namespace CRM.Models
 
         string Icon { get; set; }
 
-        int NextStateId { get; set; }
+        string NextStateId { get; set; }
     }
 }

@@ -10,7 +10,7 @@ namespace CRM.Models
         public int LeadAssignmentId { get; set; }
         public LeadAssignment LeadAssignment { get; set; }
 
-        public int StateId { get; set; }
+        public string StateId { get; set; }
         public State State { get; set; }
 
         public string Actor { get; set; }
