@@ -60,6 +60,7 @@
                     action.perform(action.sources.assignment, actionInstance, actionVM, callback);
 
                 } else if (actionInstance.ActionTarget === action.targets.message) {
+
                 }
             }
         },
