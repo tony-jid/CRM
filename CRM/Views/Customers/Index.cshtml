@@ -157,16 +157,6 @@
                 e.data.customerId = tabExtras.customerId;
                 }
             </text>)
-            .OnContentReady(@<text>
-                function(e) {
-                    CustomGridEvent.onContentReady(e, "Leads");
-                }
-            </text>)
-            .OnToolbarPreparing(@<text>
-                function(e) {
-                    CustomGridEvent.onToolbarPreparing(e, "Leads");
-                }
-            </text>)
     )
 }
 

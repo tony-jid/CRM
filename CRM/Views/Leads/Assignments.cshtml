@@ -111,16 +111,8 @@
                     .Selection(DXGridConfigs.SelectionCheckBoxMode())
                     .OnContentReady(@<text>
                         function(e) {
-                            CustomGridEvent.onContentReady(e, "SearchBranches");
-                            
-                            $('[data-toggle="tooltip"]').tooltip();
-
+                            dxGrid.handlers.onContentReady(e);
                             assignment.handlers.clickBtnAdd();
-                        }
-                    </text>)
-                    .OnToolbarPreparing(@<text>
-                        function(e) {
-                            CustomGridEvent.onToolbarPreparing(e, "SearchBranches");
                         }
                     </text>)
                 )
@@ -170,16 +162,9 @@
                     .Selection(DXGridConfigs.SelectionCheckBoxMode())
                     .OnContentReady(@<text>
                         function(e) {
-                            CustomGrid.setToolbarTotalItems("SelectedBranches", assignment.selectedBranches);
-                            $('[data-toggle="tooltip"]').tooltip();
-
+                            dxGrid.handlers.onContentReady(e);
                             assignment.handlers.clickBtnRemove();
                             assignment.handlers.clickBtnAssign();
-                        }
-                    </text>)
-                    .OnToolbarPreparing(@<text>
-                        function(e) {
-                            CustomGridEvent.onToolbarPreparing(e, "SelectedBranches");
                         }
                     </text>)
                 )
