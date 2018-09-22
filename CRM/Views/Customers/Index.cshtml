@@ -12,84 +12,60 @@
         <div class="card">
             <div class="card-body pt-0">
                 @(Html.DevExtreme().DataGrid<Customer>()
-                        .ID("gridCustomers")
-                        .ShowBorders(true)
-                        .ShowRowLines(true)
-                        .ShowColumnLines(false)
-                        .RowAlternationEnabled(true)
-                        .HoverStateEnabled(true)
-                        .RemoteOperations(false)
-                        .FilterRow(f => f.Visible(true))
-                        .Paging(DXGridConfigs.MasterPaging())
-                        .Pager(DXGridConfigs.Pager())
-                        .DataSource(ds => ds.Mvc()
-                            .Controller(nameof(EnumController.Customers))
-                            .LoadAction("Get")
-                            .InsertAction("Post")
-                            .UpdateAction("Put")
-                            .DeleteAction("Delete")
-                            .Key("Id")
-                        )
-                        .Columns(columns =>
-                        {
-                            columns.AddFor(m => m.ContactName);
-                            columns.AddFor(m => m.ContactNumber);
-                            columns.AddFor(m => m.EMail);
-                            columns.AddFor(m => m.BusinessName);
+                    .ID("gridCustomers")
+                    .CommonConfigs()
+                    .DataSource(ds => ds.Mvc()
+                        .Controller(nameof(EnumController.Customers))
+                        .LoadAction("Get")
+                        .InsertAction("Post")
+                        .UpdateAction("Put")
+                        .DeleteAction("Delete")
+                        .Key("Id")
+                    )
+                    .Columns(columns =>
+                    {
+                        columns.AddFor(m => m.ContactName);
+                        columns.AddFor(m => m.ContactNumber);
+                        columns.AddFor(m => m.EMail);
+                        columns.AddFor(m => m.BusinessName);
 
-                            columns.AddFor(m => m.Address.StreetAddress).Visible(false);
-                            columns.AddFor(m => m.Address.Suburb).Visible(false);
-                            columns.AddFor(m => m.Address.State).Visible(false);
-                            columns.AddFor(m => m.Address.PostCode).Visible(false);
-                        })
-                        .Editing(e =>
-                            e.Mode(GridEditMode.Popup)
-                            .UseIcons(true)
-                            .AllowAdding(true)
-                            .AllowUpdating(true)
-                            .AllowDeleting(true)
-                            .Form(f =>
-                                f.Items(i =>
+                        columns.AddFor(m => m.Address.StreetAddress).Visible(false);
+                        columns.AddFor(m => m.Address.Suburb).Visible(false);
+                        columns.AddFor(m => m.Address.State).Visible(false);
+                        columns.AddFor(m => m.Address.PostCode).Visible(false);
+                    })
+                    .Editing(e =>
+                        e.Mode(GridEditMode.Popup)
+                        .UseIcons(true)
+                        .AllowAdding(true)
+                        .AllowUpdating(true)
+                        .AllowDeleting(true)
+                        .Form(f =>
+                            f.Items(i =>
+                            {
+                                i.AddGroup().Caption("Personal Information").Items(groupItems =>
                                 {
-                                    i.AddGroup().Caption("Personal Information").Items(groupItems =>
-                                    {
-                                        groupItems.AddSimpleFor(c => c.ContactName);
-                                        groupItems.AddSimpleFor(c => c.ContactNumber);
-                                        groupItems.AddSimpleFor(c => c.EMail);
-                                        groupItems.AddSimpleFor(c => c.BusinessName);
-                                    });
-                                    i.AddGroup().Caption("Address").Items(groupItems =>
-                                    {
-                                        groupItems.AddSimpleFor(c => c.Address.StreetAddress);
-                                        groupItems.AddSimpleFor(c => c.Address.Suburb);
-                                        groupItems.AddSimpleFor(c => c.Address.State);
-                                        groupItems.AddSimpleFor(c => c.Address.PostCode);
-                                    });
-                                })
-                            )
-                            .Popup(DXGridConfigs.EditingPopup(nameof(Customer)))
+                                    groupItems.AddSimpleFor(c => c.ContactName);
+                                    groupItems.AddSimpleFor(c => c.ContactNumber);
+                                    groupItems.AddSimpleFor(c => c.EMail);
+                                    groupItems.AddSimpleFor(c => c.BusinessName);
+                                });
+                                i.AddGroup().Caption("Address").Items(groupItems =>
+                                {
+                                    groupItems.AddSimpleFor(c => c.Address.StreetAddress);
+                                    groupItems.AddSimpleFor(c => c.Address.Suburb);
+                                    groupItems.AddSimpleFor(c => c.Address.State);
+                                    groupItems.AddSimpleFor(c => c.Address.PostCode);
+                                });
+                            })
                         )
-                        .MasterDetail(m => m
-                            .Enabled(true)
-                            .Template(new TemplateName("grid-details"))
-                            .AutoExpandAll(false)
-                        )
-                        .Selection(s => s.Mode(SelectionMode.Single))
-                        .OnSelectionChanged(@<text>
-                            function(e) {
-                                CustomGridEvent.onSelectionChangedExpandDetails(e);
-                            }
-                        </text>)
-                        .OnContentReady(@<text>
-                            function(e) {
-                                CustomGridEvent.onContentReady(e, "Customers");
-                            }
-                        </text>)
-                        .OnToolbarPreparing(@<text>
-                            function(e) {
-                                CustomGridEvent.onToolbarPreparing(e, "Customers");
-                            }
-                        </text>)
+                        .Popup(DXGridConfigs.EditingPopup(nameof(Customer)))
+                    )
+                    .MasterDetail(m => m
+                        .Enabled(true)
+                        .Template(new TemplateName("grid-details"))
+                        .AutoExpandAll(false)
+                    )
                 )
             </div>
         </div>
@@ -120,13 +96,7 @@
 {
     @(Html.DevExtreme().DataGrid<Lead>()
             .ID("grid-customer-leads-" + new JS("tabExtras.customerId"))
-            .ShowBorders(true)
-            .ShowRowLines(true)
-            .ShowColumnLines(false)
-            .RowAlternationEnabled(true)
-            .HoverStateEnabled(true)
-            .RemoteOperations(false)
-            .HeaderFilter(f => f.Visible(true))
+            .CommonConfigs()
             .DataSource(d => d.Mvc()
                 .Controller(nameof(EnumController.Leads))
                 .LoadAction("GetLeadsByCustomer")
@@ -204,17 +174,17 @@
 @using (Html.DevExtreme().NamedTemplate("grid-details-address"))
 {
     @(Html.DevExtreme().Form<Customer>()
-                .ElementAttr("class", "address-form form-container")
-                .ElementAttr("style", "padding: 20px; background-color: white;")
-                .FormData(new JS("tabExtras"))
-                .ColCount(2)
-                .Items(items =>
-                {
-                    items.AddSimpleFor(c => c.Address.StreetAddress);
-                    items.AddSimpleFor(c => c.Address.Suburb);
-                    items.AddSimpleFor(c => c.Address.State);
-                    items.AddSimpleFor(c => c.Address.PostCode);
-                })
-                .ReadOnly(true)
+        .ElementAttr("class", "address-form form-container")
+        .ElementAttr("style", "padding: 20px; background-color: white;")
+        .FormData(new JS("tabExtras"))
+        .ColCount(2)
+        .Items(items =>
+        {
+            items.AddSimpleFor(c => c.Address.StreetAddress);
+            items.AddSimpleFor(c => c.Address.Suburb);
+            items.AddSimpleFor(c => c.Address.State);
+            items.AddSimpleFor(c => c.Address.PostCode);
+        })
+        .ReadOnly(true)
     )
 }

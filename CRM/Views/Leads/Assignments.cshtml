@@ -71,7 +71,8 @@
             <div class="card-body pt-0">
                 <div class="card-header">Search Partners</div>
                 @(Html.DevExtreme().DataGrid<PartnerBranch>()
-                    .CommonConfigs("gridSearchBranches")
+                    .ID("gridSearchBranches")
+                    .CommonConfigs()
                     .DataSource(ds => ds.Mvc()
                         .Controller(nameof(EnumController.PartnerBranches))
                         .LoadAction("GetBranchesFilteredByLead")
@@ -143,7 +144,8 @@
             <div class="card-body pt-0">
                 <div class="card-header">Selected Partners</div>
                 @(Html.DevExtreme().DataGrid<PartnerBranch>()
-                    .CommonConfigs("gridSelectedBranches")
+                    .ID("gridSelectedBranches")
+                    .CommonConfigs()
                     .DataSource(new JS("assignment.selectedBranches"))
                     .Columns(c => {
                         c.Add()

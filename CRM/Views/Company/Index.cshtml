@@ -60,7 +60,8 @@
         </div>
         <div class="card-body pt-0">
             @(Html.DevExtreme().DataGrid<Office>()
-                .CommonConfigs("gridOffices")
+                .ID("gridOffices")
+                .CommonConfigs()
                 .Pager(pager => { pager.Visible(false); })
                 .DataSource(d => d.Mvc()
                     .Controller(nameof(EnumController.Offices))
@@ -100,22 +101,6 @@
                         e.data.companyId = @Model.Id
                     }
                 </text>)
-                .Selection(s => s.Mode(SelectionMode.Single))
-                .OnSelectionChanged(@<text>
-                    function(e) {
-                        CustomGridEvent.onSelectionChangedExpandDetails(e);
-                    }
-                </text>)
-                .OnContentReady(@<text>
-                    function(e) {
-                        CustomGridEvent.onContentReady(e, "Offices");
-                    }
-                </text>)
-                .OnToolbarPreparing(@<text>
-                    function(e) {
-                        CustomGridEvent.onToolbarPreparing(e, "Offices");
-                    }
-                </text>)
             )
         </div>
     </div>
@@ -140,7 +125,8 @@
 @using (Html.DevExtreme().NamedTemplate("grid-office-agents"))
 {
     @(Html.DevExtreme().DataGrid<Agent>()
-        .CommonConfigs("grid-office-agents-" + new JS("masterOffice.officeId"))
+        .ID("grid-office-agents-" + new JS("masterOffice.officeId"))
+        .CommonConfigs()
         .DataSource(d => d.Mvc()
             .Controller(nameof(EnumController.Agents))
             .LoadAction("GetAgentsByOffice")
@@ -172,16 +158,6 @@
         .OnRowInserting(@<text>
             function (e) {
                 e.data.officeId = masterOffice.officeId;
-            }
-        </text>)
-        .OnContentReady(@<text>
-            function(e) {
-                CustomGridEvent.onContentReady(e, "Agents");
-            }
-        </text>)
-        .OnToolbarPreparing(@<text>
-            function(e) {
-                CustomGridEvent.onToolbarPreparing(e, "Agents");
             }
         </text>)
     )

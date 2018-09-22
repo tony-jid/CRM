@@ -1922,7 +1922,8 @@ a.badge-light {
     color: #07a7e3;
     background-color: transparent;
     text-transform: uppercase;
-    font-size: 1.333rem;
+    font-size: 2rem;
+    font-weight: bold;
     border-bottom: 1px solid rgba(0, 0, 0, 0.09);
     padding-top: 2.5rem;
     margin-left: 2.083rem;

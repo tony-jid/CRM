@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData[nameof(EnumViewData.Title)] = nameof(EnumController.Partners);
+    ViewData[nameof(EnumViewData.Title)] = "Partner";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -18,17 +18,67 @@
     @Html.Partial(nameof(EnumPartialPages._MessageComposePartial))
 }
 
-@(Html.DevExtreme().TabPanel()
-    .FocusStateEnabled(false)
-    .ElementAttr("class", "tabpanel-single-item") // Adding this class to hide tabpanel's header for a tabpanel with only 1 item
-    .Items(items =>
-    {
-        items.Add()
-            .Title("Assignments")
-            .Template(new TemplateName("template-grid-assignments-by-partner"))
-            .Option("templateData", new
-            {
-                Id = @Model.Id
-            });
-    })
-)
+<div class="row mb-4">
+    <div class="col-md-12 mb-5 mb-">
+        <div class="card">
+            <div class="card-body pt-0">
+                @(Html.DevExtreme().Form<Partner>()
+                    .ID("formPartner")
+                    .Items(items =>
+                    {
+                        items.AddGroup()
+                            .CssClass("form-first-group")
+                            .ColCount(6)
+                            .Items(groupItems =>
+                            {
+                                groupItems.AddSimple()
+                                    .CssClass("text-center")
+                                    .Template(@<text>
+                                        <img src="@ImageHelper.PATH_PARTNER@Model.Logo" class="form-partner-logo" />
+                                    </text>);
+                                groupItems.AddSimpleFor(m => m.Name).Editor(e => e.TextBox().ReadOnly(true));
+                                groupItems.AddButton()
+                                    .ButtonOptions(option => option
+                                        .Text("Show Report Options")
+                                        .Icon("fa fa-save")
+                                        //.OnClick("")
+                                    );
+                            });
+                        items.AddGroup()
+                            .Items(groupItems =>
+                            {
+                                groupItems.AddSimple().Template(new TemplateName("grid-assignments"));
+                            });
+                    })
+                    //.OnContentReady("")
+                    .FormData(@Model)
+                )
+            </div>
+        </div>
+    </div>
+</div>
+
+@using (Html.DevExtreme().NamedTemplate("grid-assignments"))
+{
+    <div class="card">
+        <div class="card-header">
+            Leads
+        </div>
+        <div class="card-body pt-0">
+            @(Html.DevExtreme().TabPanel()
+                .FocusStateEnabled(false)
+                .ElementAttr("class", "tabpanel-single-item") // Adding this class to hide tabpanel's header for a tabpanel with only 1 item
+                .Items(items =>
+                {
+                    items.Add()
+                        .Title("Assignments")
+                        .Template(new TemplateName("template-grid-assignments-by-partner"))
+                        .Option("templateData", new
+                        {
+                            Id = @Model.Id
+                        });
+                })
+            )
+        </div>
+    </div>
+}

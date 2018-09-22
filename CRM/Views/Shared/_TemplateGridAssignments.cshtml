@@ -1,13 +1,8 @@
-﻿@{ 
-    string leadId = new JS("templateData.Id").Value;
-}
-
-@using (Html.DevExtreme().NamedTemplate("template-grid-assignments-by-lead"))
+﻿@using (Html.DevExtreme().NamedTemplate("template-grid-assignments-by-lead"))
 {
     @(Html.DevExtreme().DataGrid<LeadAssignmentViewModel>()
-        //.CommonConfigs((new JS("templateData.Id")).ToString()) // cannot get Id by using "new JS()"
-        .CommonConfigs("gridLeadAssignments")
         .ID(new JS("'gridLeadAssignments'.concat(templateData.Id)"))
+        .CommonConfigs()
         .DataSource(ds => ds.Mvc()
             .Controller(nameof(EnumController.LeadAssignments))
             .LoadAction("GetByLead")
@@ -32,8 +27,6 @@
             .AllowDeleting(true)
             .Popup(DXGridConfigs.EditingPopup("LeadAssignment"))
         )
-        .OnContentReady("function(e) { CustomGridEvent.onContentReady(e, templateData.Id); $('[data-toggle=\"tooltip\"]').tooltip(); }")
-        .OnToolbarPreparing("function(e) { CustomGridEvent.onToolbarPreparing(e, templateData.Id); }")
         .OnRowRemoved("function(e) { assignment.refreshGridSearchBranches(); }")
     )
 }
@@ -41,7 +34,8 @@
 @using (Html.DevExtreme().NamedTemplate("template-grid-assignments-by-partner"))
 {
     @(Html.DevExtreme().DataGrid<LeadAssignmentViewModel>()
-        .CommonConfigs("gridLeadAssignments")
+        .ID("gridLeadAssignments")
+        .CommonConfigs()
         .DataSource(ds => ds.Mvc()
             .Controller(nameof(EnumController.LeadAssignments))
             .LoadAction("GetByPartner")
@@ -58,8 +52,6 @@
             c.Add().CellTemplate(new TemplateName("template-grid-assignment-column-status")).Caption("Status");
             c.Add().CellTemplate(new TemplateName("template-grid-assignment-column-action"));
         })
-        .OnContentReady("function(e) { CustomGridEvent.onContentReady(e, templateData.Id); $('[data-toggle=\"tooltip\"]').tooltip(); }")
-        .OnToolbarPreparing("function(e) { CustomGridEvent.onToolbarPreparing(e, templateData.Id); }")
         .OnRowRemoved("function(e) { assignment.refreshGridSearchBranches(); }")
     )
 }

@@ -3,38 +3,37 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@(Html.DevExtreme().DataGrid<LeadType>()
-    .CommonConfigs("gridLeadTypes")
-    .DataSource(ds => ds.Mvc()
-        .Controller(nameof(EnumController.LeadTypes))
-        .LoadAction("Get")
-        .InsertAction("Post")
-        .UpdateAction("Put")
-        .DeleteAction("Delete")
-        .Key("Id")
-    )
-    .Columns(columns =>
-    {
-        columns.Add().CellTemplate(@<text><%= data.Id %></text>).Caption("Id").FormItem(f => { f.Visible(false); });
-        columns.AddFor(m => m.Name);
-        columns.AddFor(m => m.Price).Format(Format.Currency);
-    })
-    .Editing(e =>
-        e.Mode(GridEditMode.Popup)
-        .UseIcons(true)
-        .AllowAdding(true)
-        .AllowUpdating(true)
-        .AllowDeleting(true)
-        .Popup(DXGridConfigs.EditingPopup(nameof(LeadType)))
-    )
-    .OnContentReady(@<text>
-        function(e) {
-            CustomGridEvent.onContentReady(e, "Types");
-        }
-    </text>)
-    .OnToolbarPreparing(@<text>
-        function(e) {
-            CustomGridEvent.onToolbarPreparing(e, "Types");
-        }
-    </text>)
-)
+<div class="row mb-4">
+    <div class="col-md-12 mb-5">
+        <div class="card">
+            <div class="card-body pt-0">
+                @(Html.DevExtreme().DataGrid<LeadType>()
+                    .ID("gridLeadTypes")
+                    .CommonConfigs()
+                    .DataSource(ds => ds.Mvc()
+                        .Controller(nameof(EnumController.LeadTypes))
+                        .LoadAction("Get")
+                        .InsertAction("Post")
+                        .UpdateAction("Put")
+                        .DeleteAction("Delete")
+                        .Key("Id")
+                    )
+                    .Columns(columns =>
+                    {
+                        columns.Add().CellTemplate(@<text><%= data.Id %></text>).Caption("Id").FormItem(f => { f.Visible(false); });
+                        columns.AddFor(m => m.Name);
+                        columns.AddFor(m => m.Price).Format(Format.Currency);
+                    })
+                    .Editing(e =>
+                        e.Mode(GridEditMode.Popup)
+                        .UseIcons(true)
+                        .AllowAdding(true)
+                        .AllowUpdating(true)
+                        .AllowDeleting(true)
+                        .Popup(DXGridConfigs.EditingPopup(nameof(LeadType)))
+                    )
+                )
+            </div>
+        </div>
+    </div>
+</div>

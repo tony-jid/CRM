@@ -9,10 +9,9 @@ namespace CRM.DXConfigurators
 {
     public static class DXGridConfigs
     {
-        public static DataGridBuilder<T> CommonConfigs<T>(this DataGridBuilder<T> grid, string gridId)
+        public static DataGridBuilder<T> CommonConfigs<T>(this DataGridBuilder<T> grid)
         {
             return grid
-                .ID(gridId)
                 .ShowBorders(true)
                 .ShowRowLines(true)
                 .ShowColumnLines(false)
@@ -21,11 +20,37 @@ namespace CRM.DXConfigurators
                 .RemoteOperations(false)
                 .Paging(DXGridConfigs.MasterPaging())
                 .Pager(DXGridConfigs.Pager())
+                .OnContentReady("dxGrid.handlers.onContentReady")
+                .OnToolbarPreparing("dxGrid.handlers.onToolbarPreparing")
                 .OnRowInserted("dxGrid.handlers.onRowInserted")
                 .OnRowUpdated("dxGrid.handlers.onRowUpdated")
                 .OnRowRemoved("dxGrid.handlers.onRowRemoved")
+                .OnRowClick("dxGrid.handlers.onRowDoubleClick")
             ;
         }
+
+        //public static DataGridBuilder<T> CommonConfigs<T>(this DataGridBuilder<T> grid, string gridId)
+        //{
+        //    return grid
+        //        //.ID(new JS("'" + gridId + "'.concat(" + suffixId + ")"))
+        //        //.ID(new JS($"'{gridId}'.concat('{suffixId}')"))
+        //        .ID(gridId)
+        //        .ShowBorders(true)
+        //        .ShowRowLines(true)
+        //        .ShowColumnLines(false)
+        //        .RowAlternationEnabled(true)
+        //        .HoverStateEnabled(true)
+        //        .RemoteOperations(false)
+        //        .Paging(DXGridConfigs.MasterPaging())
+        //        .Pager(DXGridConfigs.Pager())
+        //        .OnContentReady($"function(e) {{ dxGrid.handlers.onContentReady(e, '{gridId}'); }}")
+        //        .OnToolbarPreparing($"function(e) {{ dxGrid.handlers.onToolbarPreparing(e, '{gridId}'); }}")
+        //        .OnRowInserted("dxGrid.handlers.onRowInserted")
+        //        .OnRowUpdated("dxGrid.handlers.onRowUpdated")
+        //        .OnRowRemoved("dxGrid.handlers.onRowRemoved")
+        //        .OnRowClick("dxGrid.handlers.onRowDoubleClick")
+        //    ;
+        //}
 
         public static Action<DataGridPagingBuilder> MasterPaging()
         {

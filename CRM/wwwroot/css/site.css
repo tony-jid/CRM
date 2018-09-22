@@ -86,6 +86,13 @@ footer {
     border: 1px solid rgba(191, 191, 191, 0.15);
 }
 
+.form-partner-logo {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 1px solid rgba(191, 191, 191, 0.15);
+}
+
 .lead-type-img {
     width: 40px;
     height: 40px;
@@ -106,4 +113,12 @@ footer {
 }
 .tabpanel-single-item .dx-datagrid .dx-datagrid-header-panel {
     margin-top: 0px;
+}
+
+.dx-toolbar-before .dx-button:first-child {
+    margin-left: 10px;
+}
+
+.dx-toolbar-before-first {
+    margin-left: 10px;
 }
