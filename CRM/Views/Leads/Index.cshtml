@@ -35,7 +35,7 @@
                     )
                     .Columns(c => {
                         c.AddFor(m => m.CustomerName);
-                        c.Add().Caption("Type")
+                        c.AddFor(m => m.LeadTypeName).Caption("Type")
                             .Width("15%")
                             .CellTemplate(@<text>
                                 <div>
@@ -43,12 +43,12 @@
                                     <%= data.LeadTypeName %>
                                 </div>
                             </text>);
-                        c.Add().Caption("Details")
+                        c.AddFor(m => m.Details).Caption("Details")
                             .Width("35%")
                             .CellTemplate(@<text>
                                 <%= data.Details %>
                             </text>);
-                        c.Add().Caption("Status")
+                        c.AddFor(m => m.StatusName).Caption("Status")
                             .Width("15%")
                             .CellTemplate(@<text>
                                 <%= data.StatusTag %>
@@ -69,6 +69,7 @@
                                 )
                             </text>);
                     })
+                    .SearchPanel(DXGridConfigs.ShowSearchPanel())
                     .Editing(e => e
                         .Mode(GridEditMode.Popup)
                         .UseIcons(true)
@@ -81,6 +82,20 @@
                         .Enabled(true) 
                         .Template(new TemplateName("form-template-grid-assignments"))
                     )
+                    .OnToolbarPreparing(@<text>
+                        function(e) {
+                            dxGrid.handlers.onToolbarPreparing(e);
+                            dxGrid.toolbar.methods.addToolbarItem(e,
+                                dxGrid.toolbar.widgets.optionGrouping(e, 
+                                    [
+                                        dxGrid.toolbar.methods.newGroupingOptionItem("CustomerName", "Grouping by Customer"),
+                                        dxGrid.toolbar.methods.newGroupingOptionItem("Type", "Grouping by Type"),
+                                        dxGrid.toolbar.methods.newGroupingOptionItem("Status", "Grouping by Status"),
+                                    ]
+                                )
+                            );
+                        }
+                    </text>)
                 )
             </div>
         </div>

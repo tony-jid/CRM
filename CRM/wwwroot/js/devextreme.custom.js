@@ -42,6 +42,10 @@
                 e.toolbarOptions.items.push(dxGrid.toolbar.widgets.btnExpandAll(e));
                 e.toolbarOptions.items.push(dxGrid.toolbar.widgets.btnCollapseAll(e));
             }
+
+            dxGrid.toolbar.methods.setSearchPanelLocation(e.toolbarOptions.items);
+
+            console.log(e.toolbarOptions.items);
         },
         onRowDoubleClick: function (e) {
             // Not reasonable, in detail-gris, this event fired twice & e.rowIndex is not correct
@@ -155,9 +159,58 @@
                     }
                 }
             },
+            optionGrouping: function (e, groupingItems) {
+                groupingItems.unshift(dxGrid.toolbar.methods.getDefaultGroupingOptionItem());
+
+                return {
+                    location: "before",
+                    widget: "dxSelectBox",
+                    options: {
+                        width: 200,
+                        //items: [{
+                        //    value: "CustomerStoreState",
+                        //    text: "Grouping by State"
+                        //}, {
+                        //    value: "Employee",
+                        //    text: "Grouping by Employee"
+                        //}],
+                        items: groupingItems,
+                        displayExpr: "text",
+                        valueExpr: "value",
+                        value: groupingItems.length ? groupingItems[0].value : "", // default the option by the first item
+                        onValueChanged: function (_e) {
+                            e.component.clearGrouping();
+
+                            if (_e.value !== "")
+                                e.component.columnOption(_e.value, "groupIndex", 0);
+                        }
+                    }
+                }
+            },
         },
 
         methods: {
+            addToolbarItem: function (e, widget) {
+                e.toolbarOptions.items.push(widget);
+            },
+            getDefaultGroupingOptionItem: function () {
+                return { value: "", text: "No Grouping" };
+            },
+            newGroupingOptionItem: function (_value, _text) {
+                return { value: _value, text: _text };
+            },
+            setSearchPanelLocation: function (toolbarItems) {
+                var searchPanel = $.grep(toolbarItems, function (item) {
+                    if (typeof (item.name) !== "undefined")
+                        return item.name === "searchPanel";
+                    else
+                        return false;
+                });
+
+                if (searchPanel.length) {
+                    searchPanel[0].location = "before";
+                }
+            },
             resetTotalCount: function (e, id) {
                 //console.log(e.component.getDataSource().items().length);
                 $(dxGrid.toolbar.ids.totalCount.format("#", id)).text(dxGrid.options.dataItems(e).length);

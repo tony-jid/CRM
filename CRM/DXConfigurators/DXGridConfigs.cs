@@ -121,5 +121,16 @@ namespace CRM.DXConfigurators
                 selection.Mode(SelectionMode.Multiple);
             };
         }
+
+        public static Action<DataGridSearchPanelBuilder> ShowSearchPanel()
+        {
+            return searchPanel =>
+            {
+                searchPanel.Visible(true);
+                searchPanel.Width(200);
+                searchPanel.SearchVisibleColumnsOnly(true);
+                searchPanel.HighlightSearchText(false);
+            };
+        }
     }
 }
