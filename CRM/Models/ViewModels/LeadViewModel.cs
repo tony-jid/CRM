@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CRM.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -26,7 +27,9 @@ namespace CRM.Models.ViewModels
         public string CustomerBusinessName { get; set; }
         public string CustomerContactNumber { get; set; }
         public string CustomerEmail { get; set; }
-        
+
+        public DateTime CreatedOn { get; set; }
+        public string CreatedOnShortFormat { get { return CreatedOn.ToString(DateHelper.FORMAT_SHORT_MONTH_STR); } }
         public string History { get; set; }
     }
 }

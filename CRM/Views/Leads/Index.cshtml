@@ -36,7 +36,6 @@
                     .Columns(c => {
                         c.AddFor(m => m.CustomerName);
                         c.AddFor(m => m.LeadTypeName).Caption("Type")
-                            .Width("15%")
                             .CellTemplate(@<text>
                                 <div>
                                     <img src="<%= data.LeadTypeImage %>" width="32" height="32" /> 
@@ -49,9 +48,13 @@
                                 <%= data.Details %>
                             </text>);
                         c.AddFor(m => m.StatusName).Caption("Status")
-                            .Width("15%")
                             .CellTemplate(@<text>
                                 <%= data.StatusTag %>
+                            </text>);
+                        c.AddFor(m => m.CreatedOn)
+                            .Width("15%")
+                            .CellTemplate(@<text>
+                                <%= data.CreatedOnShortFormat %>
                                 <a href="#/" data-toggle="tooltip"
                                     data-placement="bottom"
                                     data-html="true"
@@ -82,20 +85,7 @@
                         .Enabled(true) 
                         .Template(new TemplateName("form-template-grid-assignments"))
                     )
-                    .OnToolbarPreparing(@<text>
-                        function(e) {
-                            dxGrid.handlers.onToolbarPreparing(e);
-                            dxGrid.toolbar.methods.addToolbarItem(e,
-                                dxGrid.toolbar.widgets.optionGrouping(e, 
-                                    [
-                                        dxGrid.toolbar.methods.newGroupingOptionItem("CustomerName", "Grouping by Customer"),
-                                        dxGrid.toolbar.methods.newGroupingOptionItem("Type", "Grouping by Type"),
-                                        dxGrid.toolbar.methods.newGroupingOptionItem("Status", "Grouping by Status"),
-                                    ]
-                                )
-                            );
-                        }
-                    </text>)
+                    .OnToolbarPreparing("lead.dxGrid.handlers.onToolbarPreparing")
                 )
             </div>
         </div>

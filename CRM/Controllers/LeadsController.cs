@@ -144,6 +144,10 @@ namespace CRM.Controllers
 
             itemVM.Actions = actions;
 
+            // CreatedWhen
+            var createdStatus = item.LeadStates.OrderBy(o => o.ActionTimestamp).FirstOrDefault();
+            itemVM.CreatedOn = createdStatus.ActionTimestamp;
+
             // Histories
             var histories = item.LeadStates
                 //.Where(w => w.StateId != currentStatus.StateId) // *show all

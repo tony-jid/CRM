@@ -48,4 +48,35 @@
             }
         },
     },
+
+    // Overiding functions === Start ===
+    //
+    dxGrid: {
+        handlers: {
+            onToolbarPreparing: function(e_grid) {
+                dxGrid.handlers.onToolbarPreparing(e_grid);
+                dxGrid.toolbar.methods.addToolbarItem(e_grid,
+                    dxGrid.toolbar.widgets.optionGrouping(e_grid,
+                        [
+                            dxGrid.toolbar.methods.newOptionItem("CustomerName", "Grouping by Customer"),
+                            dxGrid.toolbar.methods.newOptionItem("Type", "Grouping by Type"),
+                            dxGrid.toolbar.methods.newOptionItem("Status", "Grouping by Status"),
+                        ]
+                    )
+                );
+                dxGrid.toolbar.methods.addToolbarItem(e_grid,
+                    dxGrid.toolbar.widgets.optionDateRange(e_grid, "Created...", function (e_selectbox) {
+                        //console.log(e_selectbox.value)
+
+                        if (e_selectbox.value != null) {
+                            e_grid.component.filter(["CreatedOn", ">=", moment(e_selectbox.value.start)], ["CreatedOn", "<=", moment(e_selectbox.value.end)]);
+                        }
+                        else {
+                            e_grid.component.clearFilter();
+                        }
+                    })
+                );
+            }
+        }
+    },
 }

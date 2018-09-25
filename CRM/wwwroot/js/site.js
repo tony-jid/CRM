@@ -1,9 +1,7 @@
-﻿var site = {
-    setTooltip: function () {
-        $('[data-toggle="tooltip"]').tooltip();
-    }
-};
+﻿$(document).ready(function () {
+    
+});
 
-function setTooptip() {
-    $('[data-toggle="tooltip"]').tooltip();
-}
+var site = {
+    
+};

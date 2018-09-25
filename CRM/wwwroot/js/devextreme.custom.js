@@ -45,7 +45,7 @@
 
             dxGrid.toolbar.methods.setSearchPanelLocation(e.toolbarOptions.items);
 
-            console.log(e.toolbarOptions.items);
+            //console.log(e.toolbarOptions.items);
         },
         onRowDoubleClick: function (e) {
             // Not reasonable, in detail-gris, this event fired twice & e.rowIndex is not correct
@@ -187,6 +187,44 @@
                     }
                 }
             },
+            optionDateRange: function (e, placeholder, onValueChanged) {
+                var dateItems = dateHelper.items.getDateRange();
+
+                if (typeof (placeholder) !== "undefined") {
+                    dateItems.unshift(dxGrid.toolbar.methods.newOptionItem(null, placeholder));
+                }
+
+                return {
+                    location: "before",
+                    widget: "dxSelectBox",
+                    options: {
+                        width: 200,
+                        items: dateItems,
+                        displayExpr: "text",
+                        valueExpr: "value",
+                        onValueChanged: typeof (onValueChanged) !== "undefined" ? onValueChanged : function () { }
+                    }
+                }
+            },
+            optionDateRange: function (e, placeholder, onValueChanged) {
+                var dateItems = dateHelper.items.getDateRange();
+
+                if (typeof (placeholder) !== "undefined") {
+                    dateItems.unshift(dxGrid.toolbar.methods.newOptionItem(null, placeholder));
+                }
+
+                return {
+                    location: "before",
+                    widget: "dxSelectBox",
+                    options: {
+                        width: 200,
+                        items: dateItems,
+                        displayExpr: "text",
+                        valueExpr: "value",
+                        onValueChanged: typeof (onValueChanged) !== "undefined" ? onValueChanged : function () { }
+                    }
+                }
+            },
         },
 
         methods: {
@@ -196,7 +234,7 @@
             getDefaultGroupingOptionItem: function () {
                 return { value: "", text: "No Grouping" };
             },
-            newGroupingOptionItem: function (_value, _text) {
+            newOptionItem: function (_value, _text) {
                 return { value: _value, text: _text };
             },
             setSearchPanelLocation: function (toolbarItems) {
