@@ -68,10 +68,21 @@
 
     instances: {
         gridSearchBranches: function () {
-            return $(assignment.ids.gridSearchBranches).dxDataGrid('instance');
+            if ($(assignment.ids.gridSearchBranches).length)
+                return $(assignment.ids.gridSearchBranches).dxDataGrid('instance');
+            else {
+                console.log(assignment.ids.gridSearchBranches.concat(" is not found!"))
+                return undefined;
+            }
+
         },
         gridSelectedBranches: function () {
-            return $(assignment.ids.gridSelectedBranches).dxDataGrid('instance');
+            if ($(assignment.ids.gridSelectedBranches).length)
+                return $(assignment.ids.gridSelectedBranches).dxDataGrid('instance');
+            else {
+                console.log(assignment.ids.gridSelectedBranches.concat(" is not found!"));
+                return undefined;
+            }
         },
         gridLeadAssignments: function (suffixId) {
             if (typeof (suffixId) === "undefined") {
@@ -85,6 +96,8 @@
 
             if (typeof (instance) === "undefined") {
                 instance = $(assignment.ids.gridLeadAssignments).dxDataGrid('instance');
+            } else {
+                console.log(assignment.ids.gridLeadAssignments.concat(suffixId).concat(" is not found!"));
             }
 
             return instance;

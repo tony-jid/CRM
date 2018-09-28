@@ -11,8 +11,8 @@
         masterDetail: function (e) {
             return e.component.option("masterDetail");
         },
-        dataItems: function (e) {
-            return e.component.getDataSource().items();
+        dataItems: function (component) { // component = instance
+            return component.getDataSource().items();
         },
     },
 
@@ -251,7 +251,7 @@
             },
             resetTotalCount: function (e, id) {
                 //console.log(e.component.getDataSource().items().length);
-                $(dxGrid.toolbar.ids.totalCount.format("#", id)).text(dxGrid.options.dataItems(e).length);
+                $(dxGrid.toolbar.ids.totalCount.format("#", id)).text(dxGrid.options.dataItems(e.component).length);
 
                 // This statement is poor performance
                 //e.component

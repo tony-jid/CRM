@@ -62,7 +62,13 @@ namespace CRM.Controllers
         [HttpGet]
         public object GetViewModel(DataSourceLoadOptions loadOptions)
         {
-            return DataSourceLoader.Load(this.GetLeadViewModels(), loadOptions);
+            return DataSourceLoader.Load(this.GetLeadViewModels(_leadRepo.Get()), loadOptions);
+        }
+
+        [HttpGet]
+        public object GetViewModelByCustomer(Guid id, DataSourceLoadOptions loadOptions)
+        {
+            return DataSourceLoader.Load(this.GetLeadViewModels(_leadRepo.GetLeadsByCustomer(id)), loadOptions);
         }
 
         [HttpPost]
@@ -158,11 +164,10 @@ namespace CRM.Controllers
             return itemVM;
         }
 
-        protected List<LeadViewModel> GetLeadViewModels()
+        protected List<LeadViewModel> GetLeadViewModels(IEnumerable<Lead> leads)
         {
             List<LeadViewModel> leadVMs = new List<LeadViewModel>();
 
-            var leads = _leadRepo.Get();
             foreach (var item in leads)
             {
                 leadVMs.Add(this.GetLeadViewModel(item));

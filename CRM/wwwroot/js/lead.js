@@ -1,11 +1,29 @@
 ﻿var lead = {
     ids: {
+        customerId: "__customerId",
         gridLeads: "#gridLeads",
     },
 
     instances: {
-        gridLeads: function () {
-            return $(lead.ids.gridLeads).dxDataGrid("instance");
+        gridLeads: function (suffixId) {
+            if (typeof (suffixId) === "undefined") {
+                if ($(lead.ids.customerId).length) {
+                    suffixId = $(lead.ids.customerId).val();
+                }
+                else {
+                    console.log("The hidden customerId is not found! Returning default instance!");
+
+                    suffixId = "";
+                }
+            } else {
+                if (!($(lead.ids.gridLeads.concat(suffixId)).length)) {
+                    console.log(lead.ids.gridLeads.concat(suffixId).concat(" is not found! Returning default instance!"));
+
+                    suffixId = "";
+                }
+            }
+
+            return $(lead.ids.gridLeads.concat(suffixId)).dxDataGrid("instance");
         },
     },
 
@@ -16,18 +34,28 @@
                 var actionInstance = e.selectedItem;
 
                 if (actionInstance.ActionTarget === action.targets.message) {
-                    lead.methods.loadDataSourceLeads().done(function (data) {
-                        var email = lead.methods.getMessageRecipient(actionInstance.CustomerId, data);
-                        //console.log(email);
+                    var dataItems = lead.methods.getLeadDataItems(actionInstance.CustomerId);
+                    var email = lead.methods.getMessageRecipient(actionInstance.CustomerId, dataItems);
 
-                        // creating dynamic data to support "Message Compose"
-                        var messageData = {
-                            recipients: []
-                        };
-                        messageData.recipients.push(email);
+                    var messageData = {
+                        recipients: []
+                    };
+                    messageData.recipients.push(email);
 
-                        action.perform(action.sources.lead, actionInstance, messageData);
-                    });
+                    action.perform(action.sources.lead, actionInstance, messageData);
+
+                    //lead.methods.loadDataSourceLeads().done(function (data) {
+                    //    var email = lead.methods.getMessageRecipient(actionInstance.CustomerId, data);
+                    //    //console.log(email);
+
+                    //    // creating dynamic data to support "Message Compose"
+                    //    var messageData = {
+                    //        recipients: []
+                    //    };
+                    //    messageData.recipients.push(email);
+
+                    //    action.perform(action.sources.lead, actionInstance, messageData);
+                    //});
                 } else {
                     action.perform(action.sources.lead, actionInstance);
                 }
@@ -40,6 +68,9 @@
     methods: {
         loadDataSourceLeads: function () {
             return lead.instances.gridLeads().option("dataSource").store.load();
+        },
+        getLeadDataItems: function (suffixId) {
+            return dxGrid.options.dataItems(lead.instances.gridLeads(suffixId));
         },
         getMessageRecipient: function (customerId, data) {
             for (var i = 0; i < data.length; i++) {

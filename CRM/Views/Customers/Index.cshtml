@@ -4,7 +4,21 @@
 }
 
 @section Scripts { 
+    <script type="text/javascript" src="~/js/viewmodels/LeadAssignmentResponseVM.js"></script>
+
+    <script type="text/javascript" src="~/js/action.js"></script>
+
     <script type="text/javascript" src="~/js/customer.js"></script>
+    <script type="text/javascript" src="~/js/lead.js"></script>
+    <script type="text/javascript" src="~/js/assignment.js"></script>
+}
+
+@section Templates {
+    @Html.Partial(nameof(EnumPartialPages._TemplateGridLeads))
+
+    @Html.Partial(nameof(EnumPartialPages._TemplateGridAssignments))
+
+    @Html.Partial(nameof(EnumPartialPages._MessageComposePartial))
 }
 
 <div class="row mb-4">
@@ -22,6 +36,7 @@
                         .DeleteAction("Delete")
                         .Key("Id")
                     )
+                    .SearchPanel(DXGridConfigs.ShowSearchPanel())
                     .Columns(columns =>
                     {
                         columns.AddFor(m => m.ContactName);
@@ -63,7 +78,7 @@
                     )
                     .MasterDetail(m => m
                         .Enabled(true)
-                        .Template(new TemplateName("grid-details"))
+                        .Template(new TemplateName("masterdetail-template-grid-leads"))
                         .AutoExpandAll(false)
                     )
                 )
@@ -72,101 +87,35 @@
     </div>
 </div>
 
-@using (Html.DevExtreme().NamedTemplate("grid-details"))
+@using(Html.DevExtreme().NamedTemplate("masterdetail-template-grid-leads"))
 {
     @(Html.DevExtreme().TabPanel()
-                .FocusStateEnabled(false)
-                .ElementAttr("class", "tabPanel")
-                .Items(items =>
-                {
-                    items.Add()
-                        .Title("Leads")
-                        .Template(new TemplateName("grid-details-leads"))
-                        .Option("tabExtras", new { customerId = new JS("data.Id") });
+        .FocusStateEnabled(false)
+        //.ElementAttr("class", "tabpanel-single-item") // Adding this class to hide tabpanel's header for a tabpanel with only 1 item
+        .Items(items =>
+        {
+            items.Add()
+                .Title("Leads")
+                .Template(new TemplateName("template-grid-leads-by-customer"))
+                .Option("templateData", new {
+                    Id = new JS("data.Id")
+                });
 
-                    items.Add()
-                        .Title("Address")
-                        .Template(new TemplateName("grid-details-address"))
-                        .Option("tabExtras", new JS("data"));
-                })
-    )
-}
-
-@using (Html.DevExtreme().NamedTemplate("grid-details-leads"))
-{
-    @(Html.DevExtreme().DataGrid<Lead>()
-            .ID("grid-customer-leads-" + new JS("tabExtras.customerId"))
-            .CommonConfigs()
-            .DataSource(d => d.Mvc()
-                .Controller(nameof(EnumController.Leads))
-                .LoadAction("GetLeadsByCustomer")
-                .LoadParams(new
-                {
-                    customerId = new JS("tabExtras.customerId")
-                })
-                .InsertAction("Post")
-                .UpdateAction("Put")
-                .DeleteAction("Delete")
-                .Key("Id")
-            )
-            .Paging(DXGridConfigs.DetailsPaging())
-            .Pager(DXGridConfigs.Pager())
-            .Columns(columns =>
-            {
-                columns.AddFor(m => m.LeadTypeId)
-                    .Lookup(lookup =>
-                        lookup.DataSource(d => d.Mvc()
-                            .Controller(nameof(EnumController.LeadTypes))
-                            .LoadAction("Get").Key("Id")
-                        ).DisplayExpr("Name").ValueExpr("Id")
-                    )
-                    .Caption("Type of lead");
-                columns.AddFor(m => m.Details).AllowHeaderFiltering(false);
-                columns.Add().CellTemplate(@<text>New</text>).Caption("Status").AllowHeaderFiltering(false).AllowEditing(false).FormItem(i => i.Visible(false));
-                columns.Add().CellTemplate(@<text>
-                    @(Html.DevExtreme().ProgressBar()
-                            .ID("progressBarStatus")
-                            .Min(0)
-                            .Max(100)
-                            .Width("100%")
-                    )
-                </text>).Caption("Progress").AllowHeaderFiltering(false).AllowEditing(false).FormItem(i => i.Visible(false));
-                columns.Add().CellTemplate(@<text><u>view</u></text>).Caption("History").AllowHeaderFiltering(false).AllowEditing(false).FormItem(i => i.Visible(false));
-                            columns.Add().CellTemplate(@<text>
-                                @(Html.DevExtreme().SelectBox())
-                            </text>).Caption("Actions").AllowHeaderFiltering(false).AllowEditing(false).FormItem(i => i.Visible(false));
-            })
-            .Editing(e =>
-                e.Mode(GridEditMode.Popup)
-                .UseIcons(true)
-                .AllowAdding(true)
-                .AllowUpdating(true)
-                .AllowDeleting(true)
-                .Popup(DXGridConfigs.EditingPopup(nameof(Lead)))
-            )
-            // DateTime field is compulsory set as required so it must be set a default value
-            // *** CAN NOT use Date.now()
-            .OnInitNewRow(@<text>
-                function (e) {
-                e.data.CreatedDateTime = new Date();
-                }
-            </text>)
-            // Passing "CustomerId" into the parameter "values" of InsertAction
-            .OnRowInserting(@<text>
-                function (e) {
-                e.data.customerId = tabExtras.customerId;
-                }
-            </text>)
+            items.Add()
+                .Title("Address")
+                .Template(new TemplateName("template-customer-address"))
+                .Option("templateData", new JS("data"));
+        })
     )
 }
 
 
-@using (Html.DevExtreme().NamedTemplate("grid-details-address"))
+@using (Html.DevExtreme().NamedTemplate("template-customer-address"))
 {
     @(Html.DevExtreme().Form<Customer>()
         .ElementAttr("class", "address-form form-container")
         .ElementAttr("style", "padding: 20px; background-color: white;")
-        .FormData(new JS("tabExtras"))
+        .FormData(new JS("templateData"))
         .ColCount(2)
         .Items(items =>
         {

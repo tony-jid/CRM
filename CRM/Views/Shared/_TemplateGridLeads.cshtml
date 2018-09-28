@@ -1,0 +1,153 @@
+﻿@using (Html.DevExtreme().NamedTemplate("template-grid-leads"))
+{
+    @(Html.DevExtreme().DataGrid<LeadViewModel>()
+        .ID("gridLeads")
+        .CommonConfigs()
+        .DataSource(ds => ds.Mvc()
+            .Controller(nameof(EnumController.Leads))
+            .LoadAction("GetViewModel")
+            .InsertAction("Post")
+            .UpdateAction("Put")
+            .DeleteAction("Delete")
+            .Key("Id")
+        )
+        .SearchPanel(DXGridConfigs.ShowSearchPanel())
+        .Columns(c => {
+            c.AddFor(m => m.CustomerName);
+            c.AddFor(m => m.LeadTypeName).Caption("Type")
+                .CellTemplate(new TemplateName("template-grid-leads-column-type"));
+            c.AddFor(m => m.Details).Caption("Details").Width("35%")
+                .CellTemplate(new TemplateName("template-grid-leads-column-details"));
+            c.AddFor(m => m.StatusName).Caption("Status")
+                .CellTemplate(new TemplateName("template-grid-leads-column-status"));
+            c.AddFor(m => m.CreatedOn).Width("15%")
+                .CellTemplate(new TemplateName("template-grid-leads-column-created-on"));
+            c.Add().Width("15%")
+                .CellTemplate(new TemplateName("template-grid-leads-column-actions"));
+        })
+        .Editing(e => e
+            .Mode(GridEditMode.Popup)
+            .UseIcons(true)
+            .AllowAdding(true)
+            .AllowUpdating(true)
+            .AllowDeleting(true)
+            .Popup(DXGridConfigs.EditingPopup(nameof(Lead)))
+        )
+        .MasterDetail(m => m
+            .Enabled(true) 
+            .Template(new TemplateName("masterdetail-template-grid-assignments"))
+        )
+        .OnToolbarPreparing("lead.dxGrid.handlers.onToolbarPreparing")
+    )
+}
+
+@using (Html.DevExtreme().NamedTemplate("template-grid-leads-by-customer"))
+{
+    @(Html.DevExtreme().DataGrid<LeadViewModel>()
+        .ID(new JS("'gridLeads'.concat(templateData.Id)"))
+        .CommonConfigs()
+        .DataSource(ds => ds.Mvc()
+            .Controller(nameof(EnumController.Leads))
+            .LoadAction("GetViewModelByCustomer")
+            .LoadParams(new
+            {
+                id = new JS("templateData.Id")
+            })
+            .InsertAction("Post")
+            .UpdateAction("Put")
+            .DeleteAction("Delete")
+            .Key("Id")
+        )
+        .Columns(c => {
+            c.AddFor(m => m.LeadTypeName).Caption("Type")
+                .CellTemplate(new TemplateName("template-grid-leads-column-type"));
+            c.AddFor(m => m.Details).Caption("Details").Width("35%")
+                .CellTemplate(new TemplateName("template-grid-leads-column-details"));
+            c.AddFor(m => m.StatusName).Caption("Status")
+                .CellTemplate(new TemplateName("template-grid-leads-column-status"));
+            c.AddFor(m => m.CreatedOn).Width("15%")
+                .CellTemplate(new TemplateName("template-grid-leads-column-created-on"));
+            c.Add().Width("15%")
+                .CellTemplate(new TemplateName("template-grid-leads-column-actions"));
+        })
+        .SearchPanel(DXGridConfigs.ShowSearchPanel())
+        .Editing(e => e
+            .Mode(GridEditMode.Popup)
+            .UseIcons(true)
+            .AllowAdding(true)
+            .AllowUpdating(true)
+            .AllowDeleting(true)
+            .Popup(DXGridConfigs.EditingPopup(nameof(Lead)))
+        )
+        .MasterDetail(m => m
+            .Enabled(true) 
+            .Template(new TemplateName("masterdetail-template-grid-assignments"))
+        )
+        .OnToolbarPreparing("lead.dxGrid.handlers.onToolbarPreparing")
+    )
+}
+
+@using (Html.DevExtreme().NamedTemplate("template-grid-leads-column-type"))
+{
+    <div>
+        <img src="<%= data.LeadTypeImage %>" width="32" height="32" /> 
+        <%= data.LeadTypeName %>
+    </div>
+}
+
+@using (Html.DevExtreme().NamedTemplate("template-grid-leads-column-details"))
+{
+    <span><%= data.Details %></span>
+}
+
+@using (Html.DevExtreme().NamedTemplate("template-grid-leads-column-status"))
+{
+    <span><%= data.StatusTag %></span>
+}
+
+@using (Html.DevExtreme().NamedTemplate("template-grid-leads-column-created-on"))
+{
+    <span><%= data.CreatedOnShortFormat %></span>
+    <a href="#/" data-toggle="tooltip"
+        data-placement="bottom"
+        data-html="true"
+        title="<%= data.History %>">
+        <span class="batch-icon batch-icon-zoom-in-alt text-priamry"></span>
+    </a>
+}
+
+@using (Html.DevExtreme().NamedTemplate("template-grid-leads-column-actions"))
+{
+    @(Html.DevExtreme().SelectBox()
+        .DataSource(new JS("data.Actions"))
+        .ActionCommonConfigs()
+        .OnSelectionChanged("lead.handlers.onActionChanged")
+    )
+}
+
+@using (Html.DevExtreme().NamedTemplate("masterdetail-template-grid-assignments"))
+{
+     // This does not work, parameter cannot be passed into the template via form
+    @*@(Html.DevExtreme().Form().ID("form-grid-assignments")
+        .Items(i =>
+        {
+            i.AddSimple().Template(new TemplateName("template-grid-assignments"))
+                .Option("templateData", new { LeadId = new JS("data.Id") });
+        })
+    )*@
+
+    @* Using tabpanel for passing parameter to the grid in the template *@
+    @(Html.DevExtreme().TabPanel()
+        .FocusStateEnabled(false)
+        .ElementAttr("class", "tabpanel-single-item") // Adding this class to hide tabpanel's header for a tabpanel with only 1 item
+        .Items(items =>
+        {
+            items.Add()
+                .Title("Assignments")
+                .Template(new TemplateName("template-grid-assignments-by-lead"))
+                .Option("templateData", new {
+                    Id = new JS("data.Id")
+                });
+        })
+    )
+}

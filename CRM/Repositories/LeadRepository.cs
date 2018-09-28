@@ -51,9 +51,7 @@ namespace CRM.Repositories
 
         public IEnumerable<Lead> GetLeadsByCustomer(Guid customerId)
         {
-            return _context.Leads
-                .Include(i => i.LeadType)
-                .Include(i => i.LeadStates)
+            return this.Get()
                 .Where(w => w.CustomerId == customerId);
         }
 

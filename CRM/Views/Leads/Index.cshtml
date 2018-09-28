@@ -8,11 +8,14 @@
     <script type="text/javascript" src="~/js/viewmodels/LeadAssignmentResponseVM.js"></script>
 
     <script type="text/javascript" src="~/js/action.js"></script>
+
     <script type="text/javascript" src="~/js/lead.js"></script>
     <script type="text/javascript" src="~/js/assignment.js"></script>
 }
 
 @section Templates {
+    @Html.Partial(nameof(EnumPartialPages._TemplateGridLeads))
+
     @Html.Partial(nameof(EnumPartialPages._TemplateGridAssignments))
 
     @Html.Partial(nameof(EnumPartialPages._MessageComposePartial))
@@ -22,99 +25,20 @@
     <div class="col-md-12 mb-5">
         <div class="card">
             <div class="card-body pt-0">
-                @(Html.DevExtreme().DataGrid<LeadViewModel>()
-                    .ID("gridLeads")
-                    .CommonConfigs()
-                    .DataSource(ds => ds.Mvc()
-                        .Controller(nameof(EnumController.Leads))
-                        .LoadAction("GetViewModel")
-                        .InsertAction("Post")
-                        .UpdateAction("Put")
-                        .DeleteAction("Delete")
-                        .Key("Id")
-                    )
-                    .Columns(c => {
-                        c.AddFor(m => m.CustomerName);
-                        c.AddFor(m => m.LeadTypeName).Caption("Type")
-                            .CellTemplate(@<text>
-                                <div>
-                                    <img src="<%= data.LeadTypeImage %>" width="32" height="32" /> 
-                                    <%= data.LeadTypeName %>
-                                </div>
-                            </text>);
-                        c.AddFor(m => m.Details).Caption("Details")
-                            .Width("35%")
-                            .CellTemplate(@<text>
-                                <%= data.Details %>
-                            </text>);
-                        c.AddFor(m => m.StatusName).Caption("Status")
-                            .CellTemplate(@<text>
-                                <%= data.StatusTag %>
-                            </text>);
-                        c.AddFor(m => m.CreatedOn)
-                            .Width("15%")
-                            .CellTemplate(@<text>
-                                <%= data.CreatedOnShortFormat %>
-                                <a href="#/" data-toggle="tooltip"
-                                    data-placement="bottom"
-                                    data-html="true"
-                                    title="<%= data.History %>">
-                                    <span class="batch-icon batch-icon-zoom-in-alt text-priamry"></span>
-                                </a>
-                            </text>);
-                        c.Add()
-                            .Width("15%")
-                            .CellTemplate(@<text>
-                                @(Html.DevExtreme().SelectBox()
-                                    .DataSource(new JS("data.Actions"))
-                                    .ActionCommonConfigs()
-                                    .OnSelectionChanged("lead.handlers.onActionChanged")
-                                )
-                            </text>);
+                @* Using tabpanel for passing parameter to the grid in the template *@
+                @(Html.DevExtreme().TabPanel()
+                    .FocusStateEnabled(false)
+                    .ElementAttr("class", "tabpanel-single-item") // Adding this class to hide tabpanel's header for a tabpanel with only 1 item
+                    .Items(items =>
+                    {
+                        items.Add()
+                            .Title("Assignments")
+                            .Template(new TemplateName("template-grid-leads"));
+                            // There is no parameter
                     })
-                    .SearchPanel(DXGridConfigs.ShowSearchPanel())
-                    .Editing(e => e
-                        .Mode(GridEditMode.Popup)
-                        .UseIcons(true)
-                        .AllowAdding(true)
-                        .AllowUpdating(true)
-                        .AllowDeleting(true)
-                        .Popup(DXGridConfigs.EditingPopup(nameof(Lead)))
-                    )
-                    .MasterDetail(m => m
-                        .Enabled(true) 
-                        .Template(new TemplateName("form-template-grid-assignments"))
-                    )
-                    .OnToolbarPreparing("lead.dxGrid.handlers.onToolbarPreparing")
                 )
+                
             </div>
         </div>
     </div>
 </div>
-
-@using(Html.DevExtreme().NamedTemplate("form-template-grid-assignments"))
-{
-    // This does not work, parameter cannot be passed into the template
-    @*@(Html.DevExtreme().Form().ID("form-grid-assignments")
-        .Items(i =>
-        {
-            i.AddSimple().Template(new TemplateName("template-grid-assignments"))
-                .Option("templateData", new { LeadId = new JS("data.Id") });
-        })
-    )*@
-
-    @* Using tabpanel for passing parameter to the grid in the template *@
-    @(Html.DevExtreme().TabPanel()
-        .FocusStateEnabled(false)
-        .ElementAttr("class", "tabpanel-single-item") // Adding this class to hide tabpanel's header for a tabpanel with only 1 item
-        .Items(items =>
-        {
-            items.Add()
-                .Title("Assignments")
-                .Template(new TemplateName("template-grid-assignments-by-lead"))
-                .Option("templateData", new {
-                    Id = new JS("data.Id")
-                });
-        })
-    )
-}
