@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CRM.Models;
+using CRM.Models.ViewModels;
 using CRM.Repositories;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
@@ -26,38 +27,54 @@ namespace CRM.Controllers
         [HttpGet]
         public object Get(DataSourceLoadOptions loadOptions)
         {
-            return DataSourceLoader.Load(_partnerRepo.Get(), loadOptions);
+            return DataSourceLoader.Load(this.GetPartnerVMs(_partnerRepo.Get()), loadOptions);
         }
 
         [HttpPost]
         public IActionResult Post(string values)
         {
-            var model = new Partner();
-            JsonConvert.PopulateObject(values, model);
+            var partner = new Partner();
+            JsonConvert.PopulateObject(values, partner);
 
-            if (!TryValidateModel(model))
+            if (!TryValidateModel(partner))
                 return BadRequest(GetFullErrorMessage(ModelState));
 
-            _partnerRepo.Add(model);
+            _partnerRepo.Add(partner);
 
-            return Ok();
+            // Adding services
+            var partnerVM = new PartnerVM();
+            JsonConvert.PopulateObject(values, partnerVM);
+
+            _partnerRepo.AddServices(partner.Id, partnerVM.Services);
+
+            return _uow.Commit() ? Ok() : StatusCode(StatusCodes.Status500InternalServerError);
         }
 
         [HttpPut]
         public IActionResult Put(Guid key, string values)
         {
-            var model = _partnerRepo.GetByUid(key);
-            if (model == null)
+            Partner partner = _partnerRepo.GetByUid(key);
+            if (partner == null)
                 return StatusCode(409, "Partner not found");
 
-            JsonConvert.PopulateObject(values, model);
-
-            if (!TryValidateModel(model))
+            if (!TryValidateModel(partner))
                 return BadRequest(GetFullErrorMessage(ModelState));
 
-            _partnerRepo.Update(model);
+            JsonConvert.PopulateObject(values, partner);            
+            
+            _partnerRepo.Update(partner);
 
-            return Ok();
+            // Updating services
+            // In editing mode
+            //      - services are [] => all services removed
+            //      - services are null => no changes
+            var partnerVM = new PartnerVM();
+            JsonConvert.PopulateObject(values, partnerVM);
+
+            if (partnerVM.Services != null)
+                _partnerRepo.UpdateServices(key, partnerVM.Services);
+
+            return _uow.Commit() ? Ok() : StatusCode(StatusCodes.Status500InternalServerError);
         }
 
         [HttpDelete]
@@ -65,7 +82,27 @@ namespace CRM.Controllers
         {
             var model = _partnerRepo.GetByUid(key);
 
+            _partnerRepo.RemoveServices(key);
             _partnerRepo.Remove(model);
+
+            _uow.Commit();
+        }
+
+        private PartnerVM GetPartnerVM(Partner partner)
+        {
+            return new PartnerVM() {
+                Id = partner.Id,
+                Name = partner.Name,
+                Logo = partner.Logo,
+                Branches = partner.Branches,
+                PartnerServices = partner.PartnerServices,
+                Services = partner.PartnerServices != null ? partner.PartnerServices.Select(i => i.LeadTypeId).ToArray() : new int[] { }
+            };
+        }
+
+        private IEnumerable<PartnerVM> GetPartnerVMs(IEnumerable<Partner> partners)
+        {
+            return partners.Select(s => this.GetPartnerVM(s));
         }
     }
 }

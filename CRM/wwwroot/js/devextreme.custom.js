@@ -4,6 +4,17 @@
         prevClickedRowIndex: -1,
     },
 
+    templates: {
+        editCell: function (templateId) {
+            return "function (element, cellInfo) { $('#" + templateId + "').appendTo(element); }";
+        },
+    },
+
+    cellTypes: {
+        cellItem: "cellItem",
+        editCellItem: "editCellItem",
+    },
+
     options: {
         id: function (e) {
             return e.element.attr('id');
