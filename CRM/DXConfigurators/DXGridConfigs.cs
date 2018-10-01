@@ -18,6 +18,7 @@ namespace CRM.DXConfigurators
                 .RowAlternationEnabled(true)
                 .HoverStateEnabled(true)
                 .RemoteOperations(false)
+                .SearchPanel(DXGridConfigs.ShowSearchPanel())
                 .Paging(DXGridConfigs.MasterPaging())
                 .Pager(DXGridConfigs.Pager())
                 .OnContentReady("dxGrid.handlers.onContentReady")

@@ -9,6 +9,14 @@ var site = {
             get: function () {
                 return site.apis.crm.concat("leadtypes/get");
             },
+            uploadImage: function () {
+                return site.apis.crm.concat("leadtypes/uploadimage/");
+            },
+        },
+        partners: {
+            uploadLogo: function () {
+                return site.apis.crm.concat("partners/uploadlogo/");
+            },
         },
     },
 }

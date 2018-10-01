@@ -14,5 +14,7 @@ namespace CRM.Repositories
         void UpdateServices(Guid partnerId, int[] services);
 
         void RemoveServices(Guid partnerId);
+
+        void UpdateLogo(Guid partnerId, string fileName);
     }
 }

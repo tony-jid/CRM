@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using CRM.Helpers;
 using CRM.Models;
 using CRM.Models.ViewModels;
 using CRM.Repositories;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -17,11 +20,20 @@ namespace CRM.Controllers
     {
         private IUnitOfWork _uow;
         private IPartnerRepository _partnerRepo;
+        private IPartnerBranchRepository _partnerBranchRepo;
+        private IHostingEnvironment _hostingEnvironment;
 
-        public PartnersController(IUnitOfWork unitOfWork)
+        public string LogoPath { get {
+                return Path.Combine(_hostingEnvironment.WebRootPath, ImageHelper.PATH_PARTNER);
+            }
+        }
+
+        public PartnersController(IUnitOfWork unitOfWork, IHostingEnvironment hostingEnvironment)
         {
             _uow = unitOfWork;
             _partnerRepo = unitOfWork.PartnerRepository;
+            _partnerBranchRepo = unitOfWork.PartnerBranchRepository;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         [HttpGet]
@@ -39,6 +51,7 @@ namespace CRM.Controllers
             if (!TryValidateModel(partner))
                 return BadRequest(GetFullErrorMessage(ModelState));
 
+            // Adding partner
             _partnerRepo.Add(partner);
 
             // Adding services
@@ -47,7 +60,34 @@ namespace CRM.Controllers
 
             _partnerRepo.AddServices(partner.Id, partnerVM.Services);
 
+            // Adding logo
+            if (!String.IsNullOrEmpty(partner.Logo))
+            {
+                this.CreateLogoFromTempFile(partner);
+            }
+
             return _uow.Commit() ? Ok() : StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
+        [HttpPost]
+        public IActionResult UploadLogo()
+        {
+            try
+            {
+                IFormFile logo = Request.Form.Files["logo"];
+                string tempFileName = Request.Query["fileName"].ToString();
+                
+                var tempFilePath = Path.Combine(this.LogoPath, tempFileName);
+
+                if (FileHelper.SaveFile(logo, tempFilePath))
+                    return Ok();
+                else
+                    return BadRequest();
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+            }
         }
 
         [HttpPut]
@@ -62,6 +102,7 @@ namespace CRM.Controllers
 
             JsonConvert.PopulateObject(values, partner);            
             
+            // Updating partner
             _partnerRepo.Update(partner);
 
             // Updating services
@@ -74,6 +115,17 @@ namespace CRM.Controllers
             if (partnerVM.Services != null)
                 _partnerRepo.UpdateServices(key, partnerVM.Services);
 
+            // Updating logo
+            if (!String.IsNullOrEmpty(partner.Logo))
+            {
+                // If the logo's name is equal to partner's id, means that there is no new logo updated.
+                //
+                if (Path.GetFileNameWithoutExtension(partner.Logo) != partner.Id.ToString())
+                {
+                    this.CreateLogoFromTempFile(partner);
+                }
+            }
+
             return _uow.Commit() ? Ok() : StatusCode(StatusCodes.Status500InternalServerError);
         }
 
@@ -84,6 +136,9 @@ namespace CRM.Controllers
 
             _partnerRepo.RemoveServices(key);
             _partnerRepo.Remove(model);
+
+            if (!String.IsNullOrEmpty(model.Logo))
+                FileHelper.DeleteFile(Path.Combine(this.LogoPath, model.Logo));
 
             _uow.Commit();
         }
@@ -103,6 +158,24 @@ namespace CRM.Controllers
         private IEnumerable<PartnerVM> GetPartnerVMs(IEnumerable<Partner> partners)
         {
             return partners.Select(s => this.GetPartnerVM(s));
+        }
+
+        private void CreateLogoFromTempFile(Partner partner) {
+            string tempFileName;
+            var tempFilePath = Path.Combine(this.LogoPath, partner.Logo);
+
+            using (var tempFileStream = FileHelper.OpenFile(tempFilePath))
+            {
+                tempFileName = tempFileStream.Name;
+
+                var newFileName = partner.Id + Path.GetExtension(tempFileStream.Name);
+                var newFilePath = Path.Combine(this.LogoPath, newFileName);
+
+                FileHelper.SaveFile(tempFileStream, newFilePath);
+                partner.Logo = newFileName;
+            }
+
+            FileHelper.DeleteFile(tempFileName);
         }
     }
 }

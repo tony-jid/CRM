@@ -20,7 +20,7 @@ namespace CRM.Repositories
         public void Add(LeadType entity)
         {
             _context.LeadTypes.Add(entity);
-            _context.SaveChanges();
+            //_context.SaveChanges();
         }
 
         public LeadType Get(int id)
@@ -41,13 +41,13 @@ namespace CRM.Repositories
         public void Update(LeadType entity)
         {
             _context.Update(entity);
-            _context.SaveChanges();
+           // _context.SaveChanges();
         }
 
         public void Remove(LeadType entity)
         {
             _context.Remove(entity);
-            _context.SaveChanges();
+            //_context.SaveChanges();
         }
     }
 }

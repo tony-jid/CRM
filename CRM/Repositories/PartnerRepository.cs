@@ -85,5 +85,10 @@ namespace CRM.Repositories
                 }
             }
         }
+
+        public void UpdateLogo(Guid partnerId, string fileName)
+        {
+
+        }
     }
 }

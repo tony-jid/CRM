@@ -122,3 +122,7 @@ footer {
 .dx-toolbar-before-first {
     margin-left: 10px;
 }
+
+.file-uploader {
+    border: 1px solid #d3d3d3;
+}

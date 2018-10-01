@@ -3,6 +3,10 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@section Scripts {
+    <script src="~/js/leadtype.js"></script>
+}
+
 <div class="row mb-4">
     <div class="col-md-12 mb-5">
         <div class="card">
@@ -21,7 +25,10 @@
                     .Columns(columns =>
                     {
                         columns.Add().CellTemplate(@<text><%= data.Id %></text>).Caption("Id").FormItem(f => { f.Visible(false); });
-                        columns.AddFor(m => m.Name);
+                        columns.AddFor(m => m.Image).Visible(false)
+                            .EditCellTemplate(new JS("function (cellElement, cellInfo) { leadtype.templates.uploaderImage(cellElement, cellInfo, dxGrid.cellTypes.editCellItem); }"));
+                        columns.AddFor(m => m.Name)
+                            .CellTemplate(new TemplateName("grid-leadtypes-column-image-name"));
                         columns.AddFor(m => m.Price).Format(Format.Currency);
                     })
                     .Editing(e =>
@@ -37,3 +44,9 @@
         </div>
     </div>
 </div>
+
+@using (Html.DevExtreme().NamedTemplate("grid-leadtypes-column-image-name"))
+{
+    <img src="@ImageHelper.PATH_LEAD_TYPE<%= data.Image %>" class="lead-type-img" />
+    <b><%= data.Name %></b>
+}

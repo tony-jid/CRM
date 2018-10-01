@@ -6,6 +6,7 @@
     ids: {
         tagBoxServices: "#tagBoxServices",
         _tagBoxServices: "tagBoxServices",
+        _uploaderLogo: "uploaderLogo",
     },
 
     templates: {
@@ -13,16 +14,14 @@
             var _cellId, _readOnly;
 
             if (dxCellType === dxGrid.cellTypes.cellItem) {
-                _cellId = cellInfo.key;
+                _cellId = partner.ids._tagBoxServices.concat(cellInfo.key);
                 _readOnly = true;
             } else {
-                _cellId = cellInfo.id;
+                _cellId = partner.ids._tagBoxServices.concat(cellInfo.id);
                 _readOnly = false;
             }
 
             $(cellElement).append("<div id='" + _cellId + "' />");
-
-            console.log(_cellId);
 
             $("#" + _cellId).dxTagBox({
                 dataSource: DevExpress.data.AspNet.createStore({
@@ -43,8 +42,37 @@
                 readOnly: _readOnly,
                 onValueChanged: function (e) {
                     if (!_readOnly) {
-                        if (typeof (cellInfo.setValue) === "function")
+                        if (typeof (cellInfo.setValue) === "function") // cellInfo.setValue is not function in "CellTemplate"
                             cellInfo.setValue(e.value);
+                    }
+                },
+            });
+        },
+        uploaderLogo: function (cellElement, cellInfo, dxCellType) {
+            var _cellId;
+
+            if (dxCellType === dxGrid.cellTypes.cellItem) {
+                _cellId = partner.ids._uploaderLogo.concat(cellInfo.key);
+            } else {
+                _cellId = partner.ids._uploaderLogo.concat(cellInfo.id);
+            }
+
+            $(cellElement).append("<div id='" + _cellId + "' class='file-uploader' />");
+
+            $("#" + _cellId).dxFileUploader({
+                name: "logo",
+                selectButtonText: "Select partner's logo",
+                labelText: "",
+                accept: "image/*",
+                uploadMode: "instantly",
+                uploadUrl: site.apis.partners.uploadLogo(),
+                showFileList: true,
+                onValueChanged: function (e) {
+                    if (typeof (cellInfo.setValue) === "function") {    // cellInfo.setValue is not function in "CellTemplate"
+                        var fileName = _cellId.concat("_" + e.value[0].name);
+
+                        cellInfo.setValue(fileName);
+                        e.component.option('uploadUrl', site.apis.partners.uploadLogo() + "?fileName=" + fileName); // reset url along with unique fileName
                     }
                 },
             });
