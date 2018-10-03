@@ -85,7 +85,7 @@ namespace CRM.Controllers
         }
 
         [HttpGet]
-        public object GetBranchesFilteredByLead(Guid leadId, int leadTypeId, DataSourceLoadOptions loadOptions)
+        public object GetBranchesByLead(Guid leadId, int leadTypeId, DataSourceLoadOptions loadOptions)
         {
             return DataSourceLoader.Load(this.FilterBranchesByLead(leadId, leadTypeId), loadOptions);
         }

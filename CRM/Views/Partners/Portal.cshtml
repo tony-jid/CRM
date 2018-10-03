@@ -1,0 +1,54 @@
+﻿
+@{
+    ViewData[EnumViewData.Title.ToString()] = nameof(EnumController.Partners);
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Scripts {
+    <script type="text/javascript" src="~/js/viewmodels/LeadAssignmentResponseVM.js"></script>
+
+    <script type="text/javascript" src="~/js/action.js"></script>
+
+    <script type="text/javascript" src="~/js/assignment.js"></script>
+    <script src="~/js/partner.js"></script>
+}
+
+@section Templates {
+    @Html.Partial(nameof(EnumPartialPages._TemplateGridAssignments))
+
+    @Html.Partial(nameof(EnumPartialPages._MessageComposePartial))
+}
+
+<input type="hidden" id="__partnerId" value="@Model.Id" />
+
+<div class="row mb-4">
+    <div class="col-md-12 mb-5">
+        <div class="card">
+            <div class="card-user-profile">
+                <div class="profile-page-left">
+                    <h4><i class="batch-icon batch-icon-store"></i> Partner Info</h4>
+                    <h5 class="pl-4">
+                        <img src="@ImageHelper.PATH_CLIENT_PARTNER@Model.Logo" class="grid-partner-logo" />
+                        @Model.Name
+                    </h5>
+                </div>
+                <div class="profile-page-center">
+                    @* Using tabpanel for passing parameter to the grid in the template *@
+                    @(Html.DevExtreme().TabPanel()
+                        .FocusStateEnabled(false)
+                        .ElementAttr("class", "tabpanel-single-item") // Adding this class to hide tabpanel's header for a tabpanel with only 1 item
+                        .Items(items =>
+                        {
+                            items.Add()
+                                .Title("Leads")
+                                .Template(new TemplateName("template-grid-assignments-by-partner"))
+                                .Option("templateData", new {
+                                    Id = @Model.Id
+                                });
+                        })
+                    )
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

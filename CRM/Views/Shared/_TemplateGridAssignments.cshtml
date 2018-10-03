@@ -1,6 +1,6 @@
 ﻿@using (Html.DevExtreme().NamedTemplate("template-grid-assignments-by-lead"))
 {
-    @(Html.DevExtreme().DataGrid<LeadAssignmentViewModel>()
+    @(Html.DevExtreme().DataGrid<LeadAssignmentVM>()
         .ID(new JS("'gridLeadAssignments'.concat(templateData.Id)"))
         .CommonConfigs()
         .DataSource(ds => ds.Mvc()
@@ -27,13 +27,13 @@
             .AllowDeleting(true)
             .Popup(DXGridConfigs.EditingPopup("LeadAssignment"))
         )
-        .OnRowRemoved("function(e) { assignment.refreshGridSearchBranches(); }")
+        .OnRowRemoved("function(e) { assignment.methods.refreshGridSearchBranches(); }")
     )
 }
 
 @using (Html.DevExtreme().NamedTemplate("template-grid-assignments-by-partner"))
 {
-    @(Html.DevExtreme().DataGrid<LeadAssignmentViewModel>()
+    @(Html.DevExtreme().DataGrid<LeadAssignmentVM>()
         .ID("gridLeadAssignments")
         .CommonConfigs()
         .DataSource(ds => ds.Mvc()
@@ -47,28 +47,35 @@
         )
         .Columns(c =>
         {
-            c.Add().CellTemplate(new TemplateName("template-grid-assignment-column-lead")).Caption("Lead").Width("50%");
-            c.Add().CellTemplate(new TemplateName("template-grid-assignment-column-customer")).Caption("Customer");
-            c.Add().CellTemplate(new TemplateName("template-grid-assignment-column-status")).Caption("Status");
-            c.Add().CellTemplate(new TemplateName("template-grid-assignment-column-action"));
+            c.AddFor(m => m.LeadTypeName)
+                .CellTemplate(new TemplateName("template-grid-assignment-column-lead")).Caption("Type");
+            c.AddFor(m => m.LeadDetails)
+                .Width("35%")
+                .CellTemplate(new TemplateName("template-grid-assignment-column-lead-details")).Caption("Details");
+            c.AddFor(m => m.CustomerUnique)
+                .Width("15%")
+                .CellTemplate(new TemplateName("template-grid-assignment-column-customer")).Caption("Customer");
+            c.AddFor(m => m.StatusName)
+                .CellTemplate(new TemplateName("template-grid-assignment-column-status")).Caption("Status");
+            c.AddFor(m => m.AssignedOn)
+                .CellTemplate(new TemplateName("template-grid-assignment-column-assigned-on"));
+            c.Add()
+                .CellTemplate(new TemplateName("template-grid-assignment-column-action"));
         })
-        .OnRowRemoved("function(e) { assignment.refreshGridSearchBranches(); }")
+        .OnRowRemoved("function(e) { assignment.methods.refreshGridSearchBranches(); }")
+        .OnToolbarPreparing("assignment.dxGrid.handlers.onToolbarPreparing")
     )
 }
 
 @using (Html.DevExtreme().NamedTemplate("template-grid-assignment-column-lead"))
 {
-    <div class="d-flex justify-content-between">
-        <img src="<%= data.LeadTypeImage %>" class="lead-type-img" />
+    <img src="<%= data.LeadTypeImage %>" class="lead-type-img" />
+    <b><%= data.LeadTypeName %></b>
+}
 
-        <span>
-            <%= data.LeadTypeName %>
-        </span>
-
-        <span>
-            <%= data.LeadDetails %>
-        </span>
-    </div>
+@using (Html.DevExtreme().NamedTemplate("template-grid-assignment-column-lead-details"))
+{
+    <span><%= data.LeadDetails %></span>
 }
 
 @using (Html.DevExtreme().NamedTemplate("template-grid-assignment-column-customer"))
@@ -109,6 +116,11 @@
 @using (Html.DevExtreme().NamedTemplate("template-grid-assignment-column-status"))
 {
     <span><%= data.StatusTag %></span>
+}
+
+@using (Html.DevExtreme().NamedTemplate("template-grid-assignment-column-assigned-on"))
+{
+    <span><%= data.CreatedOnShortFormat %></span>
     <a href="#/" data-toggle="tooltip"
         data-placement="bottom"
         data-html="true"

@@ -198,7 +198,7 @@
                     }
                 }
             },
-            optionDateRange: function (e, placeholder, onValueChanged) {
+            optionDateRange: function (e_grid, dataField, placeholder, onValueChanged) {
                 var dateItems = dateHelper.items.getDateRange();
 
                 if (typeof (placeholder) !== "undefined") {
@@ -213,26 +213,50 @@
                         items: dateItems,
                         displayExpr: "text",
                         valueExpr: "value",
-                        onValueChanged: typeof (onValueChanged) !== "undefined" ? onValueChanged : function () { }
+                        onValueChanged: typeof (onValueChanged) !== "undefined" ?
+                            onValueChanged
+                            : function (e_selectBox) {
+                                if (e_selectBox.value != null) {
+                                    e_grid.component.filter([dataField, ">=", moment(e_selectBox.value.start)], [dataField, "<=", moment(e_selectBox.value.end)]);
+                                }
+                                else {
+                                    e_grid.component.clearFilter();
+                                }
+                            }
                     }
                 }
             },
-            optionDateRange: function (e, placeholder, onValueChanged) {
-                var dateItems = dateHelper.items.getDateRange();
-
+            optionFilter: function (e_grid, textValues, dataField, placeholder, defaultValue, onValueChanged) {
                 if (typeof (placeholder) !== "undefined") {
-                    dateItems.unshift(dxGrid.toolbar.methods.newOptionItem(null, placeholder));
+                    textValues.unshift(dxGrid.toolbar.methods.newOptionItem(null, placeholder));
+                }
+
+                if (typeof (defaultValue) !== "undefined") {
+                    if (defaultValue.trim() == "")
+                        defaultValue = null;
+                } else {
+                    defaultValue = null;
                 }
 
                 return {
                     location: "before",
                     widget: "dxSelectBox",
                     options: {
-                        width: 200,
-                        items: dateItems,
+                        width: 150,
+                        items: textValues,
                         displayExpr: "text",
                         valueExpr: "value",
-                        onValueChanged: typeof (onValueChanged) !== "undefined" ? onValueChanged : function () { }
+                        value: defaultValue,
+                        onSelectionChanged: typeof (onValueChanged) !== "undefined" ?
+                            onValueChanged
+                            : function (e_selectBox) {
+                                if (e_selectBox.selectedItem.value != null) {
+                                    e_grid.component.filter([dataField, "=", e_selectBox.selectedItem.value]);
+                                }
+                                else {
+                                    e_grid.component.clearFilter();
+                                }
+                            }
                     }
                 }
             },

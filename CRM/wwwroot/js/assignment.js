@@ -1,8 +1,12 @@
 ﻿var assignment = {
-    selectedBranches: [],
+    vars: {
+        selectedBranches: [],
+    },
 
     ids: {
         leadId: "#__leadId",
+        leadState: "#__leadState",
+
         btnAdd: "#btnAdd",
         btnRemove: '#btnRemove',
         btnAssign: '#btnAssign',
@@ -20,25 +24,25 @@
         clickBtnAdd: function () {
             $(assignment.ids.btnAdd).unbind();
             $(assignment.ids.btnAdd).click(function () {
-                assignment.addItemsToSelectedBranches();
-                assignment.refreshGridSelectedBranches();
+                assignment.methods.addItemsToSelectedBranches();
+                assignment.methods.refreshGridSelectedBranches();
             });
         },
         clickBtnRemove: function () {
             $(assignment.ids.btnRemove).unbind();
             $(assignment.ids.btnRemove).click(function () {
-                assignment.removeItemsFromSelectedBranches();
-                assignment.refreshGridSelectedBranches();
+                assignment.methods.removeItemsFromSelectedBranches();
+                assignment.methods.refreshGridSelectedBranches();
             });
         },
         clickBtnAssign: function () {
             $(assignment.ids.btnAssign).unbind();
             $(assignment.ids.btnAssign).click(function () {
-                if (assignment.selectedBranches.length) {
+                if (assignment.vars.selectedBranches.length) {
                     ajax.callers.crm(
                         ajax.controllers.assignment.name
                         , ajax.controllers.assignment.actions.assignPartners
-                        , assignment.getViewModel()
+                        , assignment.methods.getViewModel()
                         , assignment.callbacks.onAssignmentSuccess);
                 }
             });
@@ -106,22 +110,22 @@
 
     callbacks: {
         onAssignmentSuccess: function (response) {
-            assignment.clearSelectedBranches();
-            assignment.refreshGridSelectedBranches();
+            assignment.methods.clearSelectedBranches();
+            assignment.methods.refreshGridSelectedBranches();
 
-            assignment.refreshGridSearchBranches();
-            assignment.refreshGridLeadAssignments();
+            assignment.methods.refreshGridSearchBranches();
+            assignment.methods.refreshGridLeadAssignments();
 
             $(window).scrollTop(0);
         },
         onAcceptLeadSuccess: function (response) {
             // response.Value = LeadId
-            assignment.refreshGridLeadAssignments(response.Value);
+            assignment.methods.refreshGridLeadAssignments(response.Value);
             notification.alert.showSuccess('Successfully accepted the lead');
         },
         onRejectLeadSuccess: function (response) {
             // response.Value = LeadId
-            assignment.refreshGridLeadAssignments(response.Value);
+            assignment.methods.refreshGridLeadAssignments(response.Value);
             notification.alert.showWarning('Successfully reject the lead');
         }
     },
@@ -129,15 +133,122 @@
     methods: {
         getAssignmentResponseVM: function (leadId, leadAssignmentId, action) {
             return new LeadAssignmentResponseVM(leadId, leadAssignmentId, action);
+        },
+        getViewModel: function () {
+            var viewModel = new LeadAssignmentSelectedPartnerVM($(assignment.ids.leadId).val());
+
+            for (var i = 0; i < assignment.vars.selectedBranches.length; i++) {
+                viewModel.addPartner(assignment.vars.selectedBranches[i].Id);
+            }
+
+            return viewModel;
+        },
+
+        getLeadState: function () {
+            if ($(assignment.ids.leadState).length)
+                return $(assignment.ids.leadState).val();
+            else
+                return "";
+        },
+
+        getRowsFromSearchGrid: function () {
+            return assignment.instances.gridSearchBranches().getSelectedRowsData();
+        },
+        getRowsFromSelectedGrid: function () {
+            return assignment.instances.gridSelectedBranches().getSelectedRowsData();
+        },
+
+        clearSelectedBranches: function () {
+            assignment.vars.selectedBranches.splice(0, assignment.vars.selectedBranches.length);
+        },
+        addItemsToSelectedBranches: function () {
+            var rows = assignment.methods.getRowsFromSearchGrid();
+            //assignment.alertRowIds(rows);
+
+            if (rows.length) {
+                for (var i = 0; i < rows.length; i++) {
+                    var isIdDuplicate = false;
+
+                    for (var j = 0; j < assignment.vars.selectedBranches.length; j++) {
+                        if (rows[i].Id === assignment.vars.selectedBranches[j].Id) {
+                            isIdDuplicate = true;
+                            break;
+                        }
+                    }
+
+                    if (!isIdDuplicate)
+                        assignment.vars.selectedBranches.push(rows[i]);
+                }
+
+                //assignment.alertRowIds(assignment.vars.selectedBranches);
+            }
+        },
+
+        refreshGridSearchBranches: function () {
+            var instance = assignment.instances.gridSearchBranches();
+            if (typeof (instance) !== "undefined") {
+                instance.refresh();
+            }
+        },
+        refreshGridSelectedBranches: function () {
+            var instance = assignment.instances.gridSelectedBranches();
+
+            if (typeof (instance) !== "undefined") {
+                instance.refresh();
+            }
+        },
+        refreshGridLeadAssignments: function (suffixId) {
+            assignment.instances.gridLeadAssignments(suffixId).refresh();
+        },
+
+        removeItemsFromSelectedBranches: function () {
+            var rows = assignment.methods.getRowsFromSelectedGrid();
+
+            if (rows.length) {
+                for (var i = 0; i < rows.length; i++) {
+                    var beingRemovedIndex;
+
+                    for (var j = 0; j < assignment.vars.selectedBranches.length; j++) {
+                        if (rows[i].Id === assignment.vars.selectedBranches[j].Id) {
+                            beingRemovedIndex = j;
+                            break;
+                        }
+                    }
+
+                    assignment.vars.selectedBranches.splice(beingRemovedIndex, 1);
+                }
+            }
+        },
+    },
+
+    // Overiding functions === Start ===
+    //
+    dxGrid: {
+        handlers: {
+            onToolbarPreparing: function (e_grid) {
+                dxGrid.handlers.onToolbarPreparing(e_grid);
+                dxGrid.toolbar.methods.addToolbarItem(e_grid,
+                    dxGrid.toolbar.widgets.optionGrouping(e_grid,
+                        [
+                            dxGrid.toolbar.methods.newOptionItem("Type", "Grouping by Type"),
+                            dxGrid.toolbar.methods.newOptionItem("Customer", "Grouping by Customer"),
+                            dxGrid.toolbar.methods.newOptionItem("Status", "Grouping by Status"),
+                        ]
+                    )
+                );
+                dxGrid.toolbar.methods.addToolbarItem(e_grid,
+                    dxGrid.toolbar.widgets.optionDateRange(e_grid, "AssignedOn", "Assigned...")
+                );
+            },
+            gridSearchBranchesOnToolbarPreparing: function (e_grid) {
+                dxGrid.handlers.onToolbarPreparing(e_grid);
+                dxGrid.toolbar.methods.addToolbarItem(e_grid,
+                    dxGrid.toolbar.widgets.optionFilter(e_grid, stateTextValues, "Address.State", "All State", assignment.methods.getLeadState())
+                );
+            }
         }
     },
 
-    getRowsFromSearchGrid: function () {
-        return assignment.instances.gridSearchBranches().getSelectedRowsData();
-    },
-    getRowsFromSelectedGrid: function () {
-        return assignment.instances.gridSelectedBranches().getSelectedRowsData();
-    },
     alertRowIds: function (rows) {
         var msg = [];
         for (var i = 0; i < rows.length; i++) {
@@ -146,79 +257,4 @@
 
         alert(msg.join('\n'));
     },
-
-    addItemsToSelectedBranches: function () {
-        var rows = assignment.getRowsFromSearchGrid();
-        //assignment.alertRowIds(rows);
-
-        if (rows.length) {
-            for (var i = 0; i < rows.length; i++) {
-                var isIdDuplicate = false;
-
-                for (var j = 0; j < assignment.selectedBranches.length; j++) {
-                    if (rows[i].Id === assignment.selectedBranches[j].Id) {
-                        isIdDuplicate = true;
-                        break;
-                    }
-                }
-
-                if (!isIdDuplicate)
-                    assignment.selectedBranches.push(rows[i]);
-            }
-
-            //assignment.alertRowIds(assignment.selectedBranches);
-        }
-    },    
-    removeItemsFromSelectedBranches: function () {
-        var rows = assignment.getRowsFromSelectedGrid();
-
-        if (rows.length) {
-            for (var i = 0; i < rows.length; i++) {
-                var beingRemovedIndex;
-
-                for (var j = 0; j < assignment.selectedBranches.length; j++) {
-                    if (rows[i].Id === assignment.selectedBranches[j].Id) {
-                        beingRemovedIndex = j;
-                        break;
-                    }
-                }
-
-                assignment.selectedBranches.splice(beingRemovedIndex, 1);
-            }
-        }
-    },
-    clearSelectedBranches: function () {
-        assignment.selectedBranches.splice(0, assignment.selectedBranches.length);
-    },
-
-    getViewModel: function () {
-        var viewModel = new LeadAssignmentSelectedPartnerVM($(assignment.ids.leadId).val());
-
-        for (var i = 0; i < assignment.selectedBranches.length; i++) {
-            viewModel.addPartner(assignment.selectedBranches[i].Id);
-        }
-
-        return viewModel;
-    },
-
-    refreshGridSearchBranches: function () {
-        var instance = assignment.instances.gridSearchBranches();
-        if (typeof (instance) !== "undefined")
-            instance.refresh();
-        else
-            console.log("gridSearchBranches is not in this page.");
-    },
-    refreshGridSelectedBranches: function () {
-        var instance = assignment.instances.gridSelectedBranches();
-
-        if (typeof (instance) !== "undefined") {
-            instance.refresh();
-            CustomGrid.setToolbarTotalItems("SelectedBranches", assignment.selectedBranches);
-        }
-        else
-            console.log("gridSelectedBranches is not in this page.");
-    },
-    refreshGridLeadAssignments: function (suffixId) {
-        assignment.instances.gridLeadAssignments(suffixId).refresh();
-    },
-};
+}

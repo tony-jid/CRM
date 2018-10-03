@@ -115,9 +115,9 @@ namespace CRM.Controllers
             _emailSender.SendEmailAsync("thawatchai.j14@gmail.com", "Lead assignment from ComparisonAdvantage", "{lead_type} lead is assigned to you guys.");
         }
 
-        protected LeadAssignmentViewModel GetLeadAssignmentViewModel(LeadAssignment item)
+        protected LeadAssignmentVM GetLeadAssignmentViewModel(LeadAssignment item)
         {
-            var itemVM = new LeadAssignmentViewModel();
+            var itemVM = new LeadAssignmentVM();
             itemVM.Id = item.Id;
             itemVM.LeadId = item.LeadId;
 
@@ -128,7 +128,7 @@ namespace CRM.Controllers
                 if (item.Lead.LeadType != null)
                 {
                     itemVM.LeadTypeName = item.Lead.LeadType.Name;
-                    itemVM.LeadTypeImage = item.Lead.LeadType.Image;
+                    itemVM.LeadTypeImage = ImageHelper.PATH_CLIENT_LEAD_TYPE + item.Lead.LeadType.Image;
                 }
 
                 if (item.Lead.Customer != null)
@@ -152,7 +152,7 @@ namespace CRM.Controllers
 
             itemVM.PartnerId = item.PartnerBranch.Partner.Id;
             itemVM.PartnerName = item.PartnerBranch.Partner.Name;
-            itemVM.PartnerLogo = ImageHelper.PATH_PARTNER + item.PartnerBranch.Partner.Logo;
+            itemVM.PartnerLogo = ImageHelper.PATH_CLIENT_PARTNER + item.PartnerBranch.Partner.Logo;
 
             itemVM.PartnerBranchId = item.PartnerBranch.Id;
             itemVM.PartnerBranchStreetAddress = item.PartnerBranch.Address.StreetAddress;
@@ -184,6 +184,11 @@ namespace CRM.Controllers
 
             itemVM.Actions = actions;
 
+            // CreatedWhen
+            var firstSssignedOn = item.LeadAssignmentStates.OrderBy(o => o.ActionTimestamp).FirstOrDefault();
+            itemVM.AssignedOn = firstSssignedOn.ActionTimestamp;
+
+            // History
             var histories = item.LeadAssignmentStates
                 //.Where(w => w.StateId != currentStatus.StateId) // *show all
                 .Select(s => HistoryHelper.GetHtmlHistoryLine(s.ActionTimestamp, s.Action.ToLower(), s.Actor));
@@ -193,9 +198,9 @@ namespace CRM.Controllers
             return itemVM;
         }
 
-        protected List<LeadAssignmentViewModel> GetLeadAssignmentViewModels(IEnumerable<LeadAssignment> leadAssignments)
+        protected List<LeadAssignmentVM> GetLeadAssignmentViewModels(IEnumerable<LeadAssignment> leadAssignments)
         {
-            List<LeadAssignmentViewModel> leadVMs = new List<LeadAssignmentViewModel>();
+            List<LeadAssignmentVM> leadVMs = new List<LeadAssignmentVM>();
             
             foreach (var item in leadAssignments)
             {

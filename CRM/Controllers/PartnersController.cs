@@ -36,6 +36,13 @@ namespace CRM.Controllers
             _hostingEnvironment = hostingEnvironment;
         }
 
+        [HttpGet("{partnerId}")]
+        public IActionResult Portal (Guid partnerId)
+        {
+            var partner = _partnerRepo.GetByUid(partnerId);
+            return View(partner);
+        }
+
         [HttpGet]
         public object Get(DataSourceLoadOptions loadOptions)
         {

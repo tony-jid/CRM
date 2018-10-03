@@ -112,21 +112,26 @@ namespace CRM.Controllers
             _uow.Commit();
         }
 
-        protected LeadViewModel GetLeadViewModel(Lead item)
+        protected LeadVM GetLeadViewModel(Lead item)
         {
-            var itemVM = new LeadViewModel();
+            var itemVM = new LeadVM();
             itemVM.Id = item.Id;
             itemVM.Details = item.Details;
 
             itemVM.LeadTypeId = item.LeadType.Id;
             itemVM.LeadTypeName = item.LeadType.Name;
-            itemVM.LeadTypeImage = ImageHelper.PATH_LEAD_TYPE + item.LeadType.Image;
+            itemVM.LeadTypeImage = ImageHelper.PATH_CLIENT_LEAD_TYPE + item.LeadType.Image;
 
             itemVM.CustomerId = item.Customer.Id;
+            itemVM.CustomerUnique = String.Format("{0} ({1})", item.Customer.ContactName, item.Customer.EMail);
+
             itemVM.CustomerName = item.Customer.ContactName;
             itemVM.CustomerBusinessName = item.Customer.BusinessName;
             itemVM.CustomerContactNumber = item.Customer.ContactNumber;
             itemVM.CustomerEmail = item.Customer.EMail;
+
+            itemVM.CustomerAddress = AddressHelper.MergeAddress(item.Customer.Address.StreetAddress, item.Customer.Address.Suburb, item.Customer.Address.State, item.Customer.Address.PostCode);
+            itemVM.CustomerDetails = String.Format("Business: <b>{0}</b><br>Tel: <b>{1}</b><br>Address: <b>{2}</b>", itemVM.CustomerBusinessName, itemVM.CustomerContactNumber, itemVM.CustomerAddress);
 
             // Current status
             var currentStatus = item.LeadStates.OrderByDescending(o => o.ActionTimestamp).FirstOrDefault();
@@ -164,9 +169,9 @@ namespace CRM.Controllers
             return itemVM;
         }
 
-        protected List<LeadViewModel> GetLeadViewModels(IEnumerable<Lead> leads)
+        protected List<LeadVM> GetLeadViewModels(IEnumerable<Lead> leads)
         {
-            List<LeadViewModel> leadVMs = new List<LeadViewModel>();
+            List<LeadVM> leadVMs = new List<LeadVM>();
 
             foreach (var item in leads)
             {

@@ -44,7 +44,7 @@ namespace CRM.Repositories
         public IEnumerable<Lead> Get()
         {
             return _context.Leads
-                .Include(i => i.Customer)
+                .Include(i => i.Customer).ThenInclude(i => i.Address)
                 .Include(i => i.LeadType)
                 .Include(i => i.LeadStates).ThenInclude(i => i.State.StateActions).ThenInclude(i => i.Action);
         }

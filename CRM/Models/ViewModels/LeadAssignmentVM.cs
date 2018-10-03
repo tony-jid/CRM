@@ -1,11 +1,12 @@
-﻿using System;
+﻿using CRM.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace CRM.Models.ViewModels
 {
-    public class LeadAssignmentViewModel
+    public class LeadAssignmentVM
     {
         public int Id { get; set; }
 
@@ -26,8 +27,7 @@ namespace CRM.Models.ViewModels
         public string CustomerSuburb { get; set; }
         public string CustomerState { get; set; }
         public string CustomerPostCode { get; set; }
-
-
+        
         public string StatusId { get; set; }
         public string StatusName { get; set; }
         public string StatusTag { get; set; }
@@ -43,6 +43,9 @@ namespace CRM.Models.ViewModels
         public string PartnerBranchSuburb { get; set; }
         public string PartnerBranchState { get; set; }
         public string PartnerBranchPostCode { get; set; }
+
+        public DateTime AssignedOn { get; set; }
+        public string CreatedOnShortFormat { get { return AssignedOn.ToString(DateHelper.FORMAT_SHORT_MONTH_STR); } }
 
         public string History { get; set; }
     }

@@ -7,6 +7,6 @@ namespace CRM.Helpers
 {
     public static class DateHelper
     {
-        public const string FORMAT_SHORT_MONTH_STR = "dd MMM yyyy";
+        public const string FORMAT_SHORT_MONTH_STR = "d MMM yyyy";
     }
 }

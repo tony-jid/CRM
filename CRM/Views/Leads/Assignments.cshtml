@@ -23,6 +23,7 @@
 }
 
 <input type="hidden" id="__leadId" value="@Model.Id" />
+<input type="hidden" id="__leadState" value="@Model.Customer.Address.State" />
 
 <div class="row mb-4">
     <div class="col-md-12">
@@ -31,7 +32,7 @@
                 <div class="profile-page-left">
                     <h4><i class="batch-icon batch-icon-podcast"></i> Type of Lead</h4>
                     <h5 class="pl-4">
-                        <img src="@ImageHelper.PATH_LEAD_TYPE@Model.LeadType.Image" class="lead-type-img" />
+                        <img src="@ImageHelper.PATH_CLIENT_LEAD_TYPE@Model.LeadType.Image" class="lead-type-img" />
                         @Model.LeadType.Name
                     </h5>
                     <hr />
@@ -76,7 +77,7 @@
                     .CommonConfigs()
                     .DataSource(ds => ds.Mvc()
                         .Controller(nameof(EnumController.PartnerBranches))
-                        .LoadAction("GetBranchesFilteredByLead")
+                        .LoadAction("GetBranchesByLead")
                         .LoadParams(new
                         {
                             leadId = @Model.Id,
@@ -88,7 +89,7 @@
                         c.Add()
                             .CellTemplate(@<text>
                                 <div class="d-flex justify-content-between">
-                                    <img src="@ImageHelper.PATH_PARTNER<%= data.Partner.Logo %>" class="grid-partner-logo" 
+                                    <img src="@ImageHelper.PATH_CLIENT_PARTNER<%= data.Partner.Logo %>" class="grid-partner-logo" 
                                          data-toggle="tooltip" data-placement="bottom" title="<%= data.Partner.Name %>"/>
 
                                     <%= data.Address.State %>, <%= data.Address.PostCode %>
@@ -110,6 +111,7 @@
                             </text>);
                     })
                     .Selection(DXGridConfigs.SelectionCheckBoxMode())
+                    .OnToolbarPreparing("assignment.dxGrid.handlers.gridSearchBranchesOnToolbarPreparing")
                     .OnContentReady(@<text>
                         function(e) {
                             dxGrid.handlers.onContentReady(e);
@@ -139,12 +141,12 @@
                 @(Html.DevExtreme().DataGrid<PartnerBranch>()
                     .ID("gridSelectedBranches")
                     .CommonConfigs()
-                    .DataSource(new JS("assignment.selectedBranches"))
+                    .DataSource(new JS("assignment.vars.selectedBranches"))
                     .Columns(c => {
                         c.Add()
                             .CellTemplate(@<text>
                                 <div class="d-flex justify-content-between">
-                                    <img src="@ImageHelper.PATH_PARTNER<%= data.Partner.Logo %>" class="grid-partner-logo" 
+                                    <img src="@ImageHelper.PATH_CLIENT_PARTNER<%= data.Partner.Logo %>" class="grid-partner-logo" 
                                          data-toggle="tooltip" data-placement="bottom" title="<%= data.Partner.Name %>"/>
 
                                     <span>
