@@ -37,6 +37,7 @@
                     var dataItems = lead.methods.getLeadDataItems(actionInstance.CustomerId);
                     var email = lead.methods.getMessageRecipient(actionInstance.CustomerId, dataItems);
 
+                    // using dynamic data to support "Message Compose"
                     var messageData = {
                         recipients: []
                     };

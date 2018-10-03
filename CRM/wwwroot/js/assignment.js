@@ -64,8 +64,18 @@
                     action.perform(action.sources.assignment, actionInstance, actionVM, callback);
 
                 } else if (actionInstance.ActionTarget === action.targets.message) {
+                    var email = actionInstance.CustomerEMail;
 
+                    // using dynamic data to support "Message Compose"
+                    var messageData = {
+                        recipients: []
+                    };
+                    messageData.recipients.push(email);
+
+                    action.perform(action.sources.lead, actionInstance, messageData);
                 }
+
+                e.component.reset();
             }
         },
     },
@@ -149,6 +159,9 @@
                 return $(assignment.ids.leadState).val();
             else
                 return "";
+        },
+        getAssignmentDataItems: function (suffixId) {
+            return dxGrid.options.dataItems(assignment.instances.gridLeadAssignments(suffixId));
         },
 
         getRowsFromSearchGrid: function () {

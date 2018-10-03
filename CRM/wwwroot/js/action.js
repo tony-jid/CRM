@@ -45,7 +45,13 @@
                         // using dynamic data to support "Message Compose"
                         email.methods.showModal(data.recipients, "", "");
                     }
+                } else if (source === action.sources.assignment) {
+                    if (target === action.targets.message) {
+                        // using dynamic data to support "Message Compose"
+                        email.methods.showModal(data.recipients, "", "");
+                    }
                 }
+
                 break;
             case action.requestTypes.put:
                 if (source === action.sources.assignment) {
@@ -57,6 +63,7 @@
                             , callback);
                     }
                 }
+
                 break;
             case action.requestTypes.delete:
                 break;

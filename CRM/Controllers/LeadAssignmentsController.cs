@@ -173,6 +173,7 @@ namespace CRM.Controllers
                 LeadId = itemVM.LeadId,
                 PartnerBranchId = itemVM.PartnerBranchId,
                 LeadAssignmentId = itemVM.Id,
+                CustomerEMail = itemVM.CustomerEMail,
                 ControllerName = s.Action.ControllerName,
                 ActionName = s.Action.ActionName,
                 ActionTarget = s.Action.ActionTarget,
