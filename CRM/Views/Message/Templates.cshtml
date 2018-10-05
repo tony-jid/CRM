@@ -1,0 +1,58 @@
+﻿@{
+    ViewData[nameof(EnumViewData.Title)] = "Message Templates";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Scripts {
+    <script type="text/javascript" src="~/js/messagetemplate.js"></script>
+
+    <!-- CKEditor -->
+    <script type="text/javascript" src="~/quillpro/plugins/ckeditor/ckeditor.js"></script>
+    <!-- This jQuery Adapter is REQUIRED for CKEditor to function properly -->
+    <script type="text/javascript" src="~/quillpro/plugins/ckeditor/adapters/jquery.js"></script>
+}
+
+<div class="row mb-4">
+    <div class="col-md-12 mb-5">
+        <div class="card">
+            <div class="card-body pt-0">
+                @(Html.DevExtreme().DataGrid<MessageTemplate>()
+                    .ID("gridMessageTemplates")
+                    .CommonConfigs()
+                    .DataSource(ds => ds.Mvc()
+                        .Controller(nameof(EnumController.Message))
+                        .LoadAction("GetTemplates")
+                        .InsertAction("AddTemplate")
+                        .UpdateAction("UpdateTemplate")
+                        .DeleteAction("RemoveTemplate")
+                        .Key("Id")
+                    )
+                    .Columns(columns =>
+                    {
+                        columns.AddFor(m => m.MessageSubject)
+                            .Width("30%")
+                            .FormItem(f => f.ColSpan(2));
+                        columns.Add()
+                            .DataField("MessageBody")
+                            .FormItem(f => f.ColSpan(2).Label(config => config.Location(FormLabelLocation.Top)))
+                            .CellTemplate(new TemplateName("grid-message-templates-column-body"))
+                            .EditCellTemplate(new JS("messagetemplate.templates.editorMessageBody"));
+                    })
+                    .Editing(e =>
+                        e.Mode(GridEditMode.Popup)
+                        .UseIcons(true)
+                        .AllowAdding(true)
+                        .AllowUpdating(true)
+                        .AllowDeleting(true)
+                        .Popup(DXGridConfigs.EditingPopup(nameof(MessageTemplate), 600))
+                    )
+                )
+            </div>
+        </div>
+    </div>
+</div>
+
+@using (Html.DevExtreme().NamedTemplate("grid-message-templates-column-body"))
+{
+    <span><%= data.MessageBody %></span>
+}

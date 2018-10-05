@@ -36,9 +36,13 @@ namespace CRM.Controllers
             _hostingEnvironment = hostingEnvironment;
         }
 
-        [HttpGet("{partnerId}")]
-        public IActionResult Portal (Guid partnerId)
+        //[HttpGet("{partnerId}")]
+        //public IActionResult Portal (Guid partnerId)
+        public IActionResult Portal()
         {
+            // *** For test, will be assigned by "Partner User Login"
+            Guid partnerId = new Guid("5DD63725-0737-4D40-5853-08D62779DCF3");
+
             var partner = _partnerRepo.GetByUid(partnerId);
             return View(partner);
         }

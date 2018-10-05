@@ -29,8 +29,7 @@ namespace CRM.Data
         public DbSet<SalesPerson> SalesPeople { get; set; }
         public DbSet<Models.State> States { get; set; }
         public DbSet<StateAction> StateActions { get; set; }
-
-
+        public DbSet<MessageTemplate> MessageTemplates { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)

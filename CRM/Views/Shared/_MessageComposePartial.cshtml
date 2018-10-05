@@ -23,8 +23,8 @@
     <div class="row mb-0">
         <div class="col-md-12">
             <div class="row mb-2">
-                <label class="col-md-1">To:</label>
-                <div class="col-md-11">
+                <label class="col-md-2">To:</label>
+                <div class="col-md-10">
                     @*<input id="emailRecipients" type="text" value="" class="form-control email-recepient email-recepient-main">*@
                     @(Html.DevExtreme().TagBox()
                         .ID("emailRecipients")
@@ -51,8 +51,25 @@
                 </div>
             </div>
             <div class="row mb-2">
-                <div class="col-md-1">Subject:</div>
-                <div class="col-md-11 pr-0">
+                <div class="col-md-2">Template:</div>
+                <div class="col-md-10 mr-0">
+                    @(Html.DevExtreme().SelectBox()
+                        .ID("selectBoxTemplates")
+                        .DataSource(ds => ds.Mvc()
+                            .Controller(nameof(EnumController.Message))
+                            .LoadAction("GetTemplates")
+                            .Key("Id")
+                        )
+                        .DisplayExpr("MessageSubject")
+                        .ValueExpr("MessageBody")
+                        .Placeholder("Select template...")
+                        .OnSelectionChanged("email.handlers.onTemplatesSelectionChanged")
+                    )
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-2">Subject:</div>
+                <div class="col-md-10 pr-0">
                     <input id="emailSubject" type="text" value="" class="form-control email-subject">
                 </div>
             </div>

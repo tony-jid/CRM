@@ -99,13 +99,13 @@ namespace CRM.DXConfigurators
             };
         }
 
-        public static Action<PopupBuilder> EditingPopup(string title)
+        public static Action<PopupBuilder> EditingPopup(string title, int maxHeight = 400)
         {
             return (popup) => {
                 popup.Title(title);
                 popup.ShowTitle(true);
                 popup.DragEnabled(false);
-                popup.MaxHeight(400);
+                popup.MaxHeight(maxHeight);
                 popup.Position(pos => pos
                     .Of(new JS("window"))
                     .Offset(0, 50)

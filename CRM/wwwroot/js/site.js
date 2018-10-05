@@ -19,4 +19,19 @@ var site = {
             },
         },
     },
+
+    methods: {
+        isDefined: function (object) {
+            if (typeof (object) === "undefined")
+                return false;
+            else
+                return true;
+        },
+        isFunction: function (object) {
+            if (typeof (object) === "function")
+                return true;
+            else
+                return false;
+        },
+    },
 }

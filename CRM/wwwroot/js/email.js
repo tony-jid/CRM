@@ -7,7 +7,8 @@
         emailRecipients: "#emailRecipients",
         emailSubject: "#emailSubject",
         emailEditor: "#emailEditor",
-        emailModal: '#mail-compose-popup',
+        emailModal: "#mail-compose-popup",
+        selectBoxTemplates: "#selectBoxTemplates",
     },
 
     handlers: {
@@ -32,12 +33,25 @@
                     ajax.controllers.message.name
                     , ajax.controllers.message.actions.sendMessage
                     , model
-                    , email.handlers.onSendSuccess);
+                    , email.callbacks.onSendSuccess);
             });
         },
+        onTemplatesSelectionChanged: function (e) {
+            if (e.selectedItem !== null) {
+                email.methods.setSubject(e.selectedItem.MessageSubject);
+                email.methods.setMessage(e.selectedItem.MessageBody);
+
+                e.component.reset();
+            }
+        },
+    },
+
+    callbacks: {
         onSendSuccess: function (response) {
-            alert(JSON.stringify(response));
-        }
+            notification.alert.showSuccess("Successfully send the message.");
+            email.methods.hideModal();
+            //alert(JSON.stringify(response));
+        },
     },
 
     instances: {
@@ -50,6 +64,9 @@
         editor: function () {
             return CKEDITOR.instances.emailEditor;
         },
+        selectBoxTemplates: function () {
+            return $(email.ids.selectBoxTemplates).dxSelectBox("instance");
+        },
     },
 
     methods: {
@@ -57,6 +74,9 @@
 
             email.handlers.shownModal(recipients, subject, msg);
             email.instances.modal().show();
+        },
+        hideModal: function () {
+            email.instances.modal().hide();
         },
         initEditor: function (msg) {
             if (typeof (email.instances.editor()) !== 'undefined') {

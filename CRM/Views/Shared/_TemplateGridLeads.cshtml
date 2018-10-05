@@ -17,14 +17,19 @@
                 .Width("15%")
                 .CellTemplate(new TemplateName("template-grid-leads-column-customer")).Caption("Customer");
             c.AddFor(m => m.LeadTypeName).Caption("Type")
+                .Width("12%")
                 .CellTemplate(new TemplateName("template-grid-leads-column-type"));
-            c.AddFor(m => m.Details).Caption("Details").Width("35%")
+            c.AddFor(m => m.Details).Caption("Details")
+                .Width("35%")
                 .CellTemplate(new TemplateName("template-grid-leads-column-details"));
             c.AddFor(m => m.StatusName).Caption("Status")
+                .Width("10%")
                 .CellTemplate(new TemplateName("template-grid-leads-column-status"));
-            c.AddFor(m => m.CreatedOn).Width("15%")
+            c.AddFor(m => m.CreatedOn)
+                .Width("15%")
                 .CellTemplate(new TemplateName("template-grid-leads-column-created-on"));
-            c.Add().Width("15%") // adding CustomerEmail here for text searching
+            c.Add()
+                .Width("13%") // adding CustomerEmail here for text searching
                 .CellTemplate(new TemplateName("template-grid-leads-column-actions"));
         })
         .Editing(e => e
