@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CRM.Models
 {
-    public class Agent
+    public class Agent : IPerson
     {
         [Key]
         public Guid Id { get; set; }
@@ -20,7 +20,7 @@ namespace CRM.Models
         [RegularExpression(RegexHelpers.PHONE, ErrorMessage = RegexHelpers.PHONE_ERROR_MSG)]
         public string ContactNumber { get; set; }
 
-        [Required(ErrorMessage = "Email is needed")]
+        [Required]
         [RegularExpression(RegexHelpers.EMAIL, ErrorMessage = RegexHelpers.EMAIL_ERROR_MSG)]
         public string EMail { get; set; }
 

@@ -2,6 +2,109 @@
     ids: {
         customerId: "__customerId",
         gridLeads: "#gridLeads",
+        _lookupCustomer: "lookupCustomer",
+        editorDetails: "#editorDetails",
+        _editorDetails: "editorDetails",
+    },
+
+    templates: {
+        lookupCustomer: function (cellElement, cellInfo) {
+            var _cellId = lead.ids._lookupCustomer;
+
+            if (site.methods.isDefined(cellInfo.id))
+                _cellId = lead.ids._lookupCustomer.concat(cellInfo.id);
+            
+            $(cellElement).append("<div id='" + _cellId + "' />");
+
+            $("#" + _cellId).dxLookup({
+                name: _cellId,
+                dataSource: DevExpress.data.AspNet.createStore({
+                    loadUrl: site.apis.customers.getForLookup(),
+                    onBeforeSend: function (method, ajaxOptions) {
+                        ajaxOptions.xhrFields = { withCredentials: true };
+                    },
+                    key: "Id"
+                }),
+                closeOnOutsideClick: true,
+                value: cellInfo.value,
+                placeholder: "Customer...",
+                displayExpr: "CustomerUnique",
+                valueExpr: "Id",
+                value: cellInfo.value,
+                searchExpr: ["CustomerUnique"],                
+                onValueChanged: function (e) {
+                    if (site.methods.isFunction(cellInfo.setValue)) // cellInfo.setValue is not function in "CellTemplate"
+                        cellInfo.setValue(e.value);
+                },
+            });
+
+            //$("#" + _cellId).dxLookup("instance").option("value", null);
+            //$("#" + _cellId).dxLookup("instance").option("opend", true);
+            //$("#" + _cellId).dxLookup("instance").option("value", "5f6028b8-716a-40b7-d632-08d62ac3adc5");
+
+            //setTimeout(function () {    
+                
+            //}, 2000);
+        },
+        editorDetails: function (cellElement, cellInfo) {
+            if (site.methods.isDefined(cellInfo.item)) {
+                if (cellInfo.item.dataField === "Details") {
+                    var _cellId = lead.ids._editorDetails;
+
+                    if (site.methods.isDefined(cellInfo.id))
+                        _cellId = lead.ids._editorDetails.concat(cellInfo.id);
+
+                    $(cellElement).append("<textarea id='" + _cellId + "' class='form-control email-body load-ckeditor' rows='3'></textarea>");
+                    
+
+                    for (var instance in CKEDITOR.instances) {
+                        CKEDITOR.instances[instance].destroy();
+                    }
+
+                    if (site.methods.isDefined(CKEDITOR.instances[_cellId])) {
+                        CKEDITOR.instances[_cellId].destroy();
+                    }
+
+                    // Set message on the editor after the initialization
+                    $("#" + _cellId).ckeditor(function (e) {
+                        if (site.methods.isDefined(cellInfo.value))
+                            CKEDITOR.instances[_cellId].setData(cellInfo.value);
+
+                        CKEDITOR.instances[_cellId].on("change", function (eventInfo) {
+                            var text = eventInfo.editor.getData();
+                            cellInfo.setValue(text);
+                        });
+                    });
+                }
+            }
+        },
+        editorDetails_SingleInstance: function (cellElement, cellInfo) {
+            if (site.methods.isDefined(cellInfo.item)) {
+                if (cellInfo.item.dataField === "Details") {
+                    var _cellId = lead.ids._editorDetails;
+
+                    //if (site.methods.isDefined(cellInfo.id))
+                    //    _cellId = lead.ids._editorDetails.concat(cellInfo.id);
+
+                    $(cellElement).append("<textarea id='" + _cellId + "' class='form-control email-body load-ckeditor' rows='3'></textarea>");
+
+                    if (site.methods.isDefined(CKEDITOR.instances.editorDetails)) {
+                        CKEDITOR.instances.editorDetails.destroy();
+                    }
+
+                    // Set message on the editor after the initialization
+                    $(lead.ids.editorDetails).ckeditor(function (e) {
+                        if (site.methods.isDefined(cellInfo.value))
+                            CKEDITOR.instances.editorDetails.setData(cellInfo.value);
+
+                        CKEDITOR.instances.editorDetails.on("change", function (eventInfo) {
+                            var text = eventInfo.editor.getData();
+                            cellInfo.setValue(text);
+                        });
+                    });
+                }
+            }
+        },
     },
 
     instances: {

@@ -28,6 +28,24 @@ namespace CRM.Controllers
             return DataSourceLoader.Load(_cusRepo.Get(), loadOptions);
         }
 
+        [HttpGet]
+        public object GetForSelectionBox()
+        {
+            return _cusRepo.Get().Select(s => new {
+                Id = s.Id,
+                CustomerUnique = String.Format("{0} ({1})", s.ContactName, s.EMail)
+            });
+        }
+
+        [HttpGet]
+        public object GetForLookup()
+        {
+            return _cusRepo.Get().Select(s => new {
+                Id = s.Id,
+                CustomerUnique = String.Format("{0} ({1})", s.ContactName, s.EMail)
+            });
+        }
+
         [HttpPost]
         public IActionResult Post(string values)
         {

@@ -153,6 +153,12 @@
             .AllowAdding(true)
             .AllowUpdating(true)
             .AllowDeleting(true)
+            .Form(f => f.Items(i => {
+                i.AddSimpleFor(m => m.ContactName);
+                i.AddSimpleFor(m => m.ContactNumber);
+                i.AddSimpleFor(m => m.EMail);
+
+            }))
             .Popup(DXGridConfigs.EditingPopup(nameof(Agent)))
         )
         .OnRowInserting(@<text>

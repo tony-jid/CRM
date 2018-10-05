@@ -44,10 +44,11 @@
                         columns.AddFor(m => m.EMail);
                         columns.AddFor(m => m.BusinessName);
 
-                        columns.AddFor(m => m.Address.StreetAddress).Visible(false);
-                        columns.AddFor(m => m.Address.Suburb).Visible(false);
-                        columns.AddFor(m => m.Address.State).Visible(false);
-                        columns.AddFor(m => m.Address.PostCode).Visible(false);
+                        columns.AddFor(m => m.Address.StreetAddress).Visible(false).Caption("Street Address");
+                        columns.AddFor(m => m.Address.Suburb).Visible(false).Caption("Suburb");
+                        columns.AddFor(m => m.Address.State).Visible(false).Caption("State")
+                            .Lookup(lookup => lookup.DataSource(new JS("states")));
+                        columns.AddFor(m => m.Address.PostCode).Visible(false).Caption("Post Code");
                     })
                     .Editing(e =>
                         e.Mode(GridEditMode.Popup)
@@ -74,13 +75,14 @@
                                 });
                             })
                         )
-                        .Popup(DXGridConfigs.EditingPopup(nameof(Customer)))
+                        .Popup(DXGridConfigs.EditingPopup(nameof(Customer), 450))
                     )
                     .MasterDetail(m => m
                         .Enabled(true)
                         .Template(new TemplateName("masterdetail-template-grid-leads"))
                         .AutoExpandAll(false)
                     )
+                    .OnToolbarPreparing("customer.dxGrid.handlers.onToolbarPreparing")
                 )
             </div>
         </div>
@@ -119,10 +121,10 @@
         .ColCount(2)
         .Items(items =>
         {
-            items.AddSimpleFor(c => c.Address.StreetAddress);
-            items.AddSimpleFor(c => c.Address.Suburb);
-            items.AddSimpleFor(c => c.Address.State);
-            items.AddSimpleFor(c => c.Address.PostCode);
+            items.AddSimpleFor(c => c.Address.StreetAddress).Label(l => l.Text("Street Address"));
+            items.AddSimpleFor(c => c.Address.Suburb).Label(l => l.Text("Suburb"));
+            items.AddSimpleFor(c => c.Address.State).Label(l => l.Text("State"));
+            items.AddSimpleFor(c => c.Address.PostCode).Label(l => l.Text("Post Code"));
         })
         .ReadOnly(true)
     )

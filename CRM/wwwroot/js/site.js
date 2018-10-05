@@ -10,12 +10,17 @@ var site = {
                 return site.apis.crm.concat("leadtypes/get");
             },
             uploadImage: function () {
-                return site.apis.crm.concat("leadtypes/uploadimage/");
+                return site.apis.crm.concat("leadtypes/uploadImage/");
             },
         },
         partners: {
             uploadLogo: function () {
-                return site.apis.crm.concat("partners/uploadlogo/");
+                return site.apis.crm.concat("partners/uploadLogo/");
+            },
+        },
+        customers: {
+            getForLookup: function () {
+                return site.apis.crm.concat("customers/getForLookup/");
             },
         },
     },

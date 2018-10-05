@@ -24,12 +24,14 @@
                     )
                     .Columns(columns =>
                     {
-                        columns.Add().CellTemplate(@<text><%= data.Id %></text>).Caption("Id").FormItem(f => { f.Visible(false); });
+                        columns.Add().DataField("Id").FormItem(f => { f.Visible(false); });
                         columns.AddFor(m => m.Image).Visible(false)
                             .EditCellTemplate(new JS("function (cellElement, cellInfo) { leadtype.templates.uploaderImage(cellElement, cellInfo, dxGrid.cellTypes.editCellItem); }"));
                         columns.AddFor(m => m.Name)
                             .CellTemplate(new TemplateName("grid-leadtypes-column-image-name"));
-                        columns.AddFor(m => m.Price).Format(Format.Currency);
+                        columns.AddFor(m => m.Price)
+                            .Format(Format.Currency)
+                            .FormItem(i => i.Editor(e => e.NumberBox().CurrencyConfig()));
                     })
                     .Editing(e =>
                         e.Mode(GridEditMode.Popup)
