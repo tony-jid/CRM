@@ -238,7 +238,7 @@
     //
     dxGrid: {
         handlers: {
-            onToolbarPreparing: function (e_grid) {
+            gridAssignmentsByPartnerOnToolbarPreparing: function (e_grid) {
                 dxGrid.handlers.onToolbarPreparing(e_grid);
                 dxGrid.toolbar.methods.addToolbarItem(e_grid,
                     dxGrid.toolbar.widgets.optionGrouping(e_grid,
@@ -249,6 +249,12 @@
                         ]
                     )
                 );
+                dxGrid.toolbar.methods.addToolbarItem(e_grid,
+                    dxGrid.toolbar.widgets.optionDateRange(e_grid, "AssignedOn", "Assigned...")
+                );
+            },
+            gridAssignmentsByLeadOnToolbarPreparing: function (e_grid) {
+                dxGrid.handlers.onToolbarPreparing(e_grid);
                 dxGrid.toolbar.methods.addToolbarItem(e_grid,
                     dxGrid.toolbar.widgets.optionDateRange(e_grid, "AssignedOn", "Assigned...")
                 );

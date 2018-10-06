@@ -13,11 +13,22 @@
             .DeleteAction("Delete")
             .Key("Id")
         )
+        .HeaderFilter(filter => filter.Visible(true))
         .Columns(c =>
         {
-            c.Add().CellTemplate(new TemplateName("template-grid-assignment-column-branch")).Caption("Partner");
-            c.Add().CellTemplate(new TemplateName("template-grid-assignment-column-status")).Caption("Status");
-            c.Add().CellTemplate(new TemplateName("template-grid-assignment-column-action"));
+            c.AddFor(m => m.PartnerName)
+                .CellTemplate(new TemplateName("template-grid-assignment-column-branch")).Caption("Partner");
+            c.AddFor(m => m.PartnerBranchAddress)
+                .AllowHeaderFiltering(false)
+                .AllowSorting(false)
+                .CellTemplate(new TemplateName("template-grid-assignment-column-branch-address")).Caption("");
+            c.AddFor(m => m.StatusName)
+                .CellTemplate(new TemplateName("template-grid-assignment-column-status")).Caption("Status");
+            c.AddFor(m => m.AssignedOn)
+                .CellTemplate(new TemplateName("template-grid-assignment-column-assigned-on"));
+            c.Add()
+                .AllowHeaderFiltering(false)
+                .CellTemplate(new TemplateName("template-grid-assignment-column-action"));
         })
         .Editing(e => e
             .Mode(GridEditMode.Popup)
@@ -28,6 +39,7 @@
             .Popup(DXGridConfigs.EditingPopup("LeadAssignment"))
         )
         .OnRowRemoved("function(e) { assignment.methods.refreshGridSearchBranches(); }")
+        .OnToolbarPreparing("assignment.dxGrid.handlers.gridAssignmentsByLeadOnToolbarPreparing")
     )
 }
 
@@ -45,12 +57,15 @@
             })
             .Key("Id")
         )
+        .HeaderFilter(filter => filter.Visible(true))
         .Columns(c =>
         {
             c.AddFor(m => m.LeadTypeName)
                 .CellTemplate(new TemplateName("template-grid-assignment-column-lead")).Caption("Type");
             c.AddFor(m => m.LeadDetails)
                 .Width("35%")
+                .AllowHeaderFiltering(false)
+                .AllowSorting(false)
                 .CellTemplate(new TemplateName("template-grid-assignment-column-lead-details")).Caption("Details");
             c.AddFor(m => m.CustomerUnique)
                 .Width("15%")
@@ -63,7 +78,7 @@
                 .CellTemplate(new TemplateName("template-grid-assignment-column-action"));
         })
         .OnRowRemoved("function(e) { assignment.methods.refreshGridSearchBranches(); }")
-        .OnToolbarPreparing("assignment.dxGrid.handlers.onToolbarPreparing")
+        .OnToolbarPreparing("assignment.dxGrid.handlers.gridAssignmentsByPartnerOnToolbarPreparing")
     )
 }
 
@@ -96,21 +111,22 @@
 
 @using (Html.DevExtreme().NamedTemplate("template-grid-assignment-column-branch"))
 {
-    <div class="d-flex justify-content-around">
-        <img src="<%= data.PartnerLogo %>" class="grid-partner-logo" 
-                data-toggle="tooltip" data-placement="bottom" title="<%= data.PartnerName %>"/>
+    <img src="<%= data.PartnerLogo %>" class="grid-partner-logo" 
+        data-toggle="tooltip" data-placement="bottom" title="<%= data.PartnerName %>"/>
+}
 
-        <span>
-            <%= data.PartnerBranchState %>, <%= data.PartnerBranchPostCode %>
+@using (Html.DevExtreme().NamedTemplate("template-grid-assignment-column-branch-address"))
+{
+    <span>
+        <%= data.PartnerBranchState %>, <%= data.PartnerBranchPostCode %>
 
-            <a data-toggle="tooltip"
-                data-placement="bottom"
-                data-html="true"
-                title="<%= data.PartnerBranchAddress %>">
-                    <span class="batch-icon batch-icon-zoom-in-alt text-priamry"></span>
-            </a>
-        </span>
-    </div>
+        <a data-toggle="tooltip"
+            data-placement="bottom"
+            data-html="true"
+            title="<%= data.PartnerBranchAddress %>">
+                <span class="batch-icon batch-icon-zoom-in-alt text-priamry"></span>
+        </a>
+    </span>
 }
 
 @using (Html.DevExtreme().NamedTemplate("template-grid-assignment-column-status"))

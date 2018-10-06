@@ -20,6 +20,7 @@
             .Key("Id")
         )
         .SearchPanel(DXGridConfigs.ShowSearchPanel())
+        .HeaderFilter(filter => filter.Visible(true))
         .Columns(c => {
             // Something wrong with using Guid as ValueExpr
             c.AddFor(m => m.CustomerId).Visible(false) // Edit only
@@ -52,6 +53,8 @@
                 .CellTemplate(new TemplateName("template-grid-leads-column-type"));
             c.AddFor(m => m.Details).Caption("Details") // Display & Edit
                 .Width("35%")
+                .AllowHeaderFiltering(false)
+                .AllowSorting(false)
                 .FormItem(i => i.Label(l => l.Location(FormLabelLocation.Top)))
                 .CellTemplate(new TemplateName("template-grid-leads-column-details"))
                 .EditCellTemplate(new JS("lead.templates.editorDetails"));
@@ -82,6 +85,7 @@
             c.Add() // Display only
                 .FormItem(form => form.Visible(false))
                 .Width("13%") // adding CustomerEmail here for text searching
+                .AllowHeaderFiltering(false)
                 .CellTemplate(new TemplateName("template-grid-leads-column-actions"));
         })
         .Editing(e => e
@@ -133,6 +137,7 @@
             .DeleteAction("Delete")
             .Key("Id")
         )
+        .HeaderFilter(filter => filter.Visible(true))
         .Columns(c => {
             c.AddFor(m => m.LeadTypeId).Visible(false) // Edit only
                 .Lookup(l => l
@@ -149,6 +154,8 @@
                 .CellTemplate(new TemplateName("template-grid-leads-column-type"));
             c.AddFor(m => m.Details).Caption("Details")
                 .Width("35%")
+                .AllowHeaderFiltering(false)
+                .AllowSorting(false)
                 .FormItem(i => i.Label(l => l.Location(FormLabelLocation.Top)))
                 .CellTemplate(new TemplateName("template-grid-leads-column-details"))
                 .EditCellTemplate(new JS("lead.templates.editorDetails"));
@@ -163,6 +170,7 @@
                 .CellTemplate(new TemplateName("template-grid-leads-column-created-on"));
             c.Add()
                 .Width("15%")
+                .AllowHeaderFiltering(false)
                 .FormItem(form => form.Visible(false))
                 .CellTemplate(new TemplateName("template-grid-leads-column-actions"));
         })
