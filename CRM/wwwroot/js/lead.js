@@ -5,6 +5,7 @@
         _lookupCustomer: "lookupCustomer",
         editorDetails: "#editorDetails",
         _editorDetails: "editorDetails",
+        _dateBoxCreatedOn: "dateBoxCreatedOn",
     },
 
     templates: {
@@ -102,6 +103,39 @@
                             cellInfo.setValue(text);
                         });
                     });
+                }
+            }
+        },
+        dateBoxCreatedOn_NotWorkable: function (cellElement, cellInfo) {
+            if (site.methods.isDefined(cellInfo.item)) {
+                if (cellInfo.item.dataField === "CreatedOn") {
+                    var _cellId = lead.ids._dateBoxCreatedOn;
+
+                    if (site.methods.isDefined(cellInfo.id))
+                        _cellId = lead.ids._dateBoxCreatedOn.concat(cellInfo.id);
+
+                    $(cellElement).append("<div id='" + _cellId + "' />");
+
+                    var defaultDate;
+                    if (site.methods.isDefined(cellInfo.value))
+                        defaultDate = cellInfo.value;
+                    else
+                        defaultDate = moment();
+
+                    $("#" + _cellId).dxDateBox({
+                        name: _cellId,
+                        //value: defaultDate,
+                        //disabled: true,
+                        onValueChanged: function (e) {
+                            if (site.methods.isFunction(cellInfo.setValue)) // cellInfo.setValue is not function in "CellTemplate"
+                                cellInfo.setValue(e.value);
+                        }
+                    }).dxValidator({ validationRules: [{ type: "required", message: "WTF" }], });
+
+                    setTimeout(function () { $("#" + _cellId).dxDateBox("instance").option("value", defaultDate); }, 1000);
+
+                    //if (site.methods.isFunction(cellInfo.setValue)) // cellInfo.setValue is not function in "CellTemplate"
+                        //cellInfo.setValue(defaultDate);
                 }
             }
         },

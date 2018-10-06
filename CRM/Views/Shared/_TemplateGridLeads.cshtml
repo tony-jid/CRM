@@ -59,7 +59,23 @@
                 .Width("10%")
                 .FormItem(form => form.Visible(false))
                 .CellTemplate(new TemplateName("template-grid-leads-column-status"));
+            // *** searchable BUT cannot remove the validation rule of "Required" in edit mode
+            //c.AddFor(m => m.CreatedOn) // Display only
+            //    .DataField("CreatedOn").DataType(GridColumnDataType.Date)
+            //    .Width("15%")
+            //    .FormItem(form => form.Visible(true))
+            //    .CellTemplate(new TemplateName("template-grid-leads-column-created-on"));
+
+            // *** Can remove the validation rule of "Required" in edit mode BUT not searchable
+            //c.Add() // Display only
+            //    .Width("15%")
+            //    .FormItem(form => form.Visible(true))
+            //    .CellTemplate(new TemplateName("template-grid-leads-column-created-on"))
+            //    .EditCellTemplate(new JS("lead.templates.dateBoxCreatedOn"));
+
+            // The BEST solution for "Date" datafield, searchable & no validation rule when it is hidden
             c.Add() // Display only
+                .DataField("CreatedOn").DataType(GridColumnDataType.Date)
                 .Width("15%")
                 .FormItem(form => form.Visible(false))
                 .CellTemplate(new TemplateName("template-grid-leads-column-created-on"));
@@ -139,7 +155,9 @@
             c.AddFor(m => m.StatusName).Caption("Status")
                 .FormItem(form => form.Visible(false))
                 .CellTemplate(new TemplateName("template-grid-leads-column-status"));
-            c.Add()
+            // The BEST solution for "Date" datafield, searchable & no validation rule when it is hidden
+            c.Add() // Display only
+                .DataField("CreatedOn").DataType(GridColumnDataType.Date)
                 .Width("15%")
                 .FormItem(form => form.Visible(false))
                 .CellTemplate(new TemplateName("template-grid-leads-column-created-on"));
