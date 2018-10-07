@@ -18,7 +18,6 @@ namespace CRM.Repositories
         public void Add(SalesPerson entity)
         {
             _context.SalesPeople.Add(entity);
-            _context.SaveChanges();
         }
 
         public IEnumerable<SalesPerson> Get()
@@ -45,13 +44,11 @@ namespace CRM.Repositories
         public void Remove(SalesPerson entity)
         {
             _context.Remove(entity);
-            _context.SaveChanges();
         }
 
         public void Update(SalesPerson entity)
         {
             _context.Update(entity);
-            _context.SaveChanges();
         }
     }
 }

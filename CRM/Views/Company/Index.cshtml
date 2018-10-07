@@ -28,7 +28,7 @@
                                     secondGroupItems.AddSimpleFor(m => m.ABN);
                                     secondGroupItems.AddSimpleFor(m => m.GST)
                                         .Editor(e => e
-                                            .NumberBox().ShowSpinButtons(true)
+                                            .NumberBox().PercentageConfig()
                                         );
                                     secondGroupItems.AddButton()
                                         .ButtonOptions(option => option

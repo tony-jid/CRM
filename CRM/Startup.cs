@@ -62,6 +62,10 @@ namespace CRM
             // Add authentication options of third parties (e.g. SendGrid)
             services.Configure<EmailSenderAuthOptions>(_configuration.GetSection(nameof(EmailSenderSendGrid)));
 
+            // Add account manager for registering & managing account
+            // ** cannot add the service => error => InvalidOperationException: Cannot consume scoped service Microsoft.AspNetCore.Identity.UserManager...
+            //services.AddSingleton<IAccountManager, AccountManager>();
+
             // Add application services.
             services.AddSingleton<IEmailSender, EmailSenderSendGrid>();
 

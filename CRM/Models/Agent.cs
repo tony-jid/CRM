@@ -9,6 +9,10 @@ namespace CRM.Models
 {
     public class Agent : IPerson
     {
+        public string ApplicationUserId { get; set; }
+        public ApplicationUser ApplicationUser { get; set; }
+
+
         [Key]
         public Guid Id { get; set; }
 

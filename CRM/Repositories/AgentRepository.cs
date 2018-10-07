@@ -19,7 +19,6 @@ namespace CRM.Repositories
         public void Add(Agent entity)
         {
             _context.Agents.Add(entity);
-            _context.SaveChanges();
         }
 
         public IEnumerable<Agent> Get()
@@ -40,13 +39,11 @@ namespace CRM.Repositories
         public void Remove(Agent entity)
         {
             _context.Remove(entity);
-            _context.SaveChanges();
         }
 
         public void Update(Agent entity)
         {
             _context.Update(entity);
-            _context.SaveChanges();
         }
 
         public IEnumerable<Agent> GetAgentsByOffice(int officeId)

@@ -262,6 +262,26 @@ namespace CRM.Data
                 .WithMany(type => type.PartnerServices)
                 .HasForeignKey(service => service.LeadTypeId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+
+            // [Start] Identity Service Relationship
+            //
+            // ApplicationUser 1-1 Agent
+            builder.Entity<ApplicationUser>()
+                .HasOne(user => user.Agent)
+                .WithOne(agent => agent.ApplicationUser)
+                .HasForeignKey<Agent>(agent => agent.ApplicationUserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // ApplicationUser 1-1 SalePerson
+            builder.Entity<ApplicationUser>()
+                .HasOne(user => user.SalesPerson)
+                .WithOne(agent => agent.ApplicationUser)
+                .HasForeignKey<SalesPerson>(salesPerson => salesPerson.ApplicationUserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            //
+            // [End] Identity Service Relationship
         }
     }
 }

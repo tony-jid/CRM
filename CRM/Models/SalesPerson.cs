@@ -9,6 +9,9 @@ namespace CRM.Models
 {
     public class SalesPerson : IPerson
     {
+        public string ApplicationUserId { get; set; }
+        public ApplicationUser ApplicationUser { get; set; }
+
         [Key]
         public Guid Id { get; set; }
 

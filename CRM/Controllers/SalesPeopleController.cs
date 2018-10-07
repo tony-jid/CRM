@@ -4,9 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using CRM.Models;
 using CRM.Repositories;
+using CRM.Services;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -16,11 +20,14 @@ namespace CRM.Controllers
     {
         private IUnitOfWork _uow;
         private ISalesPersonRepository _salesRepo;
+        private AccountManager _accountManager;
 
-        public SalesPeopleController(IUnitOfWork unitOfWork)
+        public SalesPeopleController(IUnitOfWork unitOfWork, IEmailSender emailSender
+            , UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             _uow = unitOfWork;
             _salesRepo = unitOfWork.SalesPersonRepository;
+            _accountManager = new AccountManager(userManager, signInManager, emailSender);
         }
 
         [HttpGet]
@@ -30,7 +37,7 @@ namespace CRM.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post(string values)
+        public async Task<IActionResult> Post(string values)
         {
             var model = new SalesPerson();
             JsonConvert.PopulateObject(values, model);
@@ -38,9 +45,24 @@ namespace CRM.Controllers
             if (!TryValidateModel(model))
                 return BadRequest(GetFullErrorMessage(ModelState));
 
-            _salesRepo.Add(model);
+            var user = new ApplicationUser() { UserName = model.EMail, Email = model.EMail };
 
-            return Ok();
+            IdentityResult result = await _accountManager.CreateAccountAsync(user);
+
+            if (result.Succeeded)
+            {
+                await _accountManager.SendEmailConfirmationAsync(user, this.Request, this.Url);
+
+                model.ApplicationUserId = user.Id;
+                _salesRepo.Add(model);
+
+                return _uow.Commit() ? Ok() : StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status500InternalServerError);
+            }
+            else
+            {
+                _accountManager.AddModelStateErrors(this.ModelState, result);
+                return BadRequest(GetFullErrorMessage(this.ModelState));
+            }
         }
 
         [HttpPut]
@@ -57,7 +79,7 @@ namespace CRM.Controllers
 
             _salesRepo.Update(model);
 
-            return Ok();
+            return _uow.Commit() ? Ok() : StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status500InternalServerError);
         }
 
         [HttpDelete]
@@ -65,6 +87,8 @@ namespace CRM.Controllers
         {
             var model = _salesRepo.GetByUid(key);
             _salesRepo.Remove(model);
+
+            _uow.Commit();
         }
 
         [HttpGet]

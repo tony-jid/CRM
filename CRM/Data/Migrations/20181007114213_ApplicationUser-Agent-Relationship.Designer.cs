@@ -4,14 +4,16 @@ using CRM.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CRM.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181007114213_ApplicationUser-Agent-Relationship")]
+    partial class ApplicationUserAgentRelationship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -432,7 +434,7 @@ namespace CRM.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("ApplicationUserId");
+                    b.Property<string>("AspNetUserId");
 
                     b.Property<Guid>("BranchId");
 
@@ -447,9 +449,7 @@ namespace CRM.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApplicationUserId")
-                        .IsUnique()
-                        .HasFilter("[ApplicationUserId] IS NOT NULL");
+                    b.HasIndex("AspNetUserId");
 
                     b.HasIndex("BranchId");
 
@@ -758,10 +758,9 @@ namespace CRM.Data.Migrations
 
             modelBuilder.Entity("CRM.Models.SalesPerson", b =>
                 {
-                    b.HasOne("CRM.Models.ApplicationUser", "ApplicationUser")
-                        .WithOne("SalesPerson")
-                        .HasForeignKey("CRM.Models.SalesPerson", "ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.HasOne("CRM.Models.ApplicationUser", "AspNetUser")
+                        .WithMany()
+                        .HasForeignKey("AspNetUserId");
 
                     b.HasOne("CRM.Models.PartnerBranch", "Branch")
                         .WithMany("SalesPeople")

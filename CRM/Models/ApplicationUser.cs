@@ -9,5 +9,8 @@ namespace CRM.Models
     // Add profile data for application users by adding properties to the ApplicationUser class
     public class ApplicationUser : IdentityUser
     {
+        public Agent Agent { get; set; }
+
+        public SalesPerson SalesPerson { get; set; }
     }
 }
