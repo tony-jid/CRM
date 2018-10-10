@@ -1,4 +1,5 @@
-﻿using CRM.Models;
+﻿using CRM.Enum;
+using CRM.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +13,15 @@ namespace CRM.Services
 {
     public interface IAccountManager
     {
-        Task<IdentityResult> CreateAccountAsync(ApplicationUser user);
+        Task<IdentityResult> CreateAccountAsync(ApplicationUser user, EnumApplicationRole role);
+
+        Task<IdentityResult> DeleteAccountAsync(string email);
+
+        Task<IdentityResult> DeleteAccountAsync(ApplicationUser user);
+
+        Task<IdentityResult> ChangeEmailAsync(ApplicationUser user, string newEmail);
+
+        Task<ApplicationUser> GetUserAsync(string email);
 
         Task SendEmailConfirmationAsync(ApplicationUser user, HttpRequest request, IUrlHelper url);
 

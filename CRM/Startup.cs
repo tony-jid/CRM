@@ -14,6 +14,7 @@ using CRM.Services;
 using CRM.Repositories;
 using Newtonsoft.Json.Serialization;
 using CRM.Services.AuthOptions;
+using CRM.Enum;
 
 namespace CRM
 {
@@ -32,7 +33,7 @@ namespace CRM
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<ApplicationUser, IdentityRole>(config =>
+            services.AddIdentity<ApplicationUser, ApplicationRole>(config =>
             {
                 config.SignIn.RequireConfirmedEmail = Boolean.Parse(_configuration["IdentityOptions:SignIn:RequireConfirmedEmail"]);
             })
@@ -83,7 +84,7 @@ namespace CRM
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
@@ -106,6 +107,43 @@ namespace CRM
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            CreateRoles(serviceProvider).Wait();
+        }
+
+        private async Task CreateRoles(IServiceProvider serviceProvider)
+        {
+            // Retrieving UserManager & RoleManager services
+            var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
+
+            // Initializing custom roles
+            foreach (var roleName in System.Enum.GetNames(typeof(EnumApplicationRole)))
+            {
+                var roleExist = await roleManager.RoleExistsAsync(roleName);
+                if (!roleExist)
+                {
+                    // Creating the roles and seed them to the database
+                    await roleManager.CreateAsync(new ApplicationRole() { Name = roleName });
+                    //var result = await roleManager.CreateAsync(new ApplicationRole() { Name = roleName });
+                }
+            }
+
+            // Creating an account for administrator 
+            ApplicationUser admin = await userManager.FindByEmailAsync("thawatchai.j14@gmail.com");
+
+            if (admin == null)
+            {
+                admin = new ApplicationUser()
+                {
+                    UserName = "thawatchai.j14@gmail.com",
+                    Email = "thawatchai.j14@gmail.com",
+                    EmailConfirmed = true,
+                };
+                await userManager.CreateAsync(admin, "asdf!234");
+            }
+            await userManager.AddToRoleAsync(admin, EnumApplicationRole.Admin.ToString());
+
         }
     }
 }

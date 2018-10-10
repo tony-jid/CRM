@@ -23,11 +23,11 @@ namespace CRM.Controllers
         private AccountManager _accountManager;
 
         public SalesPeopleController(IUnitOfWork unitOfWork, IEmailSender emailSender
-            , UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+            , UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, SignInManager<ApplicationUser> signInManager)
         {
             _uow = unitOfWork;
             _salesRepo = unitOfWork.SalesPersonRepository;
-            _accountManager = new AccountManager(userManager, signInManager, emailSender);
+            _accountManager = new AccountManager(userManager, roleManager, signInManager, emailSender);
         }
 
         [HttpGet]
@@ -47,7 +47,7 @@ namespace CRM.Controllers
 
             var user = new ApplicationUser() { UserName = model.EMail, Email = model.EMail };
 
-            IdentityResult result = await _accountManager.CreateAccountAsync(user);
+            IdentityResult result = await _accountManager.CreateAccountAsync(user, Enum.EnumApplicationRole.Partner);
 
             if (result.Succeeded)
             {

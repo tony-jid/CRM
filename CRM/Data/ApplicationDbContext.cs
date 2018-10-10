@@ -8,7 +8,7 @@ using CRM.Models;
 
 namespace CRM.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
     {
         public DbSet<Models.Action> Actions { get; set; }
         public DbSet<Address> Addresses { get; set; }
