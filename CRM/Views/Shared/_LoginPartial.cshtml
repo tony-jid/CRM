@@ -1,27 +1,39 @@
-@using Microsoft.AspNetCore.Identity
-@using CRM.Models
-
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
-@if (SignInManager.IsSignedIn(User))
-{
-    <form asp-area="" asp-controller="Account" asp-action="Logout"
-          method="post" id="logoutForm" class="navbar-right form-inline">
-        <ul class="nav navbar-nav navbar-right">
-            <li>
-                <a class="nav-link" asp-area="" asp-controller="Manage" asp-action="Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
-            </li>
-            <li>
-                <button type="submit" class="btn btn-link navbar-btn navbar-link">Log out</button>
-            </li>
-        </ul>
-    </form>
-}
-else
-{
-    <ul class="navbar-nav">
-        <li><a class="nav-link" asp-area="" asp-controller="Account" asp-action="Register">Register</a></li>
-        <li><a class="nav-link" asp-area="" asp-controller="Account" asp-action="Login">Log in</a></li>
-    </ul>
-}
+
+<!-- Account Management Links -->
+<ul class="navbar-nav ml-5 navbar-profile float-right">
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" id="navbar-dropdown-navbar-profile" data-toggle="dropdown" data-flip="false" aria-haspopup="true" aria-expanded="false">
+            <div class="profile-name">
+                @UserManager.GetUserName(User)
+            </div>
+            @*<div class="profile-picture bg-gradient bg-primary has-message float-right">
+                <img src="~/images/agents/1.jpg" width="44" height="44">
+            </div>*@
+        </a>
+        <form asp-area="" asp-controller="Account" asp-action="Logout">
+            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="navbar-dropdown-navbar-profile">
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <li><a class="dropdown-item" href="#">Profile</a></li>
+                    <li><a class="dropdown-item" asp-controller="Account" asp-action="ChangePassword">Change password</a></li>
+                    <li><button type="submit" class="dropdown-item">LOG OUT</button></li>
+
+                    @*<li>
+                        <a class="dropdown-item" href="#">
+                            Messages
+                            <span class="badge badge-danger badge-pill float-right">3</span>
+                        </a>
+                    </li>*@
+                    @*<li><a class="dropdown-item" href="#">Logout</a></li>*@
+                }
+                else
+                {
+                    <li><a class="dropdown-item" asp-controller="Account" asp-action="Login">Log in</a></li>
+                }
+            </ul>
+        </form>
+    </li>
+</ul>

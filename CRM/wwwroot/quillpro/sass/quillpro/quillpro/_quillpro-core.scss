@@ -237,17 +237,20 @@ table.table-dark{
 	color: $qp-color-secondary !important;
 }
 .dropdown-menu a,
-.navbar .dropdown-menu a{
+.navbar .dropdown-menu a,
+.navbar .dropdown-menu button{
 	margin: 0 !important;
 	padding: 10px 1.5rem !important;
-	color: $qp-color-secondary-gradient-2 !important;
+	color: $qp-color-secondary !important;
 	@include qp-transition(color .225s ease-in-out, background-color .225s ease-in-out);
 }
 .dropdown-menu a:hover,
 .dropdown-menu a:focus,
 .navbar .dropdown-menu a:hover,
-.navbar .dropdown-menu a:focus{
-	color: $qp-color-secondary !important;
+.navbar .dropdown-menu a:focus,
+.navbar .dropdown-menu button:hover{
+	color: $qp-color-white !important;
+    background-color: $qp-color-primary !important;
 }
 .dropdown-menu a.dropdown-item.show,
 .navbar .dropdown-menu a.dropdown-item.show,
@@ -3300,6 +3303,7 @@ input[type=date].valid, input[type=date]:focus.valid, input[type=datetime-local]
 		}
 	}
 	.navbar-nav.navbar-profile{
+        cursor: pointer;
 		margin-left: 1rem !important;
 		.nav-item{
 			.nav-link.dropdown-toggle{
@@ -3310,7 +3314,27 @@ input[type=date].valid, input[type=date]:focus.valid, input[type=datetime-local]
 					font-weight: 400;
 					float: left !important;
 					margin-top: 1.3rem !important;
+                    color: $qp-color-blue-dark-2;
 				}
+                .profile-name:before{
+                    content: "";
+                    position: absolute;
+                    width: 100%;
+                    height: 2px;
+                    bottom: 0;
+                    left: 0;
+                    background-color: $qp-color-blue;
+                    visibility: hidden;
+                    -webkit-transform: scaleX(0);
+                    transform: scaleX(0);
+                    -webkit-transition: all 0.3s ease-in-out 0s;
+                    transition: all 0.3s ease-in-out 0s;
+                }
+                .profile-name:hover:before{
+                    visibility: visible;
+                    -webkit-transform: scaleX(1);
+                    transform: scaleX(1);
+                }
 				.profile-picture{
 					margin-left: 1rem !important;
 					img{

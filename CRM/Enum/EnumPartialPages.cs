@@ -10,6 +10,7 @@ namespace CRM.Enum
         _StylesPartial,
         _ScriptsPartial,
         _LoginPartial,
+        _StatusMessage,
         _SidebarPartial,
         _NavbarPartial,
         _SidebarPartialHorizontal,

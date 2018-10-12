@@ -230,10 +230,11 @@ table.table-dark {
   color: #4f5b60 !important; }
 
 .dropdown-menu a,
-.navbar .dropdown-menu a {
+.navbar .dropdown-menu a,
+.navbar .dropdown-menu button {
   margin: 0 !important;
   padding: 10px 1.5rem !important;
-  color: #97a9b2 !important;
+  color: #4f5b60 !important;
   -webkit-transition: color 0.225s ease-in-out, background-color 0.225s ease-in-out;
   -moz-transition: color 0.225s ease-in-out, background-color 0.225s ease-in-out;
   -o-transition: color 0.225s ease-in-out, background-color 0.225s ease-in-out;
@@ -242,8 +243,10 @@ table.table-dark {
 .dropdown-menu a:hover,
 .dropdown-menu a:focus,
 .navbar .dropdown-menu a:hover,
-.navbar .dropdown-menu a:focus {
-  color: #4f5b60 !important; }
+.navbar .dropdown-menu a:focus,
+.navbar .dropdown-menu button:hover {
+  color: #FFFFFF !important;
+  background-color: #07a7e3 !important; }
 
 .dropdown-menu a.dropdown-item.show,
 .navbar .dropdown-menu a.dropdown-item.show,
@@ -3396,6 +3399,7 @@ input[type=date].valid, input[type=date]:focus.valid, input[type=datetime-local]
       top: -8px !important;
       right: -12px !important; }
   .navbar .navbar-nav.navbar-profile {
+    cursor: pointer;
     margin-left: 1rem !important; }
     .navbar .navbar-nav.navbar-profile .nav-item .nav-link.dropdown-toggle {
       padding: 0 1rem 0 0;
@@ -3404,7 +3408,25 @@ input[type=date].valid, input[type=date]:focus.valid, input[type=datetime-local]
         display: none;
         font-weight: 400;
         float: left !important;
-        margin-top: 1.3rem !important; }
+        margin-top: 1.3rem !important;
+        color: #0043cf; }
+      .navbar .navbar-nav.navbar-profile .nav-item .nav-link.dropdown-toggle .profile-name:before {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 2px;
+        bottom: 0;
+        left: 0;
+        background-color: #3677FF;
+        visibility: hidden;
+        -webkit-transform: scaleX(0);
+        transform: scaleX(0);
+        -webkit-transition: all 0.3s ease-in-out 0s;
+        transition: all 0.3s ease-in-out 0s; }
+      .navbar .navbar-nav.navbar-profile .nav-item .nav-link.dropdown-toggle .profile-name:hover:before {
+        visibility: visible;
+        -webkit-transform: scaleX(1);
+        transform: scaleX(1); }
       .navbar .navbar-nav.navbar-profile .nav-item .nav-link.dropdown-toggle .profile-picture {
         margin-left: 1rem !important; }
     .navbar .navbar-nav.navbar-profile .nav-item .nav-link.dropdown-toggle::after {

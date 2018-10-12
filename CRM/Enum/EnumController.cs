@@ -7,6 +7,7 @@ namespace CRM.Enum
 {
     public enum EnumController
     {
+        Home,
         Account,
         Dashboard,
         Message,

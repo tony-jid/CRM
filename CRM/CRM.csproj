@@ -391,6 +391,9 @@
     <Content Update="Views\Shared\_NavbarPartial.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Views\Shared\_StatusMessage.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="..\..\..\..\..\%2540Work\Freelance\ComparisonAdvantage\CRM\CRM\Views\SharedTemplates\" />

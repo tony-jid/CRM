@@ -47,6 +47,7 @@ namespace CRM.Controllers
         {
             // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+            await _signInManager.SignOutAsync();
 
             ViewData["ReturnUrl"] = returnUrl;
             return View();
@@ -133,6 +134,50 @@ namespace CRM.Controllers
             {
                 return View("Error");
             }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ChangePassword(string statusMassage = "")
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+            
+            return View(new ChangePasswordViewModel() { StatusMessage = statusMassage });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                }
+
+                var changePasswordResult = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+                if (!changePasswordResult.Succeeded)
+                {
+                    AddErrors(changePasswordResult);
+                }
+                else
+                {
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    _logger.LogInformation("User changed their password successfully.");
+                    //StatusMessage = "Your password has been changed.";
+
+                    string homeLink = Url.Action(nameof(HomeController.Index), nameof(EnumController.Home));
+
+                    return RedirectToAction(nameof(ChangePassword), new { statusMassage = $"Your password has been changed. Please <a href='{homeLink}'>click here to go back to the home page</a>" });
+                }
+            }
+
+            return View(model);
         }
 
         [HttpGet]
@@ -253,7 +298,7 @@ namespace CRM.Controllers
             }
             else
             {
-                return RedirectToAction(nameof(HomeController.Index), "Home");
+                return RedirectToAction(nameof(HomeController.Index), nameof(EnumController.Home));
             }
         }
 
