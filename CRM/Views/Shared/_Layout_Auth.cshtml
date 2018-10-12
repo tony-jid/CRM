@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>CRM - @ViewData["Title"]</title>
+
+	@Html.Partial(nameof(EnumPartialPages._StylesPartial))
+
+	@Html.Partial(nameof(EnumPartialPages._ScriptsPartial))
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="right-column sisu">
+				<div class="row mx-0">
+                    <div class="col-md-7 order-md-2 signin-right-column px-5 bg-dark">
+                        <a class="signin-logo d-sm-block d-md-none" href="#">
+							<img src="~/images/company/logo-light.png" width="226" height="70" alt="Comparison Advantage">
+						</a>
+                        <span class="signin-text">
+						    <h1 class="display-4">AUSTRALIA'S BUSINESS TECHNOLOGY COMPARISON EXPERTS</h1>
+                        </span>
+                    </div>
+                    <div class="col-md-5 order-md-1 signin-left-column bg-white px-5">
+						<a class="signin-logo d-sm-none d-md-block text-center" href="#">
+							<img src="~/images/company/logo-dark.png" width="226" height="70" alt="Comparison Advantage">
+						</a>
+                        @RenderBody()
+					</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @RenderSection(nameof(EnumLayoutSections.Scripts), required: false)
+</body>
+</html>

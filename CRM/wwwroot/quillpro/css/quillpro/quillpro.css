@@ -4440,6 +4440,8 @@ input[type=date].valid, input[type=date]:focus.valid, input[type=datetime-local]
     display: none; }
   .sisu.right-column .signin-left-column .signin-logo {
     display: none; }
+  .sisu.right-column .signin-right-column .signin-text {
+    display: none; }
   #toast-container > div {
     width: 100%; } }
 
@@ -4600,4 +4602,3 @@ input[type=date].valid, input[type=date]:focus.valid, input[type=datetime-local]
     padding-top: 23rem;
     padding-right: 10rem !important;
     padding-left: 10rem !important; } }
-

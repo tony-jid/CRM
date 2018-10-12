@@ -70,7 +70,31 @@ namespace CRM.Services
 
             return result;
         }
-        
+
+        public async Task<IdentityResult> ChangeEmailAsync(string oldEmail, string newEmail, HttpRequest httpRequest, IUrlHelper url)
+        {
+            var user = await _userManager.FindByEmailAsync(oldEmail);
+
+            var result = await ChangeEmailAsync(user, newEmail);
+            
+            if (result.Succeeded)
+            {
+                result = await ChangeUserNameAsync(user, newEmail);
+
+                if (result.Succeeded)
+                {
+                    await SendEmailConfirmationAsync(user, httpRequest, url);
+                }
+                else
+                {
+                    // If changing UserName fails, then rollback the Email
+                    await ChangeEmailAsync(user, oldEmail);
+                }
+            }
+
+            return result;
+        }
+
         public async Task<IdentityResult> ChangeEmailAsync(ApplicationUser user, string newEmail)
         {
             string token = await _userManager.GenerateChangeEmailTokenAsync(user, newEmail);

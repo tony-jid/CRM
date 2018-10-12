@@ -126,27 +126,9 @@ namespace CRM.Controllers
             {
                 if (!newModel.EMail.Equals(oldModel.EMail))
                 {
-                    var user = await _accountManager.GetUserAsync(oldModel.EMail);
+                    var result = await _accountManager.ChangeEmailAsync(oldModel.EMail, newModel.EMail, this.Request, this.Url);
 
-                    var result = await _accountManager.ChangeEmailAsync(user, newModel.EMail);
-
-                    if (result.Succeeded)
-                    {
-                        result = await _accountManager.ChangeUserNameAsync(user, newModel.EMail);
-
-                        if (result.Succeeded)
-                        {
-                            await _accountManager.SendEmailConfirmationAsync(user, this.Request, this.Url);
-                        }
-                        else
-                        {
-                            // If changing UserName fails, then rollback the Email
-                            await _accountManager.ChangeEmailAsync(user, oldModel.EMail);
-                            _accountManager.AddModelStateErrors(this.ModelState, result);
-                            return false;
-                        }
-                    }
-                    else
+                    if (!result.Succeeded)
                     {
                         _accountManager.AddModelStateErrors(this.ModelState, result);
                         return false;

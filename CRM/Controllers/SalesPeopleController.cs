@@ -66,35 +66,76 @@ namespace CRM.Controllers
         }
 
         [HttpPut]
-        public IActionResult Put(Guid key, string values)
+        public async Task<IActionResult> Put(Guid key, string values)
         {
-            var model = _salesRepo.GetByUid(key);
-            if (model == null)
-                return StatusCode(409, "Sales person of the branch not found");
+            var newModel = new SalesPerson();
+            JsonConvert.PopulateObject(values, newModel);
 
-            JsonConvert.PopulateObject(values, model);
+            var oldModel = _salesRepo.GetByUid(key);
+            if (oldModel == null)
+                return StatusCode(409, "Sales person of the branch not found.");
 
-            if (!TryValidateModel(model))
-                return BadRequest(GetFullErrorMessage(ModelState));
+            if (await ChangeEmailAsync(oldModel, newModel))
+            {
+                JsonConvert.PopulateObject(values, oldModel);
 
-            _salesRepo.Update(model);
+                if (!TryValidateModel(oldModel))
+                    return BadRequest(GetFullErrorMessage(ModelState));
 
-            return _uow.Commit() ? Ok() : StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status500InternalServerError);
+                _salesRepo.Update(oldModel);
+
+                return _uow.Commit() ? Ok() : StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            else
+            {
+                return BadRequest(GetFullErrorMessage(this.ModelState));
+            }
         }
 
         [HttpDelete]
-        public void Delete(Guid key)
+        public async Task<IActionResult> Delete(Guid key)
         {
             var model = _salesRepo.GetByUid(key);
-            _salesRepo.Remove(model);
 
-            _uow.Commit();
+            var result = await _accountManager.DeleteAccountAsync(model.EMail);
+
+            if (result.Succeeded)
+            {
+                // Do not have to remove data and commit manually, because Identity Service will do the job
+                //_agentRepo.Remove(model);
+                //return _uow.Commit() ? Ok() : StatusCode(StatusCodes.Status500InternalServerError);
+
+                return Ok();
+            }
+            else
+            {
+                return BadRequest(GetFullErrorMessage(this.ModelState));
+            }
         }
 
         [HttpGet]
         public object GetSalesPeopleByBranch(Guid branchId, DataSourceLoadOptions loadOptions)
         {
             return DataSourceLoader.Load(_salesRepo.GetSalesPeopleByBranch(branchId), loadOptions);
+        }
+
+        private async Task<bool> ChangeEmailAsync(SalesPerson oldModel, SalesPerson newModel)
+        {
+            if (!String.IsNullOrEmpty(newModel.EMail))
+            {
+                if (!newModel.EMail.Equals(oldModel.EMail))
+                {
+                    var result = await _accountManager.ChangeEmailAsync(oldModel.EMail, newModel.EMail, this.Request, this.Url);
+
+                    if (!result.Succeeded)
+                    {
+                        _accountManager.AddModelStateErrors(this.ModelState, result);
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
     }
 }

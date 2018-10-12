@@ -1,10 +1,13 @@
-﻿@{
-    ViewData["Title"] = "Confirm email";
+﻿@model ConfirmEmailViewModel
+
+@{
+    ViewData[nameof(EnumViewData.Title)] = "Email Confirmation";
+    Layout = "~/Views/Shared/_Layout_Auth.cshtml";
 }
 
-<h2>@ViewData["Title"]</h2>
+<h2>@ViewData[nameof(EnumViewData.Title)]</h2>
 <div>
     <p>
-        Thank you for confirming your email.
+        Thank you for confirming your email. Please <a asp-action="ResetPassword" asp-route-code="@Model.ResetPasswordCode">click here to set your password</a>.
     </p>
 </div>
