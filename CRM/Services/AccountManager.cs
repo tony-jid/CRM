@@ -26,14 +26,19 @@ namespace CRM.Services
             _emailSender = emailSender;
         }
 
-        public async Task<IdentityResult> CreateAccountAsync(ApplicationUser user, EnumApplicationRole role)
+        public async Task<IdentityResult> CreateAccountAsync(ApplicationUser user, string roleName)
         {
             var result = await _userManager.CreateAsync(user, user.Email);
 
             if (result.Succeeded)
-                await _userManager.AddToRoleAsync(user, role.ToString());
+                await _userManager.AddToRoleAsync(user, roleName);
 
             return result;
+        }
+
+        public async Task<IdentityResult> CreateAccountAsync(ApplicationUser user, EnumApplicationRole role)
+        {
+            return await CreateAccountAsync(user, role.ToString());
         }
 
         public async Task<IdentityResult> DeleteAccountAsync(string email)
@@ -120,6 +125,16 @@ namespace CRM.Services
                 throw new Exception($"Not found application user of {email}.");
         }
 
+        public async Task<string> GetRoleAsync(ApplicationUser user)
+        {
+            var roleNames = await _userManager.GetRolesAsync(user);
+
+            if (roleNames != null)
+                return roleNames.Count() > 0 ? roleNames.First() : throw new ApplicationException($"Not found application role of {user.UserName}.");
+            else
+                throw new ApplicationException($"Not found application role of {user.UserName}.");
+        }
+
         public async Task SendEmailConfirmationAsync(ApplicationUser user, HttpRequest request, IUrlHelper url)
         {
             user.EmailConfirmed = false;
@@ -142,6 +157,59 @@ namespace CRM.Services
             var code = await _userManager.GeneratePasswordResetTokenAsync(user);
             var callbackUrl = url.ResetPasswordCallbackLink(user.Id, code, request.Scheme);
             await _emailSender.SendResetPasswordAsync(user.Email, callbackUrl);
+        }
+
+        public async Task<List<string>> GetAgentRolesAsync(ApplicationUser user)
+        {
+            var roleNames = _roleManager.Roles.Select(s => s.Name);
+            var excludedRoles = new List<string> { nameof(EnumApplicationRole.Admin), nameof(EnumApplicationRole.Partner), nameof(EnumApplicationRole.Customer) };
+
+            var activeUserRoles = await _userManager.GetRolesAsync(user);
+            var activeUserRoleName = activeUserRoles.Count() > 0 ? activeUserRoles.First() : throw new ApplicationException($"Could not find a role of {user.UserName}");
+            
+
+            if (activeUserRoleName.Equals(nameof(EnumApplicationRole.Admin)))
+            {
+                
+            }
+            else if (activeUserRoleName.Equals(nameof(EnumApplicationRole.Manager)))
+            {
+                excludedRoles.Add(nameof(EnumApplicationRole.Manager));
+            }
+            else if (activeUserRoleName.Equals(nameof(EnumApplicationRole.Agent)))
+            {
+                excludedRoles.Add(nameof(EnumApplicationRole.Manager));
+                excludedRoles.Add(nameof(EnumApplicationRole.Agent));
+            }
+
+            return roleNames.Where(role => !excludedRoles.Contains(role)).ToList();
+        }
+
+        public async Task<bool> ChangeRoleAsync(ApplicationUser user, string newRole)
+        {
+            var roles = await _userManager.GetRolesAsync(user);
+            if (roles.Count > 0)
+            {
+                string oldRole = roles[0];
+                if (!oldRole.Equals(newRole))
+                {
+                    var result = await _userManager.RemoveFromRoleAsync(user, oldRole);
+                    if (!result.Succeeded)
+                    {
+                        throw new ApplicationException(result.Errors.Count() > 0 ? result.Errors.First().Description : "Could not reach error info");
+                    }
+                    else
+                    {
+                        result = await _userManager.AddToRoleAsync(user, newRole);
+                        if (!result.Succeeded)
+                        {
+                            throw new ApplicationException(result.Errors.Count() > 0 ? result.Errors.First().Description : "Could not reach error info");
+                        }
+                    }
+                }
+            }
+            
+            return true;
         }
 
         public void AddModelStateErrors(ModelStateDictionary modelState, IdentityResult result)
