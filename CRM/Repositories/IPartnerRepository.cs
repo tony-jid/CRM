@@ -9,6 +9,8 @@ namespace CRM.Repositories
 {
     public interface IPartnerRepository : IRepository<Partner>
     {
+        Partner GetBySalesPerson(string salesPersonId);
+
         void AddServices(Guid partnerId, int[] services);
 
         void UpdateServices(Guid partnerId, int[] services);

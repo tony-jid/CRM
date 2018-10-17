@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData[EnumViewData.Title.ToString()] = nameof(EnumController.Partners);
+    ViewData[EnumViewData.Title.ToString()] = "Partner Portal";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -28,7 +28,7 @@
                 <div class="profile-page-left">
                     <h4><i class="batch-icon batch-icon-store"></i> Partner Info</h4>
                     <h5 class="pl-4">
-                        <img src="@ImageHelper.PATH_CLIENT_PARTNER@Model.Logo" class="grid-partner-logo" />
+                        <img src="@ImageHelper.PATH_CLIENT_PARTNER@Model.Logo" class="form-partner-logo" />
                         @Model.Name
                     </h5>
                 </div>

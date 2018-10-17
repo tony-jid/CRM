@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CRM.Controllers
 {
-    public class HookController : BaseController
+    public class HookController : Controller
     {
         private IUnitOfWork _uow;
         private ILeadRepository _leadRepo;
@@ -22,11 +22,6 @@ namespace CRM.Controllers
             _uow = unitOfWork;
             _leadRepo = unitOfWork.LeadRepository;
             _cusRepo = unitOfWork.CustomerRepository;
-        }
-
-        public override IActionResult Index()
-        {
-            return NotFound();
         }
 
         [HttpPost]

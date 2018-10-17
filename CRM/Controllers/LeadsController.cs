@@ -13,11 +13,15 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using CRM.Helpers;
 using System.Web;
+using CRM.Enum;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace CRM.Controllers
 {
+    [Authorize(Roles = nameof(EnumApplicationRole.Admin) 
+        + "," + nameof(EnumApplicationRole.Manager) 
+        + "," + nameof(EnumApplicationRole.Agent))]
     public class LeadsController : BaseController
     {
         private IUnitOfWork _uow;
@@ -38,10 +42,11 @@ namespace CRM.Controllers
             return View(lead);
         }
 
-        //[HttpGet("{partnerId}")]
+        // Using "Partner/Portal" instead
+        [HttpGet("{partnerId}")]
         public IActionResult Partner(Guid partnerId)
         {
-            partnerId = new Guid("C3D3E1DD-837F-4F84-7F4B-08D61A4AE951");
+            partnerId = new Guid("5DD63725-0737-4D40-5853-08D62779DCF3");
 
             var partner = _partnerRepo.GetByUid(partnerId);
             return View(partner);

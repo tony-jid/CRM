@@ -1,8 +1,10 @@
-﻿using CRM.Helpers;
+﻿using CRM.Enum;
+using CRM.Helpers;
 using CRM.Models;
 using CRM.Repositories;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +18,9 @@ using System.Linq;
 
 namespace CRM.Controllers
 {
+    [Authorize(Roles = nameof(EnumApplicationRole.Admin) 
+        + "," + nameof(EnumApplicationRole.Manager)
+        + "," + nameof(EnumApplicationRole.Agent))]
     public class LeadTypesController : BaseController
     {
         private IUnitOfWork _uow;

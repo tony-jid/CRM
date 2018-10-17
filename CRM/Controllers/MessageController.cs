@@ -2,18 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CRM.Enum;
 using CRM.Models;
 using CRM.Models.ViewModels;
 using CRM.Repositories;
 using CRM.Services;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace CRM.Controllers
 {
+    [Authorize(Roles = nameof(EnumApplicationRole.Admin)
+        + "," + nameof(EnumApplicationRole.Manager)
+        + "," + nameof(EnumApplicationRole.Agent)
+        + "," + nameof(EnumApplicationRole.Partner))]
     public class MessageController : BaseController
     {
         private IUnitOfWork _uow;
@@ -27,7 +33,8 @@ namespace CRM.Controllers
 
             _emailSender = emailSender;
         }
-        
+
+        [Authorize(Roles = nameof(EnumApplicationRole.Admin) + "," + nameof(EnumApplicationRole.Manager) + "," + nameof(EnumApplicationRole.Agent))]
         public virtual IActionResult Templates()
         {
             return View();
@@ -53,6 +60,7 @@ namespace CRM.Controllers
         //    return _msgRepo.GetTemplates();
         //}
         [HttpGet]
+        [Authorize(Roles = nameof(EnumApplicationRole.Admin) + "," + nameof(EnumApplicationRole.Manager) + "," + nameof(EnumApplicationRole.Agent))]
         public object GetTemplates(DataSourceLoadOptions loadOptions)
         {
             return DataSourceLoader.Load(_msgRepo.GetTemplates(), loadOptions);

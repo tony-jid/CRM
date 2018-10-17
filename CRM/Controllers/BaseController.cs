@@ -11,8 +11,8 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace CRM.Controllers
 {
-    //[Authorize]
-    [Route("[controller]/[action]")]
+    [Authorize]
+    [Route("/[controller]/[action]")]
     public abstract class BaseController : Controller
     {
         [Route("/[controller]")]

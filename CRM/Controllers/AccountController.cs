@@ -94,7 +94,13 @@ namespace CRM.Controllers
         {
             return View();
         }
-        
+
+        [HttpGet]
+        public IActionResult Logout(string returnUrl = null)
+        {
+            return RedirectToLocal("");
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
@@ -289,13 +295,16 @@ namespace CRM.Controllers
 
         private IActionResult RedirectToLocal(string returnUrl)
         {
-            if (Url.IsLocalUrl(returnUrl))
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
             {
                 return Redirect(returnUrl);
             }
             else
             {
-                return RedirectToAction(nameof(HomeController.Index), nameof(EnumController.Home));
+                if (User != null & User.IsInRole(nameof(EnumApplicationRole.Partner)))
+                    return RedirectToAction(nameof(PartnersController.Portal), nameof(EnumController.Partners));
+                else
+                    return RedirectToAction(nameof(HomeController.Index), nameof(EnumController.Home));
             }
         }
 

@@ -13,9 +13,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using CRM.Enum;
 
 namespace CRM.Controllers
 {
+    [Authorize(Roles = nameof(EnumApplicationRole.Admin) + "," + nameof(EnumApplicationRole.Manager) + "," + nameof(EnumApplicationRole.Agent))]
     public class SalesPeopleController : BaseController
     {
         private IUnitOfWork _uow;

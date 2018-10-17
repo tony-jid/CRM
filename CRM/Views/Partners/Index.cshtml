@@ -95,15 +95,11 @@
         )
         .Columns(columns =>
         {
-            columns.AddFor(m => m.Address.StreetAddress)
-                .Caption("Street Address");
-            columns.AddFor(m => m.Address.Suburb)
-                .Caption("Suburb");
-            columns.AddFor(m => m.Address.State)
-                .Caption("State")
+            columns.AddFor(m => m.Address.StreetAddress).Caption("Street Address");
+            columns.AddFor(m => m.Address.Suburb).Caption("Suburb");
+            columns.AddFor(m => m.Address.State).Caption("State")
                 .Lookup(lookup => lookup.DataSource(new JS("states")));
-            columns.AddFor(m => m.Address.PostCode)
-                .Caption("Post Code");
+            columns.AddFor(m => m.Address.PostCode).Caption("Post Code");
         })
         .Editing(e =>
             e.Mode(GridEditMode.Popup)
@@ -112,6 +108,14 @@
             .AllowUpdating(true)
             .AllowDeleting(true)
             .Popup(DXGridConfigs.EditingPopup(nameof(PartnerBranch)))
+            .Form(f => f.Items(i =>
+                {
+                    i.AddSimpleFor(m => m.Address.StreetAddress);
+                    i.AddSimpleFor(m => m.Address.Suburb);
+                    i.AddSimpleFor(m => m.Address.State)
+                        .Editor(editor => editor.Lookup().DataSource(new JS("states")));
+                    i.AddSimpleFor(m => m.Address.PostCode);
+                }))
         )
         .MasterDetail(m => m
             .Enabled(true)

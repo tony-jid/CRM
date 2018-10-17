@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using CRM.Helpers;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -18,11 +19,13 @@ namespace CRM.Models
         [StringLength(64)]
         public string Suburb { get; set; }
 
+        [Required]
         [StringLength(4)]
         public string State { get; set; }
 
-        [DataType(DataType.PostalCode)]
-        [StringLength(4)]
+        [Required]
+        [StringLength(4, ErrorMessage = RegexHelpers.POST_CODE_ERROR_MSG)]
+        [RegularExpression(RegexHelpers.POST_CODE, ErrorMessage = RegexHelpers.POST_CODE_ERROR_MSG)]
         public string PostCode { get; set; }
 
         [JsonIgnore]

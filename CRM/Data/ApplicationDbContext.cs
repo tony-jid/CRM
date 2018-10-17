@@ -89,7 +89,7 @@ namespace CRM.Data
                 .HasOne(lead => lead.Customer)
                 .WithMany(customer => customer.Leads)
                 .HasForeignKey(lead => lead.CustomerId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
             builder.Entity<Lead>()
                 .HasOne(lead => lead.LeadType)
                 .WithMany(leadType => leadType.Leads)

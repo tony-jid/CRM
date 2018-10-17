@@ -11,54 +11,72 @@
         <ul class="navbar-nav navbar-header-menu mr-auto">
             @if (SignInManager.IsSignedIn(User))
             {
-                <li class="nav-item">
-                    <a class="nav-link @(pageName == nameof(EnumController.Dashboard) ? classActiveLink : "")" asp-controller="@(nameof(EnumController.Home))">
-                        <i class="batch-icon batch-icon-browser-alt"></i>
-                        Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link @(pageName == nameof(EnumController.Company) ? classActiveLink : "")" asp-area="" asp-controller="@(nameof(EnumController.Company))" asp-action="">
-                        <i class="batch-icon batch-icon-home"></i>
-                        Company
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link @(pageName == nameof(EnumController.Customers) ? classActiveLink : "")" asp-area="" asp-controller="@(nameof(EnumController.Customers))" asp-action="">
-                        <i class="batch-icon batch-icon-users"></i>
-                        Customers
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link @(pageName == nameof(EnumController.Leads) ? classActiveLink : "")" asp-area="" asp-controller="@(nameof(EnumController.Leads))" asp-action="">
-                        <i class="batch-icon batch-icon-podcast"></i>
-                        Leads
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link @(pageName == nameof(EnumController.LeadTypes) ? classActiveLink : "")" asp-area="" asp-controller="@(nameof(EnumController.LeadTypes))" asp-action="">
-                        <i class="batch-icon batch-icon-clipboard"></i>
-                        Lead Types
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link @(pageName == nameof(EnumController.Partners) ? classActiveLink : "")" asp-area="" asp-controller="@(nameof(EnumController.Partners))" asp-action="">
-                        <i class="batch-icon batch-icon-store"></i>
-                        Partners
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link @(pageName == nameof(EnumController.Partners) ? classActiveLink : "")" asp-area="" asp-controller="@(nameof(EnumController.Partners))" asp-action="Portal">
-                        <i class="batch-icon batch-icon-store"></i>
-                        Partner Portal
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link @(pageName == nameof(EnumController.Message) ? classActiveLink : "")" asp-area="" asp-controller="@(nameof(EnumController.Message))" asp-action="Templates">
-                        <i class="batch-icon batch-icon-paragraph-alt-justify"></i>
-                        Message Templates
-                    </a>
-                </li>
+                @if (!User.IsInRole(nameof(EnumApplicationRole.Partner)))
+                {
+                    <li class="nav-item">
+                        <a class="nav-link @(pageName == nameof(EnumController.Dashboard) ? classActiveLink : "")" asp-controller="@(nameof(EnumController.Home))">
+                            <i class="batch-icon batch-icon-browser-alt"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                }
+                @if (User.IsInRole(nameof(EnumApplicationRole.Admin)) || User.IsInRole(nameof(EnumApplicationRole.Manager)))
+                {
+                    <li class="nav-item">
+                        <a class="nav-link @(pageName == nameof(EnumController.Company) ? classActiveLink : "")" asp-controller="@(nameof(EnumController.Company))" asp-action="">
+                            <i class="batch-icon batch-icon-home"></i>
+                            Company
+                        </a>
+                    </li>
+                }
+                @if (!User.IsInRole(nameof(EnumApplicationRole.Partner)))
+                {
+                    <li class="nav-item">
+                        <a class="nav-link @(pageName == nameof(EnumController.Customers) ? classActiveLink : "")" asp-controller="@(nameof(EnumController.Customers))" asp-action="">
+                            <i class="batch-icon batch-icon-users"></i>
+                            Customers
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(pageName == nameof(EnumController.Leads) ? classActiveLink : "")" asp-controller="@(nameof(EnumController.Leads))" asp-action="">
+                            <i class="batch-icon batch-icon-podcast"></i>
+                            Leads
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(pageName == nameof(EnumController.Partners) ? classActiveLink : "")" asp-controller="@(nameof(EnumController.Partners))" asp-action="">
+                            <i class="batch-icon batch-icon-store"></i>
+                            Partners
+                        </a>
+                    </li>
+                }
+                @if (User.IsInRole(nameof(EnumApplicationRole.Partner)))
+                {
+                    <li class="nav-item">
+                        <a class="nav-link @(pageName == nameof(EnumController.Partners) ? classActiveLink : "")" asp-controller="@(nameof(EnumController.Partners))" asp-action="Portal">
+                            <i class="batch-icon batch-icon-store"></i>
+                            Partner Portal
+                        </a>
+                    </li>
+                }
+                @if (User.IsInRole(nameof(EnumApplicationRole.Admin)) || User.IsInRole(nameof(EnumApplicationRole.Manager)))
+                {
+                    <li class="nav-item">
+                        <a class="nav-link @(pageName == nameof(EnumController.LeadTypes) ? classActiveLink : "")" asp-controller="@(nameof(EnumController.LeadTypes))" asp-action="">
+                            <i class="batch-icon batch-icon-clipboard"></i>
+                            Lead Types
+                        </a>
+                    </li>
+                }
+                @if (!User.IsInRole(nameof(EnumApplicationRole.Partner)))
+                {
+                    <li class="nav-item">
+                        <a class="nav-link @(pageName == nameof(EnumController.Message) ? classActiveLink : "")" asp-controller="@(nameof(EnumController.Message))" asp-action="Templates">
+                            <i class="batch-icon batch-icon-paragraph-alt-justify"></i>
+                            Message Templates
+                        </a>
+                    </li>
+                }
             }
         </ul>
     </div>

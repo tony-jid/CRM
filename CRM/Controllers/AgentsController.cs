@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 
 namespace CRM.Controllers
 {
+    [Authorize(Roles = nameof(EnumApplicationRole.Admin) + "," + nameof(EnumApplicationRole.Manager))]
     public class AgentsController : BaseController
     {
         private IUnitOfWork _uow;
@@ -35,35 +36,34 @@ namespace CRM.Controllers
         }
 
         [HttpGet]
-        public async Task<object> Get(DataSourceLoadOptions loadOptions)
+        public object Get(DataSourceLoadOptions loadOptions)
         {
-            var agentVMs = await GetAgentVMs(_agentRepo.Get());
-            agentVMs = await FilterAgentsByActiveUser(agentVMs);
+            var agentVMs = this.GetAgentVMs(_agentRepo.Get());
+            agentVMs = this.FilterAgentsByActiveUser(agentVMs);
 
             return DataSourceLoader.Load(agentVMs, loadOptions);
         }
 
         [HttpGet]
-        public async Task<object> GetAgentsByOffice(int officeId, DataSourceLoadOptions loadOptions)
+        public object GetAgentsByOffice(int officeId, DataSourceLoadOptions loadOptions)
         {
-            var agentVMs = await GetAgentVMs(_agentRepo.GetAgentsByOffice(officeId));
-            agentVMs = await FilterAgentsByActiveUser(agentVMs);
+            var agentVMs = this.GetAgentVMs(_agentRepo.GetAgentsByOffice(officeId));
+            agentVMs = this.FilterAgentsByActiveUser(agentVMs);
 
             return DataSourceLoader.Load(agentVMs, loadOptions);
         }
 
         [HttpGet]
-        public async Task<object> GetAgentRoles()
+        public object GetAgentRoles()
         {
-            //var user = await _accountManager.GetUserAsync("mala@mail.com"); // for testing
-            var user = await _accountManager.GetUserAsync(User.Identity.Name);
-            var roleNames = await _accountManager.GetAgentRolesAsync(user);
+            var user = _accountManager.GetUserAsync(User.Identity.Name).Result;
+            var roleNames = _accountManager.GetAgentRolesAsync(user).Result;
 
             return roleNames;
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(string values)
+        public IActionResult Post(string values)
         {
             var model = new Agent();
             JsonConvert.PopulateObject(values, model);
@@ -77,11 +77,11 @@ namespace CRM.Controllers
             var user = new ApplicationUser() { UserName = model.EMail, Email = model.EMail };
 
             //IdentityResult result = await _accountManager.CreateAccountAsync(user, EnumApplicationRole.Agent);
-            IdentityResult result = await _accountManager.CreateAccountAsync(user, modelVM.RoleName);
+            IdentityResult result = _accountManager.CreateAccountAsync(user, modelVM.RoleName != null ? modelVM.RoleName : nameof(EnumApplicationRole.Agent)).Result;
 
             if (result.Succeeded)
             {
-                await _accountManager.SendEmailConfirmationAsync(user, this.Request, this.Url);
+                _accountManager.SendEmailConfirmationAsync(user, this.Request, this.Url).Wait();
 
                 model.ApplicationUserId = user.Id;
                 _agentRepo.Add(model);
@@ -96,7 +96,7 @@ namespace CRM.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Put(Guid key, string values)
+        public IActionResult Put(Guid key, string values)
         {
             var newModel = new AgentVM();
             JsonConvert.PopulateObject(values, newModel);
@@ -105,14 +105,17 @@ namespace CRM.Controllers
             if (oldModel == null)
                 return StatusCode(409, "Agent not found");
 
-            if (await ChangeEmailAsync(oldModel, newModel)) {
+            if (ChangeEmailAsync(oldModel, newModel).Result) {
                 JsonConvert.PopulateObject(values, oldModel);
 
                 if (!TryValidateModel(oldModel))
                     return BadRequest(GetFullErrorMessage(ModelState));
 
-                var user = await _accountManager.GetUserAsync(oldModel.EMail);
-                var succeeded = await _accountManager.ChangeRoleAsync(user, newModel.RoleName);
+                var user = _accountManager.GetUserAsync(oldModel.EMail).Result;
+                var succeeded = true;
+
+                if (newModel.RoleName != null)
+                    succeeded = _accountManager.ChangeRoleAsync(user, newModel.RoleName).Result;
 
                 if (succeeded)
                 {
@@ -133,11 +136,11 @@ namespace CRM.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> Delete(Guid key)
+        public IActionResult Delete(Guid key)
         {
             var model = _agentRepo.GetByUid(key);
 
-            var result = await _accountManager.DeleteAccountAsync(model.EMail);
+            var result = _accountManager.DeleteAccountAsync(model.EMail).Result;
 
             if (result.Succeeded)
             {
@@ -172,10 +175,10 @@ namespace CRM.Controllers
             return true;
         }
 
-        public async Task<List<AgentVM>> FilterAgentsByActiveUser(List<AgentVM> agentVMs)
+        public List<AgentVM> FilterAgentsByActiveUser(List<AgentVM> agentVMs)
         {
-            var activeUser = await _accountManager.GetUserAsync(User.Identity.Name);
-            var activeUserRoleName = await _accountManager.GetRoleAsync(activeUser);
+            var activeUser = _accountManager.GetUserAsync(User.Identity.Name).Result;
+            var activeUserRoleName = _accountManager.GetRoleAsync(activeUser).Result;
 
             List<AgentVM> beingRemovedAgents = new List<AgentVM>();
             if (activeUserRoleName.Equals(nameof(EnumApplicationRole.Admin)))
@@ -204,24 +207,22 @@ namespace CRM.Controllers
             else
             {
                 return agentVMs;
-            }
-
-            
+            }            
         }
 
-        private async Task<List<AgentVM>> GetAgentVMs(IEnumerable<Agent> agents)
+        private List<AgentVM> GetAgentVMs(IEnumerable<Agent> agents)
         {
             var agentVMs = new List<AgentVM>();
             
             foreach (var agent in agents)
             {
-                agentVMs.Add(await GetAgentVM(agent));
+                agentVMs.Add(this.GetAgentVM(agent));
             }
 
             return agentVMs;
         }
 
-        private async Task<AgentVM> GetAgentVM(Agent agent)
+        private AgentVM GetAgentVM(Agent agent)
         {
             return new AgentVM() {
                 ApplicationUserId = agent.ApplicationUserId,
@@ -232,7 +233,7 @@ namespace CRM.Controllers
                 ContactNumber = agent.ContactNumber,
                 Office = agent.Office,
                 OfficeId = agent.OfficeId,
-                RoleName = await _accountManager.GetRoleAsync(agent.ApplicationUser)
+                RoleName = _accountManager.GetRoleAsync(agent.ApplicationUser).Result
             };
         }
     }

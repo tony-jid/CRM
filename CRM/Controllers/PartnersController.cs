@@ -3,51 +3,71 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using CRM.Enum;
 using CRM.Helpers;
 using CRM.Models;
 using CRM.Models.ViewModels;
 using CRM.Repositories;
+using CRM.Services;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace CRM.Controllers
 {
+    [Authorize(Roles = nameof(EnumApplicationRole.Admin) 
+        + "," + nameof(EnumApplicationRole.Manager) 
+        + "," + nameof(EnumApplicationRole.Agent) 
+        + "," + nameof(EnumApplicationRole.Partner))]
     public class PartnersController : BaseController
     {
         private IUnitOfWork _uow;
         private IPartnerRepository _partnerRepo;
         private IPartnerBranchRepository _partnerBranchRepo;
         private IHostingEnvironment _hostingEnvironment;
+        private AccountManager _accountManager;
 
         public string LogoPath { get {
                 return Path.Combine(_hostingEnvironment.WebRootPath, ImageHelper.PATH_PARTNER);
             }
         }
 
-        public PartnersController(IUnitOfWork unitOfWork, IHostingEnvironment hostingEnvironment)
+        public PartnersController(IUnitOfWork unitOfWork, IHostingEnvironment hostingEnvironment, IEmailSender emailSender
+            , UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, SignInManager<ApplicationUser> signInManager)
         {
             _uow = unitOfWork;
             _partnerRepo = unitOfWork.PartnerRepository;
             _partnerBranchRepo = unitOfWork.PartnerBranchRepository;
             _hostingEnvironment = hostingEnvironment;
+            _accountManager = new AccountManager(userManager, roleManager, signInManager, emailSender);
         }
 
         //[HttpGet("{partnerId}")]
         //public IActionResult Portal (Guid partnerId)
+        [HttpGet]
+        [Authorize(Roles = nameof(EnumApplicationRole.Partner))]
         public IActionResult Portal()
         {
-            // *** For test, will be assigned by "Partner User Login"
-            Guid partnerId = new Guid("5DD63725-0737-4D40-5853-08D62779DCF3");
+            //if (!User.IsInRole(nameof(EnumApplicationRole.Partner)))
+            //    RedirectToAction(nameof(AccountController.AccessDenied), nameof(EnumController.Account));
 
-            var partner = _partnerRepo.GetByUid(partnerId);
+            // *** For test, will be assigned by "Partner User Login"
+            //Guid partnerId = new Guid("5DD63725-0737-4D40-5853-08D62779DCF3");
+
+            var user = _accountManager.GetUserAsync(User.Identity.Name).Result;
+            var salesPersonId = user.Id;
+
+            var partner = _partnerRepo.GetBySalesPerson(salesPersonId);
             return View(partner);
         }
 
         [HttpGet]
+        [Authorize(Roles = nameof(EnumApplicationRole.Admin) + "," + nameof(EnumApplicationRole.Manager) + "," + nameof(EnumApplicationRole.Agent))]
         public object Get(DataSourceLoadOptions loadOptions)
         {
             return DataSourceLoader.Load(this.GetPartnerVMs(_partnerRepo.Get()), loadOptions);

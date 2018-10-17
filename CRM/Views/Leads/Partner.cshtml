@@ -34,7 +34,7 @@
                                 groupItems.AddSimple()
                                     .CssClass("text-center")
                                     .Template(@<text>
-                                        <img src="@ImageHelper.PATH_PARTNER@Model.Logo" class="form-partner-logo" />
+                                        <img src="@ImageHelper.PATH_CLIENT_PARTNER@Model.Logo" class="form-partner-logo" />
                                     </text>);
                                 groupItems.AddSimpleFor(m => m.Name).Editor(e => e.TextBox().ReadOnly(true));
                                 groupItems.AddButton()

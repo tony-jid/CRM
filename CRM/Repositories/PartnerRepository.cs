@@ -53,6 +53,16 @@ namespace CRM.Repositories
             return _context.Partners.FirstOrDefault(w => w.Id == uid);
         }
 
+        public Partner GetBySalesPerson(string salesPersonId)
+        {
+            var salesPerson = _context.SalesPeople.Where(w => w.ApplicationUserId == salesPersonId).Include(i => i.Branch).ThenInclude(j => j.Partner).FirstOrDefault();
+
+            if (salesPerson != null)
+                return salesPerson.Branch.Partner;
+            else
+                throw new ApplicationException("Sale person is not found.");
+        }
+
         public void Remove(Partner entity)
         {
             _context.Partners.Remove(entity);
