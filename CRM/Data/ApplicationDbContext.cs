@@ -43,7 +43,12 @@ namespace CRM.Data
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);
 
-            builder.Entity<Company>().HasData( new Company { Id = 1, Name = "Comparison Advantage", ABN = "65 626 309 073", GST = 10, Logo = "logo-dark.png" });
+            builder.Entity<Company>().HasData( new Company { Id = 1
+                , Name = "Comparison Advantage"
+                , ABN = "65 626 309 073"
+                , GST = 10
+                , Email = "leads@comparisonadvantage.com.au"
+                , Logo = "logo-dark.png" });
 
             // State data
             builder.Entity<State>().HasData(

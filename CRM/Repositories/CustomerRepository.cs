@@ -70,6 +70,7 @@ namespace CRM.Repositories
         public void Remove(Customer entity)
         {
             _context.Remove(entity);
+            _context.Remove(entity.Address);
             _context.SaveChanges();
         }
 

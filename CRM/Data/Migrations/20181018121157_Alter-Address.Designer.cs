@@ -4,14 +4,16 @@ using CRM.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CRM.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181018121157_Alter-Address")]
+    partial class AlterAddress
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -652,7 +654,7 @@ namespace CRM.Data.Migrations
                     b.HasOne("CRM.Models.Address", "Address")
                         .WithOne("Customer")
                         .HasForeignKey("CRM.Models.Customer", "AddressId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("CRM.Models.InvoiceItem", b =>
@@ -725,7 +727,7 @@ namespace CRM.Data.Migrations
                     b.HasOne("CRM.Models.Address", "Address")
                         .WithOne("Office")
                         .HasForeignKey("CRM.Models.Office", "AddressId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("CRM.Models.Company", "Company")
                         .WithMany("Offices")
@@ -738,7 +740,7 @@ namespace CRM.Data.Migrations
                     b.HasOne("CRM.Models.Address", "Address")
                         .WithOne("PartnerBranch")
                         .HasForeignKey("CRM.Models.PartnerBranch", "AddressId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("CRM.Models.Partner", "Partner")
                         .WithMany("Branches")

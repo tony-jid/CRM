@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CRM.Helpers;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -22,6 +23,10 @@ namespace CRM.Models
 
         [DataType(DataType.ImageUrl)]
         public string Logo { get; set; }
+
+        [Required]
+        [RegularExpression(RegexHelpers.EMAIL, ErrorMessage = RegexHelpers.EMAIL_ERROR_MSG)]
+        public string Email { get; set; }
 
         public IEnumerable<Office> Offices { get; set; }
     }

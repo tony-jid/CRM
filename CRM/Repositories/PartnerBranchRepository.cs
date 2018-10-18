@@ -72,6 +72,7 @@ namespace CRM.Repositories
         public void Remove(PartnerBranch entity)
         {
             _context.Remove(entity);
+            _context.Remove(entity.Address);
             _context.SaveChanges();
         }
 

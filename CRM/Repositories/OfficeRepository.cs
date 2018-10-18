@@ -51,6 +51,7 @@ namespace CRM.Repositories
         public void Remove(Office entity)
         {
             _context.Remove(entity);
+            _context.Remove(entity.Address);
             _context.SaveChanges();
         }
 

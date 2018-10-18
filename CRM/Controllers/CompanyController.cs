@@ -37,9 +37,7 @@ namespace CRM.Controllers
             if (model == null)
                 return Json(StatusCode(409, "Company not found"));
 
-            model.Name = data.Name;
-            model.ABN = data.ABN;
-            model.GST = data.GST;
+            JsonConvert.PopulateObject(JsonConvert.SerializeObject(data), model);
 
             _comRepo.Update(model);
 
