@@ -71,7 +71,7 @@ namespace CRM.Data
                     new Models.Action { Id = "ALA2", ControllerName = "LeadAssignments", ActionName = "Accept", NextStateId = "SLA2", Icon = "batch-icon batch-icon-tick", DisplayName = "Accept lead", ActionTarget = "Ajax", RequestType = "Put" },
                     new Models.Action { Id = "ALA3", ControllerName = "LeadAssignments", ActionName = "Reject", NextStateId = "SLA3", Icon = "batch-icon batch-icon-cross", DisplayName = "Reject lead", ActionTarget = "Ajax", RequestType = "Put" },
                     new Models.Action { Id = "ALA4", ControllerName = "LeadAssignments", ActionName = "SendInvoice", NextStateId = "SLA4", Icon = "fa fa-dollar", DisplayName = "Send invoice", ActionTarget = "Ajax", RequestType = "Post" },
-                    new Models.Action { Id = "ALA5", ControllerName = "LeadAssignments", ActionName = "ResendInvoice", NextStateId = "SLA5", Icon = "fa fa-dollar", DisplayName = "Re-send invoice", ActionTarget = "Ajax", RequestType = "Post" }
+                    new Models.Action { Id = "ALA5", ControllerName = "LeadAssignments", ActionName = "SendInvoice", NextStateId = "SLA5", Icon = "fa fa-dollar", DisplayName = "Re-send invoice", ActionTarget = "Ajax", RequestType = "Post" }
                 );
             // State-Action data
             builder.Entity<StateAction>().HasData(
@@ -84,7 +84,18 @@ namespace CRM.Data
                     new StateAction { StateId = "SLA1", ActionId = "AL1" },
                     new StateAction { StateId = "SLA1", ActionId = "ALA1" },
                     new StateAction { StateId = "SLA1", ActionId = "ALA2" },
-                    new StateAction { StateId = "SLA1", ActionId = "ALA3" }
+                    new StateAction { StateId = "SLA1", ActionId = "ALA3" },
+                    new StateAction { StateId = "SLA2", ActionId = "AL1" },
+                    new StateAction { StateId = "SLA2", ActionId = "ALA1" },
+                    new StateAction { StateId = "SLA2", ActionId = "ALA3" },
+                    new StateAction { StateId = "SLA2", ActionId = "ALA4" },
+                    new StateAction { StateId = "SLA3", ActionId = "AL1" },
+                    new StateAction { StateId = "SLA3", ActionId = "ALA1" },
+                    new StateAction { StateId = "SLA3", ActionId = "ALA2" },
+                    new StateAction { StateId = "SLA3", ActionId = "ALA4" },
+                    new StateAction { StateId = "SLA4", ActionId = "AL1" },
+                    new StateAction { StateId = "SLA4", ActionId = "ALA1" },
+                    new StateAction { StateId = "SLA4", ActionId = "ALA5" }
                 );
 
             // Customer -> Leads <- LeadType

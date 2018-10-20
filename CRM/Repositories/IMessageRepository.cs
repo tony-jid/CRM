@@ -11,6 +11,8 @@ namespace CRM.Repositories
     {
         IEnumerable<RecipientViewModel> GetRecipients();
 
+        IEnumerable<RecipientViewModel> GetRecipientsForPartner(Guid partnerId);
+
         IEnumerable<MessageTemplate> GetTemplates();
 
         MessageTemplate GetTemplate(int id);

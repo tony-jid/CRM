@@ -75,6 +75,7 @@ namespace CRM
 
             services
                 .AddMvc()
+                .AddControllersAsServices()
                 .AddJsonOptions(options => {
                     options.SerializerSettings.ContractResolver = new DefaultContractResolver();
                     // The option below solves the issue of circular reference between classes

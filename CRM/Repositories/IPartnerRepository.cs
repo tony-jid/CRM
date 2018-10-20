@@ -11,6 +11,10 @@ namespace CRM.Repositories
     {
         Partner GetBySalesPerson(string salesPersonId);
 
+        Partner GetByBranch(Guid branchId);
+
+        Partner GetByLeadAssignment(int leadAssignmentId);
+
         void AddServices(Guid partnerId, int[] services);
 
         void UpdateServices(Guid partnerId, int[] services);

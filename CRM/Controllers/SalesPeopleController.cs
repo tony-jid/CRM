@@ -118,7 +118,7 @@ namespace CRM.Controllers
         [HttpGet]
         public object GetSalesPeopleByBranch(Guid branchId, DataSourceLoadOptions loadOptions)
         {
-            return DataSourceLoader.Load(_salesRepo.GetSalesPeopleByBranch(branchId), loadOptions);
+            return DataSourceLoader.Load(_salesRepo.GetByBranch(branchId), loadOptions);
         }
 
         private async Task<bool> ChangeEmailAsync(SalesPerson oldModel, SalesPerson newModel)

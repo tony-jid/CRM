@@ -8,6 +8,8 @@ namespace CRM.Repositories
 {
     public interface ISalesPersonRepository : IRepository<SalesPerson>
     {
-        IEnumerable<SalesPerson> GetSalesPeopleByBranch(Guid branchId);
+        IEnumerable<SalesPerson> GetByBranch(Guid branchId);
+
+        IEnumerable<SalesPerson> GetByPartner(Guid partnerId);
     }
 }

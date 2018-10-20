@@ -183,7 +183,7 @@ namespace CRM.Controllers
                 leadVMs.Add(this.GetLeadViewModel(item));
             }
 
-            return leadVMs;
+            return leadVMs.OrderByDescending(o => o.CreatedOn).ToList();
         }
     }
 }

@@ -64,13 +64,18 @@
                     action.perform(action.sources.assignment, actionInstance, actionVM, callback);
 
                 } else if (actionInstance.ActionTarget === action.targets.message) {
-                    var email = actionInstance.CustomerEMail;
-
                     // using dynamic data to support "Message Compose"
                     var messageData = {
                         recipients: []
                     };
-                    messageData.recipients.push(email);
+
+                    // CustomerEmail will be null, if the grid is opened via Partner Portal
+                    if (actionInstance.CustomerEmail != null) {
+                        messageData.recipients.push(actionInstance.CustomerEmail);
+                    }
+                    else {
+                        messageData.recipients = actionInstance.PartnerEmails;
+                    }
 
                     action.perform(action.sources.lead, actionInstance, messageData);
                 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using CRM.Enum;
 using CRM.Models;
 using CRM.Models.ViewModels;
 using CRM.Repositories;
@@ -16,35 +17,52 @@ namespace CRM.Controllers
         private IUnitOfWork _uow;
         private ILeadRepository _leadRepo;
         private ICustomerRepository _cusRepo;
+        private MessageController _messageController;
 
-        public HookController(IUnitOfWork unitOfWork)
+        public HookController(IUnitOfWork unitOfWork, MessageController messageController)
         {
             _uow = unitOfWork;
             _leadRepo = unitOfWork.LeadRepository;
             _cusRepo = unitOfWork.CustomerRepository;
+            _messageController = messageController;
         }
 
         [HttpPost]
-        public IActionResult HookLead([FromBody]HookVM data)
+        public async Task HookLead([FromBody]HookVM data)
         {
             // Gravity Forms separates form fields with "----------" by considering a section field that come right after a page break
             // So, we can separate lead details by using "--------------------------------"
             //
-
-            var customer = this.CreateCustomerEntity(data);
-            if (_cusRepo.IsCustomerExisted(data.EMail))
+            try
             {
-                customer = _cusRepo.GetByEmail(customer.EMail);
+                var customer = this.CreateCustomerEntity(data);
+                if (_cusRepo.IsCustomerExisted(data.EMail))
+                {
+                    customer = _cusRepo.GetByEmail(customer.EMail);
+                }
+                else
+                {
+                    _cusRepo.Add(customer);
+                }
+
+                var lead = this.CreateLeadEntity(data, customer);
+                _leadRepo.Add(lead);
+
+                if (_uow.Commit())
+                {
+                    //RedirectToAction(nameof(MessageController.SendCompanyLeadHooked), nameof(EnumController.Message), new { leadId = lead.Id });
+                    await _messageController.SendCompanyLeadHooked(lead.Id, this.Url, this.Request);
+                }
+                else
+                {
+
+                }
             }
-            else
+            catch (Exception e)
             {
-                _cusRepo.Add(customer);
+                int x = 0;
+                // logging here
             }
-
-            var lead = this.CreateLeadEntity(data, customer);
-            _leadRepo.Add(lead);
-
-            return _uow.Commit() ? Ok() : StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status500InternalServerError);
         }
 
         private Customer CreateCustomerEntity(HookVM data)

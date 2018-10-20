@@ -10,8 +10,8 @@ namespace CRM.Models.ViewModels
         public Guid LeadId { get; set; }
         public Guid PartnerBranchId { get; set; }
         public int LeadAssignmentId { get; set; }
-        public string CustomerEMail { get; set; }
-
+        public string CustomerEmail { get; set; }
+        public List<string> PartnerEmails { get; set; }
         public string ControllerName { get; set; }
         public string ActionName { get; set; }
         public string ActionTarget { get; set; }

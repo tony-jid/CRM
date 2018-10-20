@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CRM.Data;
 using CRM.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CRM.Repositories
 {
@@ -35,10 +36,17 @@ namespace CRM.Repositories
             return _context.SalesPeople.FirstOrDefault(w => w.Id == uid);
         }
 
-        public IEnumerable<SalesPerson> GetSalesPeopleByBranch(Guid branchId)
+        public IEnumerable<SalesPerson> GetByBranch(Guid branchId)
         {
             return _context.SalesPeople
                 .Where(w => w.BranchId == branchId);
+        }
+
+        public IEnumerable<SalesPerson> GetByPartner(Guid partnerId)
+        {
+            return _context.SalesPeople
+                .Include(i => i.Branch)
+                .Where(w => w.Branch.PartnerId == partnerId);
         }
 
         public void Remove(SalesPerson entity)

@@ -155,7 +155,7 @@ namespace CRM.Services
             }
 
             var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var callbackUrl = url.ResetPasswordCallbackLink(user.Id, code, request.Scheme);
+            var callbackUrl = url.ResetPasswordCallbackLink(code, request.Scheme);
             await _emailSender.SendResetPasswordAsync(user.Email, callbackUrl);
         }
 

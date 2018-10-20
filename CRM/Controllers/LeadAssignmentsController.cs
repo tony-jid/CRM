@@ -20,16 +20,21 @@ namespace CRM.Controllers
     {
         private IUnitOfWork _uow;
         private ILeadRepository _leadRepo;
+        private ISalesPersonRepository _salesRepo;
         private ILeadAssignmentRepository _leadAssRepo;
         private IEmailSender _emailSender;
+        private MessageController _messageController;
 
-        public LeadAssignmentsController(IUnitOfWork unitOfWork, IEmailSender emailSender)
+        public LeadAssignmentsController(IUnitOfWork unitOfWork, IEmailSender emailSender
+            , MessageController messageController)
         {
             _uow = unitOfWork;
             _leadAssRepo = unitOfWork.LeadAssignmentRepository;
             _leadRepo = unitOfWork.LeadRepository;
+            _salesRepo = unitOfWork.SalesPersonRepository;
 
             _emailSender = emailSender;
+            _messageController = messageController;
         }
 
         [HttpGet]
@@ -64,14 +69,15 @@ namespace CRM.Controllers
         }
 
         [HttpPost]
-        public JsonResult AjaxPostToAssignPartners([FromBody]LeadAssignmentSelectedPartnerViewModel data)
+        public async Task<JsonResult> AjaxPostToAssignPartners([FromBody]LeadAssignmentSelectedPartnerViewModel data)
         {
             _leadAssRepo.AddByViewModel(data);
             _leadRepo.SetLeadAssignedState(data.LeadId);
             
             if (_uow.Commit())
             {
-                this.SendAssignmentEmailToPartners(data.PartnerBranchIds);
+                await _messageController.SendPartnerLeadAssigned(data.PartnerBranchIds, this.Url, this.Request);
+
                 return Json(Ok());
             }
             else
@@ -81,12 +87,14 @@ namespace CRM.Controllers
         }
 
         [HttpPut]
-        public JsonResult Accept([FromBody]LeadAssignmentResponseVM data) // can process "int id" too
+        public async Task<JsonResult> Accept([FromBody]LeadAssignmentResponseVM data) // can process "int id" too
         {
             _leadAssRepo.AcceptAssignment(data);
 
             if (_uow.Commit())
             {
+                await _messageController.SendCompanyPartnerResponse(data.LeadId, data.LeadAssignmentId, "accepted", this.Url, this.Request);
+
                 return Json(Ok(data.LeadId));
             }
             else
@@ -96,23 +104,20 @@ namespace CRM.Controllers
         }
 
         [HttpPut]
-        public JsonResult Reject([FromBody]LeadAssignmentResponseVM data)
+        public async Task<JsonResult> Reject([FromBody]LeadAssignmentResponseVM data)
         {
             _leadAssRepo.RejectAssignment(data);
 
             if (_uow.Commit())
             {
+                await _messageController.SendCompanyPartnerResponse(data.LeadId, data.LeadAssignmentId, "rejected", this.Url, this.Request);
+
                 return Json(Ok(data.LeadId));
             }
             else
             {
                 return Json(StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status500InternalServerError));
             }
-        }
-
-        protected void SendAssignmentEmailToPartners(List<Guid> partnerBranchIds)
-        {
-            _emailSender.SendEmailAsync("thawatchai.j14@gmail.com", "Lead assignment from ComparisonAdvantage", "{lead_type} lead is assigned to you guys.");
         }
 
         protected LeadAssignmentVM GetLeadAssignmentViewModel(LeadAssignment item)
@@ -173,7 +178,8 @@ namespace CRM.Controllers
                 LeadId = itemVM.LeadId,
                 PartnerBranchId = itemVM.PartnerBranchId,
                 LeadAssignmentId = itemVM.Id,
-                CustomerEMail = itemVM.CustomerEMail,
+                CustomerEmail = itemVM.CustomerEMail,
+                PartnerEmails = _salesRepo.GetByPartner(itemVM.PartnerId).Select(person => person.EMail).ToList(),
                 ControllerName = s.Action.ControllerName,
                 ActionName = s.Action.ActionName,
                 ActionTarget = s.Action.ActionTarget,
@@ -208,7 +214,7 @@ namespace CRM.Controllers
                 leadVMs.Add(this.GetLeadAssignmentViewModel(item));
             }
 
-            return leadVMs;
+            return leadVMs.OrderByDescending(o => o.AssignedOn).ToList();
         }
     }
 }

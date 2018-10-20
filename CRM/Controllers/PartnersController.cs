@@ -47,6 +47,15 @@ namespace CRM.Controllers
             _accountManager = new AccountManager(userManager, roleManager, signInManager, emailSender);
         }
 
+        [HttpGet]
+        [Route("/[controller]")]
+        [Route("/[controller]/[action]")]
+        [Authorize(Roles = nameof(EnumApplicationRole.Admin) + "," + nameof(EnumApplicationRole.Manager) + "," + nameof(EnumApplicationRole.Agent))]
+        public override IActionResult Index()
+        {
+            return View();
+        }
+
         //[HttpGet("{partnerId}")]
         //public IActionResult Portal (Guid partnerId)
         [HttpGet]

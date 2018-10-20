@@ -208,7 +208,7 @@ namespace CRM.Controllers
                 else
                 {
                     var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-                    var callbackUrl = Url.ResetPasswordCallbackLink(user.Id, code, Request.Scheme);
+                    var callbackUrl = Url.ResetPasswordCallbackLink(code, Request.Scheme);
 
                     await _emailSender.SendResetPasswordAsync(model.Email, callbackUrl);
 

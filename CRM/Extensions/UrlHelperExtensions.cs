@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CRM.Controllers;
+using CRM.Enum;
 
 namespace Microsoft.AspNetCore.Mvc
 {
@@ -12,17 +13,35 @@ namespace Microsoft.AspNetCore.Mvc
         {
             return urlHelper.Action(
                 action: nameof(AccountController.ConfirmEmail),
-                controller: "Account",
+                controller: nameof(EnumController.Account),
                 values: new { userId, code },
                 protocol: scheme);
         }
 
-        public static string ResetPasswordCallbackLink(this IUrlHelper urlHelper, string userId, string code, string scheme)
+        public static string ResetPasswordCallbackLink(this IUrlHelper urlHelper, string code, string scheme)
         {
             return urlHelper.Action(
                 action: nameof(AccountController.ResetPassword),
-                controller: "Account",
-                values: new { userId, code },
+                controller: nameof(EnumController.Account),
+                values: new { code },
+                protocol: scheme);
+        }
+
+        public static string LeadHookedCallbackLink(this IUrlHelper urlHelper, Guid leadId, string scheme)
+        {
+            return urlHelper.Action(
+                action: nameof(LeadsController.Assignments),
+                controller: nameof(EnumController.Leads),
+                values: new { leadId },
+                protocol: scheme);
+        }
+
+        public static string PartnerLeadAssignedCallbackLink(this IUrlHelper urlHelper, string scheme)
+        {
+            return urlHelper.Action(
+                action: nameof(PartnersController.Portal),
+                controller: nameof(EnumController.Partners),
+                values: new { },
                 protocol: scheme);
         }
     }

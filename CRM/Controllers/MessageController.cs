@@ -11,6 +11,7 @@ using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -24,14 +25,19 @@ namespace CRM.Controllers
     {
         private IUnitOfWork _uow;
         private IMessageRepository _msgRepo;
+        private IPartnerRepository _partnerRepo;
         private IEmailSender _emailSender;
+        private AccountManager _accountManager;
 
-        public MessageController(IUnitOfWork unitOfWork, IEmailSender emailSender)
+        public MessageController(IUnitOfWork unitOfWork, IEmailSender emailSender
+            , UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, SignInManager<ApplicationUser> signInManager)
         {
             _uow = unitOfWork;
             _msgRepo = unitOfWork.MessageRepository;
+            _partnerRepo = unitOfWork.PartnerRepository;
 
             _emailSender = emailSender;
+            _accountManager = new AccountManager(userManager, roleManager, signInManager, emailSender);
         }
 
         [Authorize(Roles = nameof(EnumApplicationRole.Admin) + "," + nameof(EnumApplicationRole.Manager) + "," + nameof(EnumApplicationRole.Agent))]
@@ -43,7 +49,22 @@ namespace CRM.Controllers
         [HttpGet]
         public object GetRecipients(DataSourceLoadOptions loadOptions)
         {
-            return DataSourceLoader.Load(_msgRepo.GetRecipients(), loadOptions);
+            IEnumerable<RecipientViewModel> recipients;
+
+            if (!User.IsInRole(nameof(EnumApplicationRole.Partner)))
+            {
+                recipients = _msgRepo.GetRecipients();
+            }
+            else
+            {
+                var user = _accountManager.GetUserAsync(User.Identity.Name).Result;
+                var salesPersonId = user.Id;
+                var partner = _partnerRepo.GetBySalesPerson(salesPersonId);
+
+                recipients = _msgRepo.GetRecipientsForPartner(partner.Id);
+            }
+
+            return DataSourceLoader.Load(recipients, loadOptions);
         }
 
         [HttpPost]
@@ -107,6 +128,71 @@ namespace CRM.Controllers
             _msgRepo.RemoveTemplate(model);
 
             return _uow.Commit() ? Ok() : StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
+        [HttpPost]
+        public async Task SendCompanyLeadHooked(Guid leadId, IUrlHelper url, HttpRequest httpRequest)
+        {
+            var company = _uow.CompanyRepository.GetFirst();
+
+            if (url == null)
+                if (this.Url == null)
+                    throw new ApplicationException("IUrlHelper in the context is null.");
+
+            if (httpRequest == null)
+                if (this.Request == null)
+                    throw new ApplicationException("HttpRequest in the context is null.");
+
+            var callbackLink = (url ?? this.Url).LeadHookedCallbackLink(leadId, (httpRequest != null) ? httpRequest.Scheme : this.Request.Scheme);
+
+            await _emailSender.SendCompanyLeadHookedAsync(company.Email, callbackLink);
+        }
+
+        [HttpPost]
+        public async Task SendCompanyPartnerResponse(Guid leadId, int leadAssignmentId, string responseText, IUrlHelper url, HttpRequest httpRequest)
+        {
+            var company = _uow.CompanyRepository.GetFirst();
+
+            List<string> emails = new List<string>();
+            
+            var partner = _uow.PartnerRepository.GetByLeadAssignment(leadAssignmentId);
+
+            if (url == null)
+                if (this.Url == null)
+                    throw new ApplicationException("IUrlHelper in the context is null.");
+
+            if (httpRequest == null)
+                if (this.Request == null)
+                    throw new ApplicationException("HttpRequest in the context is null.");
+
+            var callbackLink = (url ?? this.Url).LeadHookedCallbackLink(leadId, (httpRequest != null) ? httpRequest.Scheme : this.Request.Scheme);
+
+            await _emailSender.SendCompanyPartnerResponseAsync(company.Email, callbackLink, partner.Name, responseText);
+        }
+
+        [HttpPost]
+        public async Task SendPartnerLeadAssigned(List<Guid> branchIds, IUrlHelper url, HttpRequest httpRequest)
+        {
+            List<string> emails = new List<string>();
+
+            foreach (var branchId in branchIds)
+            {
+                var partner = _uow.PartnerRepository.GetByBranch(branchId);
+                var salesPeople = _uow.SalesPersonRepository.GetByPartner(partner.Id);
+                emails.AddRange(salesPeople.Select(s => s.EMail));
+            }
+
+            if (url == null)
+                if (this.Url == null)
+                    throw new ApplicationException("IUrlHelper in the context is null.");
+
+            if (httpRequest == null)
+                if (this.Request == null)
+                    throw new ApplicationException("HttpRequest in the context is null.");
+
+            var callbackLink = (url ?? this.Url).PartnerLeadAssignedCallbackLink((httpRequest != null) ? httpRequest.Scheme : this.Request.Scheme);
+
+            await _emailSender.SendPartnerLeadAssignedAsync(emails.ToArray(), callbackLink);
         }
     }
 }

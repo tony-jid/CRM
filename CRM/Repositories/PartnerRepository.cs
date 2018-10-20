@@ -63,6 +63,26 @@ namespace CRM.Repositories
                 throw new ApplicationException("Sale person is not found.");
         }
 
+        public Partner GetByBranch(Guid branchId)
+        {
+            var branch = _context.PartnerBranches.Where(w => w.Id == branchId).Include(i => i.Partner).FirstOrDefault();
+
+            if (branch != null)
+                return branch.Partner;
+            else
+                throw new ApplicationException("Branch is not found.");
+        }
+
+        public Partner GetByLeadAssignment(int leadAssignmentId)
+        {
+            var leadAssignment = _context.LeadAssignments.Where(w => w.Id == leadAssignmentId).Include(i => i.PartnerBranch).ThenInclude(j => j.Partner).FirstOrDefault();
+
+            if (leadAssignment != null)
+                return leadAssignment.PartnerBranch.Partner;
+            else
+                throw new ApplicationException("LeadAassignment is not found.");
+        }
+
         public void Remove(Partner entity)
         {
             _context.Partners.Remove(entity);

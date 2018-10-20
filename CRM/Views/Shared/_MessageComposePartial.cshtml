@@ -50,6 +50,8 @@
                     )
                 </div>
             </div>
+            @if (!User.IsInRole(nameof(EnumApplicationRole.Partner)))
+            {
             <div class="row mb-2">
                 <div class="col-md-2">Template:</div>
                 <div class="col-md-10 mr-0">
@@ -67,6 +69,7 @@
                     )
                 </div>
             </div>
+            }
             <div class="row mb-2">
                 <div class="col-md-2">Subject:</div>
                 <div class="col-md-10 pr-0">
