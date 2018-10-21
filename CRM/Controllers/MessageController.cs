@@ -26,6 +26,8 @@ namespace CRM.Controllers
         private IUnitOfWork _uow;
         private IMessageRepository _msgRepo;
         private IPartnerRepository _partnerRepo;
+        private ILeadRepository _leadRepo;
+        private ILeadAssignmentRepository _leadAssignmentRepo;
         private IEmailSender _emailSender;
         private AccountManager _accountManager;
 
@@ -35,6 +37,8 @@ namespace CRM.Controllers
             _uow = unitOfWork;
             _msgRepo = unitOfWork.MessageRepository;
             _partnerRepo = unitOfWork.PartnerRepository;
+            _leadRepo = unitOfWork.LeadRepository;
+            _leadAssignmentRepo = unitOfWork.LeadAssignmentRepository;
 
             _emailSender = emailSender;
             _accountManager = new AccountManager(userManager, roleManager, signInManager, emailSender);
@@ -70,6 +74,36 @@ namespace CRM.Controllers
         [HttpPost]
         public JsonResult Send([FromBody]MessageViewModel data)
         {
+            _emailSender.SendEmailAsync(data.Recipients.Select(s => s.Email).ToArray(), data.Subject, data.Message);
+
+            return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult SendLeadMessage([FromBody]MessageViewModel data)
+        {
+            _leadRepo.SetState(new Guid(data.LeadId), EnumState.S0, EnumStateAction.Messaged, User.Identity.Name);
+            _uow.Commit();
+            _emailSender.SendEmailAsync(data.Recipients.Select(s => s.Email).ToArray(), data.Subject, data.Message);
+
+            return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult SendLeadRequestInfo([FromBody]MessageViewModel data)
+        {
+            _leadRepo.SetState(new Guid(data.LeadId), EnumState.SL4, EnumStateAction.Requested_Info, User.Identity.Name);
+            _uow.Commit();
+            _emailSender.SendEmailAsync(data.Recipients.Select(s => s.Email).ToArray(), data.Subject, data.Message);
+
+            return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult SendAssignmentMessage([FromBody]MessageViewModel data)
+        {
+            _leadAssignmentRepo.SetState(data.LeadAssignmentId, EnumState.S0, EnumStateAction.Messaged, User.Identity.Name);
+            _uow.Commit();
             _emailSender.SendEmailAsync(data.Recipients.Select(s => s.Email).ToArray(), data.Subject, data.Message);
 
             return Json(data);

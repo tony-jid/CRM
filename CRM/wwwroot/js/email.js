@@ -1,5 +1,6 @@
 ﻿var email = {
     action: {},
+    callback: function () { },
     recipients: [],
 
     ids: {
@@ -12,7 +13,15 @@
     },
 
     handlers: {
-        shownModal: function (recipients, subject, msg) {
+        shownModal: function (recipients, subject, msg, actionInstance, callback) {
+            // Keep "actionInstance", as controller and action pointers
+            email.action = actionInstance;
+            
+            if (site.methods.isFunction(callback))
+                email.callback = function (response) { callback(response); email.methods.hideModal(); };
+            else
+                email.callback = email.callbacks.onDefaultSendSuccess;
+
             email.instances.modal().off('shown');
             email.instances.modal().on({
                 'shown': function (e) {
@@ -29,11 +38,17 @@
             $(email.ids.btnSend).unbind();
             $(email.ids.btnSend).click(function () {
                 var model = email.methods.getMessageModel();
+
+                //console.log(email.action);
+                console.log(model);
+
                 ajax.callers.crm(
-                    ajax.controllers.message.name
-                    , ajax.controllers.message.actions.sendMessage
+                    //ajax.controllers.message.name
+                    //, ajax.controllers.message.actions.sendMessage
+                    email.action.ControllerName
+                    , { name: email.action.ActionName, type: email.action.RequestType }
                     , model
-                    , email.callbacks.onSendSuccess);
+                    , email.callback);
             });
         },
         onTemplatesSelectionChanged: function (e) {
@@ -47,7 +62,7 @@
     },
 
     callbacks: {
-        onSendSuccess: function (response) {
+        onDefaultSendSuccess: function (response) {
             notification.alert.showSuccess("Successfully send the message.");
             email.methods.hideModal();
             //alert(JSON.stringify(response));
@@ -70,9 +85,8 @@
     },
 
     methods: {
-        showModal: function (recipients, subject, msg) {
-
-            email.handlers.shownModal(recipients, subject, msg);
+        showModal: function (recipients, subject, msg, actionInstance, callback) {
+            email.handlers.shownModal(recipients, subject, msg, actionInstance, callback);
             email.instances.modal().show();
         },
         hideModal: function () {
@@ -110,7 +124,11 @@
             return new MessageViewModel(
                 email.methods.getRecipients()
                 , email.methods.getSubject()
-                , email.methods.getMessage());
+                , email.methods.getMessage()
+                , site.methods.isDefined(email.action.CustomerId) ? email.action.CustomerId : ""
+                , site.methods.isDefined(email.action.LeadId) ? email.action.LeadId : ""
+                , site.methods.isDefined(email.action.LeadAssignmentId) ? email.action.LeadAssignmentId : 0
+            );
 
         }
     }

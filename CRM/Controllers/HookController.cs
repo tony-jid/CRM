@@ -46,7 +46,7 @@ namespace CRM.Controllers
                 }
 
                 var lead = this.CreateLeadEntity(data, customer);
-                _leadRepo.Add(lead);
+                _leadRepo.Add(lead, "WordPress");
 
                 if (_uow.Commit())
                 {

@@ -18,6 +18,7 @@
     actionNames: {
         acceptLead: "Accept",
         rejectLead: "Reject",
+        sendAssignmentMessage: "SendAssignmentMessage",
     },
 
     handlers: {
@@ -64,6 +65,10 @@
                     action.perform(action.sources.assignment, actionInstance, actionVM, callback);
 
                 } else if (actionInstance.ActionTarget === action.targets.message) {
+                    var callback = function () { };
+                    if (actionInstance.ActionName === assignment.actionNames.sendAssignmentMessage)
+                        callback = assignment.callbacks.onSendAssignmentMessage;
+
                     // using dynamic data to support "Message Compose"
                     var messageData = {
                         recipients: []
@@ -77,7 +82,7 @@
                         messageData.recipients = actionInstance.PartnerEmails;
                     }
 
-                    action.perform(action.sources.lead, actionInstance, messageData);
+                    action.perform(action.sources.lead, actionInstance, messageData, callback);
                 }
 
                 e.component.reset();
@@ -116,7 +121,7 @@
             if (typeof (instance) === "undefined") {
                 instance = $(assignment.ids.gridLeadAssignments).dxDataGrid('instance');
             } else {
-                console.log(assignment.ids.gridLeadAssignments.concat(suffixId).concat(" is not found!"));
+                console.log(assignment.ids.gridLeadAssignments.concat(suffixId).concat(" is not found! Returning default instance."));
             }
 
             return instance;
@@ -136,13 +141,18 @@
         onAcceptLeadSuccess: function (response) {
             // response.Value = LeadId
             assignment.methods.refreshGridLeadAssignments(response.Value);
-            notification.alert.showSuccess('Successfully accepted the lead');
+            notification.alert.showSuccess('Successfully accepted the lead.');
         },
         onRejectLeadSuccess: function (response) {
             // response.Value = LeadId
             assignment.methods.refreshGridLeadAssignments(response.Value);
-            notification.alert.showWarning('Successfully reject the lead');
-        }
+            notification.alert.showWarning('Successfully rejected the lead.');
+        },
+        onSendAssignmentMessage: function (response) {
+            // response = MessageViewModel
+            assignment.methods.refreshGridLeadAssignments(response.LeadId);
+            notification.alert.showSuccess('Successfully sent the message.');
+        },
     },
 
     methods: {

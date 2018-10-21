@@ -8,7 +8,8 @@ namespace CRM.Enum
     public enum EnumStateAction
     {
         Sent,
-        Requested,
+        Messaged,
+        Requested_Info,
         Created,
         Viewed,
         Assigned,

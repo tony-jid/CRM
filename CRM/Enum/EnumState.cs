@@ -24,6 +24,10 @@ namespace CRM.Enum
         /// </summary>
         SL3,
         /// <summary>
+        /// Status of a lead - Requested Info
+        /// </summary>
+        SL4,
+        /// <summary>
         /// Status of an assignment - Considering
         /// </summary>
         SLA1,

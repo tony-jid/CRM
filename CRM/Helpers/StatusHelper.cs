@@ -21,6 +21,9 @@ namespace CRM.Helpers
             else if (statusId.Equals(EnumState.SL3.ToString()))
                 return GetHtmlSmallBadge(statusName, "success");
 
+            else if (statusId.Equals(EnumState.SL4.ToString()))
+                return GetHtmlSmallBadge(statusName, "warning");
+
             else if (statusId.Equals(EnumState.SLA1.ToString()))
                 return GetHtmlSmallBadge(statusName, "warning");
 
@@ -36,7 +39,7 @@ namespace CRM.Helpers
             else if (statusId.Equals(EnumState.SLA5.ToString()))
                 return GetHtmlSmallBadge(statusName, "primary");
 
-            return GetHtmlSmallBadge("Unknown", "danger");
+            return GetHtmlSmallBadge("Undefined", "danger");
         }
 
         private static string GetHtmlSmallBadge(string statusText, string color)

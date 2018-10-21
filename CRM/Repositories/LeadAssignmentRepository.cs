@@ -19,13 +19,13 @@ namespace CRM.Repositories
             _context = context;
         }
 
-        public void AddByViewModel(LeadAssignmentSelectedPartnerViewModel viewModel)
+        public void AddByViewModel(LeadAssignmentSelectedPartnerViewModel viewModel, string userName)
         {
             foreach (var branchId in viewModel.PartnerBranchIds)
             {
                 var assignment = new LeadAssignment() { LeadId = viewModel.LeadId, PartnerBranchId = branchId };
                 _context.LeadAssignments.Add(assignment);
-                this.SetState(assignment.Id, EnumState.SLA1, EnumStateAction.Assigned);
+                this.SetState(assignment.Id, EnumState.SLA1, EnumStateAction.Assigned, userName);
             }
 
             //_context.SaveChanges(); // will be commit at Controller
@@ -83,23 +83,21 @@ namespace CRM.Repositories
             throw new NotImplementedException();
         }
 
-        public void AcceptAssignment(LeadAssignmentResponseVM responseVM)
+        public void AcceptAssignment(LeadAssignmentResponseVM responseVM, string userName)
         {
             //var leadAssignment = this.Get(responseVM.LeadAssignmentId);
-            this.SetState(responseVM.LeadAssignmentId, responseVM.Action.NextStateId, EnumStateAction.Accepted);
+            this.SetState(responseVM.LeadAssignmentId, responseVM.Action.NextStateId, EnumStateAction.Accepted, userName);
 
         }
 
-        public void RejectAssignment(LeadAssignmentResponseVM responseVM)
+        public void RejectAssignment(LeadAssignmentResponseVM responseVM, string userName)
         {
             //var leadAssignment = this.Get(responseVM.LeadAssignmentId);
-            this.SetState(responseVM.LeadAssignmentId, responseVM.Action.NextStateId, EnumStateAction.Rejected);
+            this.SetState(responseVM.LeadAssignmentId, responseVM.Action.NextStateId, EnumStateAction.Rejected, userName);
         }
 
-        public void SetState(int assignmentId, string stateId, EnumStateAction action)
+        public void SetState(int assignmentId, string stateId, EnumStateAction action, string userName)
         {
-            var userName = "admin";
-
             var itemState = new LeadAssignmentState
             {
                 LeadAssignmentId = assignmentId,
@@ -112,10 +110,8 @@ namespace CRM.Repositories
             _context.LeadAssignmentStates.Add(itemState);
         }
 
-        public void SetState(int assignmentId, EnumState state, EnumStateAction action)
+        public void SetState(int assignmentId, EnumState state, EnumStateAction action, string userName)
         {
-            var userName = "admin";
-
             var itemState = new LeadAssignmentState
             {
                 LeadAssignmentId = assignmentId,

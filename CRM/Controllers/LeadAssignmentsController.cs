@@ -71,8 +71,8 @@ namespace CRM.Controllers
         [HttpPost]
         public async Task<JsonResult> AjaxPostToAssignPartners([FromBody]LeadAssignmentSelectedPartnerViewModel data)
         {
-            _leadAssRepo.AddByViewModel(data);
-            _leadRepo.SetLeadAssignedState(data.LeadId);
+            _leadAssRepo.AddByViewModel(data, User.Identity.Name);
+            _leadRepo.SetLeadAssignedState(data.LeadId, User.Identity.Name);
             
             if (_uow.Commit())
             {
@@ -89,7 +89,7 @@ namespace CRM.Controllers
         [HttpPut]
         public async Task<JsonResult> Accept([FromBody]LeadAssignmentResponseVM data) // can process "int id" too
         {
-            _leadAssRepo.AcceptAssignment(data);
+            _leadAssRepo.AcceptAssignment(data, User.Identity.Name);
 
             if (_uow.Commit())
             {
@@ -106,7 +106,7 @@ namespace CRM.Controllers
         [HttpPut]
         public async Task<JsonResult> Reject([FromBody]LeadAssignmentResponseVM data)
         {
-            _leadAssRepo.RejectAssignment(data);
+            _leadAssRepo.RejectAssignment(data, User.Identity.Name);
 
             if (_uow.Commit())
             {
@@ -167,7 +167,7 @@ namespace CRM.Controllers
             itemVM.PartnerBranchAddress = AddressHelper.MergeAddress(itemVM.PartnerBranchStreetAddress, itemVM.PartnerBranchSuburb, itemVM.PartnerBranchState, itemVM.PartnerBranchPostCode);
 
             // Current status
-            var currentStatus = item.LeadAssignmentStates.OrderByDescending(o => o.ActionTimestamp).FirstOrDefault();
+            var currentStatus = item.LeadAssignmentStates.Where(w => w.StateId != nameof(EnumState.S0)).OrderByDescending(o => o.ActionTimestamp).FirstOrDefault();
             itemVM.StatusId = currentStatus.State.Id;
             itemVM.StatusName = currentStatus.State.Name;
             itemVM.StatusTag = StatusHelper.GetHtmlBadge(currentStatus.State.Id, currentStatus.State.Name);
@@ -197,6 +197,7 @@ namespace CRM.Controllers
 
             // History
             var histories = item.LeadAssignmentStates
+                .OrderByDescending(o => o.ActionTimestamp)
                 //.Where(w => w.StateId != currentStatus.StateId) // *show all
                 .Select(s => HistoryHelper.GetHtmlHistoryLine(s.ActionTimestamp, s.Action.ToLower(), s.Actor));
 

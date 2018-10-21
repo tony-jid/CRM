@@ -22,7 +22,13 @@ namespace CRM.Repositories
         public void Add(Lead entity)
         {
             _context.Leads.Add(entity);
-            this.SetState(entity.Id, EnumState.SL1, EnumStateAction.Created);
+            this.SetState(entity.Id, EnumState.SL1, EnumStateAction.Created, "Anonymous");
+        }
+
+        public void Add(Lead entity, string userName)
+        {
+            _context.Leads.Add(entity);
+            this.SetState(entity.Id, EnumState.SL1, EnumStateAction.Created, userName);
 
             //_context.SaveChanges(); will be committed at Controller
         }
@@ -67,14 +73,14 @@ namespace CRM.Repositories
             //_context.SaveChanges(); will be committed at Controller
         }
 
-        public void SetLeadAssignedState(Guid leadId)
+        public void SetLeadAssignedState(Guid leadId, string userName)
         {
             var currentStatus = this.GetLeadCurrentStatus(leadId);
 
             if (currentStatus.StateId == EnumState.SL1.ToString())
-                this.SetState(leadId, EnumState.SL2, EnumStateAction.Assigned);
+                this.SetState(leadId, EnumState.SL2, EnumStateAction.Assigned, userName);
             else
-                this.SetState(leadId, EnumState.SL3, EnumStateAction.Reassigned);
+                this.SetState(leadId, EnumState.SL3, EnumStateAction.Reassigned, userName);
         }
 
         public LeadState GetLeadCurrentStatus(Guid leadId)
@@ -83,10 +89,8 @@ namespace CRM.Repositories
             return lead.LeadStates.OrderByDescending(o => o.ActionTimestamp).FirstOrDefault();
         }
 
-        public void SetState(Guid leadId, EnumState state, EnumStateAction action)
+        public void SetState(Guid leadId, EnumState state, EnumStateAction action, string userName)
         {
-            var userName = "admin";
-
             var leadState = new LeadState()
             {
                 LeadId = leadId,

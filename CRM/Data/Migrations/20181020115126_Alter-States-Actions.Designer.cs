@@ -4,14 +4,16 @@ using CRM.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CRM.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181020115126_Alter-States-Actions")]
+    partial class AlterStatesActions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,11 +47,10 @@ namespace CRM.Data.Migrations
                     b.ToTable("Actions");
 
                     b.HasData(
-                        new { Id = "AL0", ActionName = "SendLeadMessage", ActionTarget = "Message", ControllerName = "Message", DisplayName = "Send message", Icon = "batch-icon batch-icon-envelope", NextStateId = "S0", RequestType = "Post" },
-                        new { Id = "AL1", ActionName = "SendLeadRequestInfo", ActionTarget = "Message", ControllerName = "Message", DisplayName = "Request Info", Icon = "batch-icon batch-icon-envelope", NextStateId = "SL4", RequestType = "Post" },
+                        new { Id = "AL1", ActionName = "Send", ActionTarget = "Message", ControllerName = "Message", DisplayName = "Send message", Icon = "batch-icon batch-icon-envelope", NextStateId = "S0", RequestType = "Post" },
+                        new { Id = "AL4", ActionName = "RequestInfo", ActionTarget = "Message", ControllerName = "Message", DisplayName = "Request Info", Icon = "batch-icon batch-icon-envelope", NextStateId = "SL4", RequestType = "Post" },
                         new { Id = "AL2", ActionName = "Assignments", ActionTarget = "Window", ControllerName = "Leads", DisplayName = "Assign partners", Icon = "batch-icon batch-icon-user-alt-2", NextStateId = "SL2", RequestType = "Get" },
                         new { Id = "AL3", ActionName = "Assignments", ActionTarget = "Window", ControllerName = "Leads", DisplayName = "Re-assign partners", Icon = "batch-icon batch-icon-user-alt-2", NextStateId = "SL3", RequestType = "Get" },
-                        new { Id = "ALA0", ActionName = "SendAssignmentMessage", ActionTarget = "Message", ControllerName = "Message", DisplayName = "Send message", Icon = "batch-icon batch-icon-envelope", NextStateId = "S0", RequestType = "Post" },
                         new { Id = "ALA1", ActionName = "Comment", ActionTarget = "Message", ControllerName = "LeadAssignments", DisplayName = "Comment lead", Icon = "batch-icon batch-icon-speech-bubble-left-tip-text", NextStateId = "S0", RequestType = "Post" },
                         new { Id = "ALA2", ActionName = "Accept", ActionTarget = "Ajax", ControllerName = "LeadAssignments", DisplayName = "Accept lead", Icon = "batch-icon batch-icon-tick", NextStateId = "SLA2", RequestType = "Put" },
                         new { Id = "ALA3", ActionName = "Reject", ActionTarget = "Ajax", ControllerName = "LeadAssignments", DisplayName = "Reject lead", Icon = "batch-icon batch-icon-cross", NextStateId = "SLA3", RequestType = "Put" },
@@ -532,29 +533,27 @@ namespace CRM.Data.Migrations
                     b.ToTable("StateActions");
 
                     b.HasData(
-                        new { StateId = "SL1", ActionId = "AL0" },
                         new { StateId = "SL1", ActionId = "AL1" },
                         new { StateId = "SL1", ActionId = "AL2" },
-                        new { StateId = "SL4", ActionId = "AL0" },
                         new { StateId = "SL4", ActionId = "AL1" },
                         new { StateId = "SL4", ActionId = "AL2" },
-                        new { StateId = "SL2", ActionId = "AL0" },
+                        new { StateId = "SL2", ActionId = "AL1" },
                         new { StateId = "SL2", ActionId = "AL3" },
-                        new { StateId = "SL3", ActionId = "AL0" },
+                        new { StateId = "SL3", ActionId = "AL1" },
                         new { StateId = "SL3", ActionId = "AL3" },
-                        new { StateId = "SLA1", ActionId = "ALA0" },
+                        new { StateId = "SLA1", ActionId = "AL1" },
                         new { StateId = "SLA1", ActionId = "ALA1" },
                         new { StateId = "SLA1", ActionId = "ALA2" },
                         new { StateId = "SLA1", ActionId = "ALA3" },
-                        new { StateId = "SLA2", ActionId = "ALA0" },
+                        new { StateId = "SLA2", ActionId = "AL1" },
                         new { StateId = "SLA2", ActionId = "ALA1" },
                         new { StateId = "SLA2", ActionId = "ALA3" },
                         new { StateId = "SLA2", ActionId = "ALA4" },
-                        new { StateId = "SLA3", ActionId = "ALA0" },
+                        new { StateId = "SLA3", ActionId = "AL1" },
                         new { StateId = "SLA3", ActionId = "ALA1" },
                         new { StateId = "SLA3", ActionId = "ALA2" },
                         new { StateId = "SLA3", ActionId = "ALA4" },
-                        new { StateId = "SLA4", ActionId = "ALA0" },
+                        new { StateId = "SLA4", ActionId = "AL1" },
                         new { StateId = "SLA4", ActionId = "ALA1" },
                         new { StateId = "SLA4", ActionId = "ALA5" }
                     );

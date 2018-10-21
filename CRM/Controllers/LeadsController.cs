@@ -85,7 +85,7 @@ namespace CRM.Controllers
             if (!TryValidateModel(model))
                 return BadRequest(GetFullErrorMessage(ModelState));
 
-            _leadRepo.Add(model);
+            _leadRepo.Add(model, User.Identity.Name);
 
             return _uow.Commit() ? Ok() : StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status500InternalServerError);
         }
@@ -139,7 +139,7 @@ namespace CRM.Controllers
             itemVM.CustomerDetails = String.Format("Business: <b>{0}</b><br>Tel: <b>{1}</b><br>Address: <b>{2}</b>", itemVM.CustomerBusinessName, itemVM.CustomerContactNumber, itemVM.CustomerAddress);
 
             // Current status
-            var currentStatus = item.LeadStates.OrderByDescending(o => o.ActionTimestamp).FirstOrDefault();
+            var currentStatus = item.LeadStates.Where(w => w.StateId != nameof(EnumState.S0)).OrderByDescending(o => o.ActionTimestamp).FirstOrDefault();
             itemVM.StatusId = currentStatus.State.Id;
             itemVM.StatusName = currentStatus.State.Name;
             itemVM.StatusTag = StatusHelper.GetHtmlBadge(currentStatus.State.Id, currentStatus.State.Name);
@@ -166,6 +166,7 @@ namespace CRM.Controllers
 
             // Histories
             var histories = item.LeadStates
+                .OrderByDescending(o => o.ActionTimestamp)
                 //.Where(w => w.StateId != currentStatus.StateId) // *show all
                 .Select(s => HistoryHelper.GetHtmlHistoryLine(s.ActionTimestamp, s.Action.ToLower(), s.Actor));
 

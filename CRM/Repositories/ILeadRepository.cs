@@ -9,12 +9,14 @@ namespace CRM.Repositories
 {
     public interface ILeadRepository : IRepository<Lead>
     {
+        void Add(Lead entity, string userName);
+
         IEnumerable<Lead> GetLeadsByCustomer(Guid customerId);
 
-        void SetLeadAssignedState(Guid leadId);
+        void SetLeadAssignedState(Guid leadId, string userName);
 
         LeadState GetLeadCurrentStatus(Guid leadId);
 
-        void SetState(Guid leadId, EnumState state, EnumStateAction action);
+        void SetState(Guid leadId, EnumState state, EnumStateAction action, string userName);
     }
 }

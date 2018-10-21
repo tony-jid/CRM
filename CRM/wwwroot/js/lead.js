@@ -8,6 +8,11 @@
         _dateBoxCreatedOn: "dateBoxCreatedOn",
     },
 
+    actionNames: {
+        sendLeadMessage: "SendLeadMessage",
+        sendLeadRequestInfo: "SendLeadRequestInfo",
+    },
+
     templates: {
         lookupCustomer: function (cellElement, cellInfo) {
             var _cellId = lead.ids._lookupCustomer;
@@ -164,6 +169,19 @@
         },
     },
 
+    callbacks: {
+        onSendLeadMessageSuccess: function (response) {
+            // response = MessageViewModel
+            lead.instances.gridLeads(response.CustomerId).refresh();
+            notification.alert.showSuccess('Successfully sent the message.');
+        },
+        onSendLeadRequestInfoSuccess: function (response) {
+            // response = MessageViewModel
+            lead.instances.gridLeads(response.CustomerId).refresh();
+            notification.alert.showSuccess('Successfully sent the request information message.');
+        }
+    },
+
     handlers: {
         onActionChanged: function (e) {
             // have to check whether [selectedItem] is null, because [e.component.reset()] raises event [onSelectionChanged]
@@ -174,13 +192,20 @@
                     var dataItems = lead.methods.getLeadDataItems(actionInstance.CustomerId);
                     var email = lead.methods.getMessageRecipient(actionInstance.CustomerId, dataItems);
 
+                    var callback = function () { };
+
+                    if (actionInstance.ActionName === lead.actionNames.sendLeadMessage)
+                        callback = lead.callbacks.onSendLeadMessageSuccess;
+                    else if (actionInstance.ActionName === lead.actionNames.sendLeadRequestInfo)
+                        callback = lead.callbacks.onSendLeadRequestInfoSuccess;
+
                     // using dynamic data to support "Message Compose"
                     var messageData = {
                         recipients: []
                     };
                     messageData.recipients.push(email);
-
-                    action.perform(action.sources.lead, actionInstance, messageData);
+                    
+                    action.perform(action.sources.lead, actionInstance, messageData, callback);
 
                     //lead.methods.loadDataSourceLeads().done(function (data) {
                     //    var email = lead.methods.getMessageRecipient(actionInstance.CustomerId, data);

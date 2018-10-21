@@ -43,12 +43,12 @@
                 if (source === action.sources.lead) {
                     if (target === action.targets.message) {
                         // using dynamic data to support "Message Compose"
-                        email.methods.showModal(data.recipients, "", "");
+                        email.methods.showModal(data.recipients, "", "", actionInstance, callback);
                     }
                 } else if (source === action.sources.assignment) {
                     if (target === action.targets.message) {
                         // using dynamic data to support "Message Compose"
-                        email.methods.showModal(data.recipients, "", "");
+                        email.methods.showModal(data.recipients, "", "", actionInstance, callback);
                     }
                 }
 

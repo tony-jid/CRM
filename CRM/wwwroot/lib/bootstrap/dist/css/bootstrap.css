@@ -5669,6 +5669,8 @@ button.close {
 .tooltip-inner {
   font-size: 1.2rem;
   max-width: 450px;
+  max-height: 450px;
+  overflow: auto;
   padding: 0.25rem 0.5rem;
   color: #fff;
   /*text-align: center;*/
