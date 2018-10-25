@@ -25,7 +25,7 @@ namespace CRM.Repositories
             _context.Addresses.Add(entity.Address);
 
             _context.PartnerBranches.Add(entity);
-            _context.SaveChanges();
+            //_context.SaveChanges();
         }
 
         public IEnumerable<PartnerBranch> Get()
@@ -73,13 +73,13 @@ namespace CRM.Repositories
         {
             _context.Remove(entity);
             _context.Remove(entity.Address);
-            _context.SaveChanges();
+            //_context.SaveChanges();
         }
 
         public void Update(PartnerBranch entity)
         {
             _context.Update(entity);
-            _context.SaveChanges();
+            //_context.SaveChanges();
         }
     }
 }

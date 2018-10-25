@@ -46,7 +46,7 @@ namespace CRM.Controllers
 
             _partnerBranchRepo.Add(model);
 
-            return Ok();
+            return _uow.Commit() ? Ok() : StatusCode(StatusCodes.Status500InternalServerError);
         }
 
         [HttpPut]
@@ -63,15 +63,20 @@ namespace CRM.Controllers
 
             _partnerBranchRepo.Update(model);
 
-            return Ok();
+            return _uow.Commit() ? Ok() : StatusCode(StatusCodes.Status500InternalServerError);
         }
 
         [HttpDelete]
-        public void Delete(Guid key)
+        public IActionResult Delete(Guid key)
         {
             var model = _partnerBranchRepo.GetByUid(key);
 
             _partnerBranchRepo.Remove(model);
+
+            if (_uow.Commit(this.ModelState))
+                return Ok();
+            else
+                return BadRequest(GetFullErrorMessage(this.ModelState));
         }
 
         [HttpGet]

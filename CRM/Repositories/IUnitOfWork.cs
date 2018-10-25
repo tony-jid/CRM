@@ -1,4 +1,5 @@
 ﻿using CRM.Models;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,8 @@ namespace CRM.Repositories
     public interface IUnitOfWork
     {
         bool Commit();
+
+        bool Commit(ModelStateDictionary modelState);
 
         IMessageRepository MessageRepository { get; }
 

@@ -8,6 +8,7 @@ using CRM.Repositories;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -44,7 +45,7 @@ namespace CRM.Controllers
 
             _officeRepo.Add(model);
 
-            return Ok();
+            return _uow.Commit() ? Ok() : StatusCode(StatusCodes.Status500InternalServerError);
         }
 
         [HttpPut]
@@ -61,15 +62,20 @@ namespace CRM.Controllers
 
             _officeRepo.Update(model);
 
-            return Ok();
+            return _uow.Commit() ? Ok() : StatusCode(StatusCodes.Status500InternalServerError);
         }
 
         [HttpDelete]
-        public void Delete(int key)
+        public IActionResult Delete(int key)
         {
             var model = _officeRepo.Get(key);
 
             _officeRepo.Remove(model);
+
+            if (_uow.Commit(this.ModelState))
+                return Ok();
+            else
+                return BadRequest(GetFullErrorMessage(this.ModelState));
         }
 
         [HttpGet]

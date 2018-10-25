@@ -1,7 +1,13 @@
 ﻿using CRM.Data;
+using CRM.Enum;
+using CRM.Extensions;
+using CRM.Helpers;
 using CRM.Models;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -23,11 +29,44 @@ namespace CRM.Repositories
                 _context.SaveChanges();
                 return true;
             }
+            catch (DbUpdateException dbUpdateEx)
+            {
+                throw dbUpdateEx;
+                return false;
+            }
             catch (Exception ex)
             {
                 // Environment: Development => simply throw an exception
                 //              Production => returning "false" and writing log
                 throw ex;
+                return false;
+            }
+        }
+
+        public bool Commit(ModelStateDictionary modelState)
+        {
+            try
+            {
+                _context.SaveChanges();
+                return true;
+            }
+            catch (DbUpdateException dbUpdateEx)
+            {
+                // logging
+
+                string errorMessage = dbUpdateEx?.InnerException.Message ?? "An error occurred while updating the data";
+                if (errorMessage.Contains(EnumErrorMessageHints.REFERENCE_CONSTRAINT.GetDesc()))
+                    ErrorMessageHelper.AddModelStateError(modelState, EnumErrorMessageHints.REFERENCE_CONSTRAINT);
+                else
+                    ErrorMessageHelper.AddModelStateError(modelState, EnumErrorMessageDescriptions.EXCEPTION);
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                // logging
+
+                ErrorMessageHelper.AddModelStateError(modelState, EnumErrorMessageDescriptions.EXCEPTION);
                 return false;
             }
         }

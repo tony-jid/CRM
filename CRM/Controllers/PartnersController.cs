@@ -170,17 +170,22 @@ namespace CRM.Controllers
         }
 
         [HttpDelete]
-        public void Delete(Guid key)
+        public IActionResult Delete(Guid key)
         {
             var model = _partnerRepo.GetByUid(key);
 
             _partnerRepo.RemoveServices(key);
             _partnerRepo.Remove(model);
 
-            if (!String.IsNullOrEmpty(model.Logo))
-                FileHelper.DeleteFile(Path.Combine(this.LogoPath, model.Logo));
+            if (_uow.Commit(this.ModelState))
+            {
+                if (!String.IsNullOrEmpty(model.Logo))
+                    FileHelper.DeleteFile(Path.Combine(this.LogoPath, model.Logo));
 
-            _uow.Commit();
+                return Ok();
+            }
+            else
+                return BadRequest(GetFullErrorMessage(this.ModelState));
         }
 
         private PartnerVM GetPartnerVM(Partner partner)

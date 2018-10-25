@@ -25,7 +25,7 @@ namespace CRM.Repositories
             _context.Addresses.Add(entity.Address);
 
             _context.Offices.Add(entity);
-            _context.SaveChanges();
+            //_context.SaveChanges();
         }
 
         public IEnumerable<Office> Get()
@@ -52,13 +52,13 @@ namespace CRM.Repositories
         {
             _context.Remove(entity);
             _context.Remove(entity.Address);
-            _context.SaveChanges();
+            //_context.SaveChanges();
         }
 
         public void Update(Office entity)
         {
             _context.Update(entity);
-            _context.SaveChanges();
+            //_context.SaveChanges();
         }
     }
 }

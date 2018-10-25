@@ -64,14 +64,14 @@ namespace CRM.Repositories
             // [P1] To solve this, the entity pulled by GetByUid/GetById must include "Address" before update
 
             _context.Update(entity);
-            _context.SaveChanges();
+            //_context.SaveChanges();
         }
 
         public void Remove(Customer entity)
         {
             _context.Remove(entity);
             _context.Remove(entity.Address);
-            _context.SaveChanges();
+            //_context.SaveChanges();
         }
 
         public IEnumerable<Customer> GetAllIncludeLeads()

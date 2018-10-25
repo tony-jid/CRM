@@ -109,12 +109,16 @@ namespace CRM.Controllers
         }
 
         [HttpDelete]
-        public void Delete(Guid key)
+        public IActionResult Delete(Guid key)
         {
             var model = _leadRepo.GetByUid(key);
 
             _leadRepo.Remove(model);
-            _uow.Commit();
+
+            if (_uow.Commit(this.ModelState))
+                return Ok();
+            else
+                return BadRequest(GetFullErrorMessage(this.ModelState));
         }
 
         protected LeadVM GetLeadViewModel(Lead item)

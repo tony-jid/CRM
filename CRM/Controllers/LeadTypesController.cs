@@ -118,16 +118,21 @@ namespace CRM.Controllers
         }
 
         [HttpDelete]
-        public void Delete(int key)
+        public IActionResult Delete(int key)
         {
             var model = _leadTypeRepo.Get(key);
 
             _leadTypeRepo.Remove(model);
 
-            if (!String.IsNullOrEmpty(model.Image))
-                FileHelper.DeleteFile(Path.Combine(this.ImagePath, model.Image));
+            if (_uow.Commit(this.ModelState))
+            {
+                if (!String.IsNullOrEmpty(model.Image))
+                    FileHelper.DeleteFile(Path.Combine(this.ImagePath, model.Image));
 
-            _uow.Commit();
+                return Ok();
+            }
+            else
+                return BadRequest(GetFullErrorMessage(this.ModelState));
         }
 
         private void CreateImageFromTempFile(LeadType leadType)
