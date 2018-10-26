@@ -29,6 +29,7 @@ namespace CRM.Data
         public DbSet<SalesPerson> SalesPeople { get; set; }
         public DbSet<Models.State> States { get; set; }
         public DbSet<StateAction> StateActions { get; set; }
+        public DbSet<ActionPermission> ActionPermissions { get; set; }
         public DbSet<MessageTemplate> MessageTemplates { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -46,7 +47,7 @@ namespace CRM.Data
             builder.Entity<Company>().HasData( new Company { Id = 1
                 , Name = "Comparison Advantage"
                 , ABN = "65 626 309 073"
-                , GST = 10
+                , GST = 0.1
                 , Email = "leads@comparisonadvantage.com.au"
                 , Logo = "logo-dark.png" });
 
@@ -99,10 +100,44 @@ namespace CRM.Data
                     new StateAction { StateId = "SLA3", ActionId = "ALA0" },
                     new StateAction { StateId = "SLA3", ActionId = "ALA1" },
                     new StateAction { StateId = "SLA3", ActionId = "ALA2" },
-                    new StateAction { StateId = "SLA3", ActionId = "ALA4" },
                     new StateAction { StateId = "SLA4", ActionId = "ALA0" },
                     new StateAction { StateId = "SLA4", ActionId = "ALA1" },
                     new StateAction { StateId = "SLA4", ActionId = "ALA5" }
+                );
+
+            // Action-Permissions Data
+            builder.Entity<ActionPermission>().HasData(
+                    new ActionPermission { ActionId = "AL0", ApplicationRoleName = "Admin" },
+                    new ActionPermission { ActionId = "AL0", ApplicationRoleName = "Manager" },
+                    new ActionPermission { ActionId = "AL0", ApplicationRoleName = "Agent" },
+                    new ActionPermission { ActionId = "AL1", ApplicationRoleName = "Admin" },
+                    new ActionPermission { ActionId = "AL1", ApplicationRoleName = "Manager" },
+                    new ActionPermission { ActionId = "AL1", ApplicationRoleName = "Agent" },
+                    new ActionPermission { ActionId = "AL2", ApplicationRoleName = "Admin" },
+                    new ActionPermission { ActionId = "AL2", ApplicationRoleName = "Manager" },
+                    new ActionPermission { ActionId = "AL2", ApplicationRoleName = "Agent" },
+                    new ActionPermission { ActionId = "AL3", ApplicationRoleName = "Admin" },
+                    new ActionPermission { ActionId = "AL3", ApplicationRoleName = "Manager" },
+                    new ActionPermission { ActionId = "AL3", ApplicationRoleName = "Agent" },
+                    new ActionPermission { ActionId = "ALA0", ApplicationRoleName = "Admin" },
+                    new ActionPermission { ActionId = "ALA0", ApplicationRoleName = "Manager" },
+                    new ActionPermission { ActionId = "ALA0", ApplicationRoleName = "Agent" },
+                    new ActionPermission { ActionId = "ALA0", ApplicationRoleName = "Partner" },
+                    new ActionPermission { ActionId = "ALA1", ApplicationRoleName = "Partner" },
+                    new ActionPermission { ActionId = "ALA2", ApplicationRoleName = "Admin" },
+                    new ActionPermission { ActionId = "ALA2", ApplicationRoleName = "Manager" },
+                    new ActionPermission { ActionId = "ALA2", ApplicationRoleName = "Agent" },
+                    new ActionPermission { ActionId = "ALA2", ApplicationRoleName = "Partner" },
+                    new ActionPermission { ActionId = "ALA3", ApplicationRoleName = "Admin" },
+                    new ActionPermission { ActionId = "ALA3", ApplicationRoleName = "Manager" },
+                    new ActionPermission { ActionId = "ALA3", ApplicationRoleName = "Agent" },
+                    new ActionPermission { ActionId = "ALA3", ApplicationRoleName = "Partner" },
+                    new ActionPermission { ActionId = "ALA4", ApplicationRoleName = "Admin" },
+                    new ActionPermission { ActionId = "ALA4", ApplicationRoleName = "Manager" },
+                    new ActionPermission { ActionId = "ALA4", ApplicationRoleName = "Agent" },
+                    new ActionPermission { ActionId = "ALA5", ApplicationRoleName = "Admin" },
+                    new ActionPermission { ActionId = "ALA5", ApplicationRoleName = "Manager" },
+                    new ActionPermission { ActionId = "ALA5", ApplicationRoleName = "Agent" }
                 );
 
             // Customer -> Leads <- LeadType
@@ -196,6 +231,14 @@ namespace CRM.Data
                 .HasOne(sa => sa.Action)
                 .WithMany(a => a.StateActions)
                 .HasForeignKey(sa => sa.ActionId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Actions 1-M ActionPermissions M-1 ApplicationRole
+            builder.Entity<ActionPermission>().HasKey(key => new { key.ActionId, key.ApplicationRoleName });
+            builder.Entity<ActionPermission>()
+                .HasOne(ap => ap.Action)
+                .WithMany(action => action.ActionPermissions)
+                .HasForeignKey(ap => ap.ActionId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // ** Removing to use M-M instead between State & LeadAssignment so that transactions can be tracked for the history

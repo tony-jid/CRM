@@ -28,5 +28,7 @@ namespace CRM.Models
         public State NextState { get; set; }
 
         public IEnumerable<StateAction> StateActions { get; set; }
+
+        public IEnumerable<ActionPermission> ActionPermissions { get; set; }
     }
 }

@@ -11,6 +11,7 @@ using CRM.Services;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -21,20 +22,28 @@ namespace CRM.Controllers
         private IUnitOfWork _uow;
         private ILeadRepository _leadRepo;
         private ISalesPersonRepository _salesRepo;
+        private ActionPermissionRepository _actionPermissionRepo;
         private ILeadAssignmentRepository _leadAssRepo;
         private IEmailSender _emailSender;
         private MessageController _messageController;
+        private AccountManager _accountManager;
+
+        private string _userRoleName;
+        private IEnumerable<ActionPermission> _actionPermissions;
 
         public LeadAssignmentsController(IUnitOfWork unitOfWork, IEmailSender emailSender
-            , MessageController messageController)
+            , MessageController messageController
+            , UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, SignInManager<ApplicationUser> signInManager)
         {
             _uow = unitOfWork;
             _leadAssRepo = unitOfWork.LeadAssignmentRepository;
             _leadRepo = unitOfWork.LeadRepository;
             _salesRepo = unitOfWork.SalesPersonRepository;
+            _actionPermissionRepo = unitOfWork.ActionPermissionRepository;
 
             _emailSender = emailSender;
             _messageController = messageController;
+            _accountManager = new AccountManager(userManager, roleManager, signInManager, emailSender);
         }
 
         [HttpGet]
@@ -188,8 +197,11 @@ namespace CRM.Controllers
             itemVM.StatusTag = StatusHelper.GetHtmlBadge(currentStatus.State.Id, currentStatus.State.Name);
             itemVM.RatingTag = RatingHelper.GetHtmlRatingTag(item.Comment, item.CommentedBy, item.CommentedOn);
 
+            if (string.IsNullOrEmpty(_userRoleName))
+                _userRoleName = _accountManager.GetRoleAsync(_accountManager.GetUserAsync(User.Identity.Name).Result).Result;
+
             // Actions of current status
-            var actions = currentStatus.State.StateActions.Select(s => new ActionLeadAssignmentVM
+            var actions = currentStatus.State.StateActions.Where(w => this.IsActionAllowed(w.Action.Id, _userRoleName)).Select(s => new ActionLeadAssignmentVM
             {
                 LeadId = itemVM.LeadId,
                 PartnerBranchId = itemVM.PartnerBranchId,
@@ -233,6 +245,16 @@ namespace CRM.Controllers
             }
 
             return leadVMs.OrderByDescending(o => o.AssignedOn).ToList();
+        }
+
+        protected bool IsActionAllowed(string actionId, string userRoleName)
+        {
+            if (_actionPermissions == null)
+                _actionPermissions = _actionPermissionRepo.Get();
+
+            var actionPermission = _actionPermissions.Where(w => w.ActionId == actionId && w.ApplicationRoleName == userRoleName).SingleOrDefault();
+
+            return actionPermission != null ? true : false;
         }
     }
 }

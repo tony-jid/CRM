@@ -34,5 +34,7 @@ namespace CRM.Repositories
         IPartnerBranchRepository PartnerBranchRepository { get; }
 
         ISalesPersonRepository SalesPersonRepository { get; }
+
+        ActionPermissionRepository ActionPermissionRepository { get; }
     }
 }

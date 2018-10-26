@@ -4,14 +4,16 @@ using CRM.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CRM.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181026114215_Add-ActionPermission-Table")]
+    partial class AddActionPermissionTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -602,6 +604,7 @@ namespace CRM.Data.Migrations
                         new { StateId = "SLA3", ActionId = "ALA0" },
                         new { StateId = "SLA3", ActionId = "ALA1" },
                         new { StateId = "SLA3", ActionId = "ALA2" },
+                        new { StateId = "SLA3", ActionId = "ALA4" },
                         new { StateId = "SLA4", ActionId = "ALA0" },
                         new { StateId = "SLA4", ActionId = "ALA1" },
                         new { StateId = "SLA4", ActionId = "ALA5" }

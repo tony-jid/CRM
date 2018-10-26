@@ -193,5 +193,16 @@ namespace CRM.Repositories
                 return _salesPersonRepo;
             }
         }
+
+        private ActionPermissionRepository _actionPermissionRepo;
+        public ActionPermissionRepository ActionPermissionRepository
+        {
+            get
+            {
+                if (_actionPermissionRepo == null)
+                    _actionPermissionRepo = new ActionPermissionRepository(_context);
+                return _actionPermissionRepo;
+            }
+        }
     }
 }

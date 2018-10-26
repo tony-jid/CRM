@@ -17,6 +17,8 @@
     <Compile Remove="Data\Migrations\20180724133010_TransactionType.Designer.cs" />
     <Compile Remove="Data\Migrations\20180727101129_test-IPerson.cs" />
     <Compile Remove="Data\Migrations\20180727101129_test-IPerson.Designer.cs" />
+    <Compile Remove="Data\Migrations\20181026130031_Update-StateAction-Data.cs" />
+    <Compile Remove="Data\Migrations\20181026130031_Update-StateAction-Data.Designer.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="DevExtreme.AspNet.Core" Version="18.1.6" />
