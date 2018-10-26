@@ -31,6 +31,7 @@ namespace CRM.Models.ViewModels
         public string StatusId { get; set; }
         public string StatusName { get; set; }
         public string StatusTag { get; set; }
+        public string RatingTag { get; set; }
         public List<ActionLeadAssignmentVM> Actions { get; set; }
 
         public Guid PartnerId { get; set; }

@@ -11,8 +11,10 @@ namespace CRM.Models
         [Key]
         public int Id { get; set; }
 
-        public int Rating { get; set; }
+        public int Rate { get; set; }
         public string Comment { get; set; }
+        public DateTime CommentedOn { get; set; }
+        public string CommentedBy { get; set; }
 
         public Guid LeadId { get; set; }
         public Lead Lead { get; set; }

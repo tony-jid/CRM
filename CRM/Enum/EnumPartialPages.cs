@@ -17,6 +17,8 @@ namespace CRM.Enum
         _NavbarPartialHorizontal,
         _MessageComposePartial,
 
+        _Partial_Rating,
+
         _TemplateGridLeads,
         _TemplateGridAssignments
     }

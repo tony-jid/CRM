@@ -20,6 +20,8 @@ namespace CRM.Repositories
 
         void RejectAssignment(LeadAssignmentResponseVM responseVM, string userName);
 
+        void CommentLeadAssignment(int leadAssignmentId, string comment, string userName);
+
         void SetState(int assignmentId, EnumState state, EnumStateAction action, string userName);
     }
 }

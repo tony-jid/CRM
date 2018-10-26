@@ -86,6 +86,21 @@ namespace CRM.Controllers
             }
         }
 
+        [HttpPost]
+        public JsonResult CommentLead([FromBody]LeadAssignmentRatingVM data)
+        {
+            _leadAssRepo.CommentLeadAssignment(data.LeadAssignmentId, data.Comment, User.Identity.Name);
+
+            if (_uow.Commit())
+            {
+                return Json(Ok(data.LeadId));
+            }
+            else
+            {
+                return Json(StatusCode(StatusCodes.Status500InternalServerError));
+            }
+        }
+
         [HttpPut]
         public async Task<JsonResult> Accept([FromBody]LeadAssignmentResponseVM data) // can process "int id" too
         {
@@ -99,7 +114,7 @@ namespace CRM.Controllers
             }
             else
             {
-                return Json(StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status500InternalServerError));
+                return Json(StatusCode(StatusCodes.Status500InternalServerError));
             }
         }
 
@@ -116,7 +131,7 @@ namespace CRM.Controllers
             }
             else
             {
-                return Json(StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status500InternalServerError));
+                return Json(StatusCode(StatusCodes.Status500InternalServerError));
             }
         }
 
@@ -171,6 +186,7 @@ namespace CRM.Controllers
             itemVM.StatusId = currentStatus.State.Id;
             itemVM.StatusName = currentStatus.State.Name;
             itemVM.StatusTag = StatusHelper.GetHtmlBadge(currentStatus.State.Id, currentStatus.State.Name);
+            itemVM.RatingTag = RatingHelper.GetHtmlRatingTag(item.Comment, item.CommentedBy, item.CommentedOn);
 
             // Actions of current status
             var actions = currentStatus.State.StateActions.Select(s => new ActionLeadAssignmentVM
@@ -186,7 +202,8 @@ namespace CRM.Controllers
                 RequestType = s.Action.RequestType,
                 DisplayName = s.Action.DisplayName,
                 Icon = s.Action.Icon,
-                NextStateId = s.Action.NextStateId
+                NextStateId = s.Action.NextStateId,
+                Rating = new Rating() { Rate = item.Rate, Comment = item.Comment ?? string.Empty, CommentedOn = item.CommentedOn, CommentedBy = item.CommentedBy }
             }).ToList();
 
             itemVM.Actions = actions;

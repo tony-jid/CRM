@@ -96,6 +96,16 @@ namespace CRM.Repositories
             this.SetState(responseVM.LeadAssignmentId, responseVM.Action.NextStateId, EnumStateAction.Rejected, userName);
         }
 
+        public void CommentLeadAssignment(int leadAssignmentId, string comment, string userName)
+        {
+            var leadAssignment = this.Get(leadAssignmentId);
+            leadAssignment.Comment = comment;
+            leadAssignment.CommentedOn = DateTime.Now;
+            leadAssignment.CommentedBy = userName;
+
+            _context.Update(leadAssignment);
+        }
+
         public void SetState(int assignmentId, string stateId, EnumStateAction action, string userName)
         {
             var itemState = new LeadAssignmentState

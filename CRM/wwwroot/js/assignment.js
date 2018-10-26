@@ -19,6 +19,7 @@
         acceptLead: "Accept",
         rejectLead: "Reject",
         sendAssignmentMessage: "SendAssignmentMessage",
+        commentLead: "CommentLead",
     },
 
     handlers: {
@@ -64,10 +65,11 @@
 
                     action.perform(action.sources.assignment, actionInstance, actionVM, callback);
 
-                } else if (actionInstance.ActionTarget === action.targets.message) {
+                }
+                else if (actionInstance.ActionTarget === action.targets.message) {
                     var callback = function () { };
                     if (actionInstance.ActionName === assignment.actionNames.sendAssignmentMessage)
-                        callback = assignment.callbacks.onSendAssignmentMessage;
+                        callback = assignment.callbacks.onSendAssignmentMessageSuccess;
 
                     // using dynamic data to support "Message Compose"
                     var messageData = {
@@ -82,7 +84,14 @@
                         messageData.recipients = actionInstance.PartnerEmails;
                     }
 
-                    action.perform(action.sources.lead, actionInstance, messageData, callback);
+                    action.perform(action.sources.assignment, actionInstance, messageData, callback);
+                }
+                else if (actionInstance.ActionTarget === action.targets.rating) {
+                    var callback = function () { };
+                    if (actionInstance.ActionName === assignment.actionNames.commentLead)
+                        callback = assignment.callbacks.onCommentLeadSuccess;
+
+                    action.perform(action.sources.assignment, actionInstance, actionInstance.Rating, callback);
                 }
 
                 e.component.reset();
@@ -148,10 +157,15 @@
             assignment.methods.refreshGridLeadAssignments(response.Value);
             notification.alert.showWarning('Successfully rejected the lead.');
         },
-        onSendAssignmentMessage: function (response) {
+        onSendAssignmentMessageSuccess: function (response) {
             // response = MessageViewModel
             assignment.methods.refreshGridLeadAssignments(response.LeadId);
             notification.alert.showSuccess('Successfully sent the message.');
+        },
+        onCommentLeadSuccess: function (response) {
+            // response.Value = LeadId
+            assignment.methods.refreshGridLeadAssignments(response.Value);
+            notification.alert.showSuccess('Successfully commented the lead.');
         },
     },
 

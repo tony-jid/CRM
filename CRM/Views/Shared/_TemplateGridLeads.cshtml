@@ -232,13 +232,16 @@
 
 @using (Html.DevExtreme().NamedTemplate("template-grid-leads-column-created-on"))
 {
-    <span><%= data.CreatedOnShortFormat %></span>
+    <div class="row m-0">
+        <div class="col-12"><%= data.CreatedOnShortFormat %> <%= data.History %></div>
+    </div>
+    @*<span><%= data.CreatedOnShortFormat %></span>
     <a href="#/" data-toggle="tooltip"
         data-placement="bottom"
         data-html="true"
         title="<%= data.History %>">
         <span class="batch-icon batch-icon-zoom-in-alt text-priamry"></span>
-    </a>
+    </a>*@
 }
 
 @using (Html.DevExtreme().NamedTemplate("template-grid-leads-column-actions"))

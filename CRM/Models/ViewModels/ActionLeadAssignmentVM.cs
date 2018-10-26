@@ -19,5 +19,6 @@ namespace CRM.Models.ViewModels
         public string DisplayName { get; set; }
         public string Icon { get; set; }
         public string NextStateId { get; set; }
+        public Rating Rating { get; set; }
     }
 }

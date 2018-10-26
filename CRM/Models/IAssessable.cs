@@ -7,8 +7,12 @@ namespace CRM.Models
 {
     public interface IAssessable
     {
-        int Rating { get; set; }
+        int Rate { get; set; }
 
         string Comment { get; set; }
+
+        DateTime CommentedOn { get; set; }
+
+        string CommentedBy { get; set; }
     }
 }

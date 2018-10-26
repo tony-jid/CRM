@@ -40,7 +40,7 @@
                 var model = email.methods.getMessageModel();
 
                 //console.log(email.action);
-                console.log(model);
+                //console.log(model);
 
                 ajax.callers.crm(
                     //ajax.controllers.message.name
@@ -63,7 +63,7 @@
 
     callbacks: {
         onDefaultSendSuccess: function (response) {
-            notification.alert.showSuccess("Successfully send the message.");
+            notification.alert.showSuccess("Successfully sent the message.");
             email.methods.hideModal();
             //alert(JSON.stringify(response));
         },

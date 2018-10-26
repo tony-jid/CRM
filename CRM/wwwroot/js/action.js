@@ -9,8 +9,9 @@
 
     targets: {
         window: "Window",
+        ajax: "Ajax",
         message: "Message",
-        ajax: "Ajax"
+        rating: "Rating",
     },
 
     requestTypes: {
@@ -49,6 +50,9 @@
                     if (target === action.targets.message) {
                         // using dynamic data to support "Message Compose"
                         email.methods.showModal(data.recipients, "", "", actionInstance, callback);
+                    }
+                    else if (target === action.targets.rating) {
+                        rating.methods.showModal(data.Comment, data.CommentedOnShortFormat, actionInstance, callback);
                     }
                 }
 

@@ -1,0 +1,45 @@
+﻿<script type="text/javascript" src="~/js/viewmodels/LeadAssignmentRatingVM.js"></script>
+
+<script type="text/javascript" src="~/js/rating.js"></script>
+
+
+@(Html.DevExtreme().Popup()
+    .ID("rating-popup")
+    .ElementAttr("style", "overflow-y: auto")
+    .MaxWidth(600)
+    .MaxHeight(300)
+    .ShowTitle(true)
+    .Visible(false)
+    .DragEnabled(false)
+    .CloseOnOutsideClick(true)
+    .Title("Lead Comment")
+    .ContentTemplate(new TemplateName("rating-popup-template"))
+)
+
+@using (Html.DevExtreme().NamedTemplate("rating-popup-template"))
+{
+    <div class="row mb-2">
+        <label class="col-md-2">Comment:</label>
+        <div class="col-md-10">
+            @(Html.DevExtreme().TextArea()
+                .ID("txtComment")
+                .Height(120)
+                //.ValueChangeEvent("change")
+                //.OnValueChanged("textArea_valueChanged")
+            )
+        </div>
+    </div>
+    <div class="row mb-2">
+        <div class="col-md-12">
+            <label>Last commented on:</label> <span id="lblCommentedOn"></span>
+        </div>
+    </div>
+    <div class="row mb-2">
+        <div class="col-md-12 text-center">
+            <button id="btnSubmit" class="btn btn-primary" data-toggle="tooltip" title="Submit comment">
+                <i class="batch-icon batch-icon-speech-bubble-left-tip-text"></i>
+                Submit comment
+            </button>
+        </div>
+    </div>
+}

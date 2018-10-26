@@ -1,4 +1,9 @@
-﻿@using (Html.DevExtreme().NamedTemplate("template-grid-assignments-by-lead"))
+﻿
+
+@Html.Partial(nameof(EnumPartialPages._Partial_Rating))
+
+
+@using (Html.DevExtreme().NamedTemplate("template-grid-assignments-by-lead"))
 {
     @(Html.DevExtreme().DataGrid<LeadAssignmentVM>()
         .ID(new JS("'gridLeadAssignments'.concat(templateData.Id)"))
@@ -131,18 +136,23 @@
 
 @using (Html.DevExtreme().NamedTemplate("template-grid-assignment-column-status"))
 {
-    <span><%= data.StatusTag %></span>
+    <div class="row m-0">
+        <div class="col-12"><%= data.StatusTag %> <%= data.RatingTag %></div>
+    </div>
 }
 
 @using (Html.DevExtreme().NamedTemplate("template-grid-assignment-column-assigned-on"))
 {
-    <span><%= data.CreatedOnShortFormat %></span>
+    <div class="row m-0">
+        <div class="col-12"><%= data.CreatedOnShortFormat %> <%= data.History %></div>
+    </div>
+    @*<span><%= data.CreatedOnShortFormat %></span>
     <a href="#/" data-toggle="tooltip"
         data-placement="bottom"
         data-html="true"
         title="<%= data.History %>">
         <span class="batch-icon batch-icon-zoom-in-alt text-priamry"></span>
-    </a>
+    </a>*@
 }
 
 @using (Html.DevExtreme().NamedTemplate("template-grid-assignment-column-action"))
