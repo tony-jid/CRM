@@ -7,21 +7,26 @@ using System.Threading.Tasks;
 
 namespace CRM.Repositories
 {
-    public class ActionPermissionRepository
+    public class ActionRepository
     {
         private ApplicationDbContext _context;
 
-        public ActionPermissionRepository(ApplicationDbContext context)
+        public ActionRepository(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        public IEnumerable<ActionPermission> Get()
+        public IEnumerable<Models.Action> GetGroupActions()
+        {
+            return _context.Actions.Where(w => w.IsGroupAction);
+        }
+
+        public IEnumerable<ActionPermission> GetActionPermissions()
         {
             return _context.ActionPermissions;
         }
 
-        public ActionPermission Get(string actionId, string userRoleName)
+        public ActionPermission GetActionPermissions(string actionId, string userRoleName)
         {
             return _context.ActionPermissions.Where(w => w.ActionId == actionId && w.ApplicationRoleName == userRoleName).FirstOrDefault();
         }

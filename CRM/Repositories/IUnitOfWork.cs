@@ -21,9 +21,9 @@ namespace CRM.Repositories
 
         IAgentRepository AgentRepository { get; }
 
-        ILeadRepository LeadRepository { get; }
+        LeadRepository LeadRepository { get; }
 
-        ILeadAssignmentRepository LeadAssignmentRepository { get; }
+        LeadAssignmentRepository LeadAssignmentRepository { get; }
 
         ILeadTypeRepository LeadTypeRepository { get; }
 
@@ -35,6 +35,6 @@ namespace CRM.Repositories
 
         ISalesPersonRepository SalesPersonRepository { get; }
 
-        ActionPermissionRepository ActionPermissionRepository { get; }
+        ActionRepository ActionRepository { get; }
     }
 }

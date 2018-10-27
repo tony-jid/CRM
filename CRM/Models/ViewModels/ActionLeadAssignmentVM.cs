@@ -7,6 +7,7 @@ namespace CRM.Models.ViewModels
 {
     public class ActionLeadAssignmentVM : IAction
     {
+        public string Id { get; set; }
         public Guid LeadId { get; set; }
         public Guid PartnerBranchId { get; set; }
         public int LeadAssignmentId { get; set; }

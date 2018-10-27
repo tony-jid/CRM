@@ -21,6 +21,7 @@
         )
         .SearchPanel(DXGridConfigs.ShowSearchPanel())
         .HeaderFilter(filter => filter.Visible(true))
+        .Selection(s => s.Mode(SelectionMode.Multiple).AllowSelectAll(true))
         .Columns(c => {
             // Something wrong with using Guid as ValueExpr
             c.AddFor(m => m.CustomerId).Visible(false) // Edit only
@@ -138,6 +139,7 @@
             .Key("Id")
         )
         .HeaderFilter(filter => filter.Visible(true))
+        .Selection(s => s.Mode(SelectionMode.Multiple).AllowSelectAll(true))
         .Columns(c => {
             c.AddFor(m => m.LeadTypeId).Visible(false) // Edit only
                 .Lookup(l => l

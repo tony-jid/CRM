@@ -1,5 +1,5 @@
 ﻿var notification = {
-    displayTime: 2000,
+    displayTime: 3000,
 
     types: {
         success: "success",

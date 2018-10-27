@@ -24,6 +24,10 @@ namespace CRM.Models
         
         public string Icon { get; set; }
 
+        public bool IsGroupAction { get; set; }
+
+        public string GroupActionDisplayName { get; set; }
+
         public string NextStateId { get; set; }
         public State NextState { get; set; }
 

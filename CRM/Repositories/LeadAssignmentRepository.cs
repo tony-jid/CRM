@@ -45,6 +45,15 @@ namespace CRM.Repositories
                 .Include(i => i.LeadAssignmentStates).ThenInclude(i => i.State.StateActions).ThenInclude(i => i.Action);
         }
 
+        public IEnumerable<LeadAssignment> GetByLeads(List<Guid> leadIds)
+        {
+            return _context.LeadAssignments
+                .Where(w => leadIds.Contains(w.LeadId))
+                .Include(i => i.PartnerBranch).ThenInclude(i => i.Partner)
+                .Include(i => i.PartnerBranch).ThenInclude(i => i.Address)
+                .Include(i => i.LeadAssignmentStates).ThenInclude(i => i.State.StateActions).ThenInclude(i => i.Action);
+        }
+
         public IEnumerable<LeadAssignment> GetByPartner(Guid partnerId)
         {
             return _context.LeadAssignments

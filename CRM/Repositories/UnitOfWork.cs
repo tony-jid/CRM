@@ -116,8 +116,8 @@ namespace CRM.Repositories
             }
         }
 
-        private ILeadRepository _leadRepo;
-        public ILeadRepository LeadRepository {
+        private LeadRepository _leadRepo;
+        public LeadRepository LeadRepository {
             get {
                 if (_leadRepo == null)
                     _leadRepo = new LeadRepository(_context);
@@ -125,8 +125,8 @@ namespace CRM.Repositories
             }
         }
 
-        private ILeadAssignmentRepository _leadAssRepo;
-        public ILeadAssignmentRepository LeadAssignmentRepository
+        private LeadAssignmentRepository _leadAssRepo;
+        public LeadAssignmentRepository LeadAssignmentRepository
         {
             get
             {
@@ -194,14 +194,14 @@ namespace CRM.Repositories
             }
         }
 
-        private ActionPermissionRepository _actionPermissionRepo;
-        public ActionPermissionRepository ActionPermissionRepository
+        private ActionRepository _actionRepositoryRepo;
+        public ActionRepository ActionRepository
         {
             get
             {
-                if (_actionPermissionRepo == null)
-                    _actionPermissionRepo = new ActionPermissionRepository(_context);
-                return _actionPermissionRepo;
+                if (_actionRepositoryRepo == null)
+                    _actionRepositoryRepo = new ActionRepository(_context);
+                return _actionRepositoryRepo;
             }
         }
     }

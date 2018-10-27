@@ -23,6 +23,11 @@ var site = {
                 return site.apis.crm.concat("customers/getForLookup/");
             },
         },
+        leads: {
+            getGroupActions: function () {
+                return site.apis.crm.concat("leads/getGroupActions/");
+            },
+        },
     },
 
     methods: {

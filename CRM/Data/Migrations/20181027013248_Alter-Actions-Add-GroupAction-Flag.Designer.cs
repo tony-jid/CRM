@@ -4,14 +4,16 @@ using CRM.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CRM.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181027013248_Alter-Actions-Add-GroupAction-Flag")]
+    partial class AlterActionsAddGroupActionFlag
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,12 +51,12 @@ namespace CRM.Data.Migrations
                     b.ToTable("Actions");
 
                     b.HasData(
-                        new { Id = "AL0", ActionName = "SendLeadMessage", ActionTarget = "Message", ControllerName = "Message", DisplayName = "Send message", GroupActionDisplayName = "Message customers", Icon = "batch-icon batch-icon-envelope", IsGroupAction = true, NextStateId = "S0", RequestType = "Post" },
-                        new { Id = "AL1", ActionName = "SendLeadRequestInfo", ActionTarget = "Message", ControllerName = "Message", DisplayName = "Request Info", GroupActionDisplayName = "Request info", Icon = "batch-icon batch-icon-envelope", IsGroupAction = true, NextStateId = "SL4", RequestType = "Post" },
+                        new { Id = "AL0", ActionName = "SendLeadMessage", ActionTarget = "Message", ControllerName = "Message", DisplayName = "Send message", GroupActionDisplayName = "Send customers message", Icon = "batch-icon batch-icon-envelope", IsGroupAction = true, NextStateId = "S0", RequestType = "Post" },
+                        new { Id = "AL1", ActionName = "SendLeadRequestInfo", ActionTarget = "Message", ControllerName = "Message", DisplayName = "Request Info", GroupActionDisplayName = "Request customers info", Icon = "batch-icon batch-icon-envelope", IsGroupAction = true, NextStateId = "SL4", RequestType = "Post" },
                         new { Id = "AL2", ActionName = "Assignments", ActionTarget = "Window", ControllerName = "Leads", DisplayName = "Assign partners", Icon = "batch-icon batch-icon-user-alt-2", IsGroupAction = false, NextStateId = "SL2", RequestType = "Get" },
                         new { Id = "AL3", ActionName = "Assignments", ActionTarget = "Window", ControllerName = "Leads", DisplayName = "Re-assign partners", Icon = "batch-icon batch-icon-user-alt-2", IsGroupAction = false, NextStateId = "SL3", RequestType = "Get" },
                         new { Id = "AL4", ActionName = "GetInvoices", ActionTarget = "Ajax", ControllerName = "Leads", DisplayName = "Get invoices", GroupActionDisplayName = "Get invoices", Icon = "fa fa-dollar", IsGroupAction = true, NextStateId = "SLA4", RequestType = "Post" },
-                        new { Id = "ALA0", ActionName = "SendAssignmentMessage", ActionTarget = "Message", ControllerName = "Message", DisplayName = "Send message", GroupActionDisplayName = "Message partners", Icon = "batch-icon batch-icon-envelope", IsGroupAction = true, NextStateId = "S0", RequestType = "Post" },
+                        new { Id = "ALA0", ActionName = "SendAssignmentMessage", ActionTarget = "Message", ControllerName = "Message", DisplayName = "Send message", GroupActionDisplayName = "Send partners message", Icon = "batch-icon batch-icon-envelope", IsGroupAction = true, NextStateId = "S0", RequestType = "Post" },
                         new { Id = "ALA1", ActionName = "CommentLead", ActionTarget = "Rating", ControllerName = "LeadAssignments", DisplayName = "Comment lead", Icon = "batch-icon batch-icon-speech-bubble-left-tip-text", IsGroupAction = false, NextStateId = "S0", RequestType = "Post" },
                         new { Id = "ALA2", ActionName = "Accept", ActionTarget = "Ajax", ControllerName = "LeadAssignments", DisplayName = "Accept lead", Icon = "batch-icon batch-icon-tick", IsGroupAction = false, NextStateId = "SLA2", RequestType = "Put" },
                         new { Id = "ALA3", ActionName = "Reject", ActionTarget = "Ajax", ControllerName = "LeadAssignments", DisplayName = "Reject lead", Icon = "batch-icon batch-icon-cross", IsGroupAction = false, NextStateId = "SLA3", RequestType = "Put" },

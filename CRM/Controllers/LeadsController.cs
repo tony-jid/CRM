@@ -27,12 +27,14 @@ namespace CRM.Controllers
         private IUnitOfWork _uow;
         private ILeadRepository _leadRepo;
         private IPartnerRepository _partnerRepo;
+        private ActionRepository _actionRepo;
 
         public LeadsController(IUnitOfWork unitOfWork)
         {
             _uow = unitOfWork;
             _leadRepo = unitOfWork.LeadRepository;
             _partnerRepo = unitOfWork.PartnerRepository;
+            _actionRepo = unitOfWork.ActionRepository;
         }
 
         [HttpGet("{leadId}")]
@@ -74,6 +76,12 @@ namespace CRM.Controllers
         public object GetViewModelByCustomer(Guid id, DataSourceLoadOptions loadOptions)
         {
             return DataSourceLoader.Load(this.GetLeadViewModels(_leadRepo.GetLeadsByCustomer(id)), loadOptions);
+        }
+
+        [HttpGet]
+        public object GetGroupActions(DataSourceLoadOptions loadOptions)
+        {
+            return DataSourceLoader.Load(_actionRepo.GetGroupActions(), loadOptions);
         }
 
         [HttpPost]
@@ -151,7 +159,9 @@ namespace CRM.Controllers
             // Actions of current status
             var actions = currentStatus.State.StateActions.Select(s => new ActionLeadVM
             {
+                Id = s.ActionId,
                 CustomerId = itemVM.CustomerId,
+                CustomerEmail = itemVM.CustomerEmail,
                 LeadId = itemVM.Id,
                 ControllerName = s.Action.ControllerName,
                 ActionName = s.Action.ActionName,

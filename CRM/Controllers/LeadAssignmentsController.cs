@@ -22,8 +22,8 @@ namespace CRM.Controllers
         private IUnitOfWork _uow;
         private ILeadRepository _leadRepo;
         private ISalesPersonRepository _salesRepo;
-        private ActionPermissionRepository _actionPermissionRepo;
-        private ILeadAssignmentRepository _leadAssRepo;
+        private ActionRepository _actionPermissionRepo;
+        private LeadAssignmentRepository _leadAssRepo;
         private IEmailSender _emailSender;
         private MessageController _messageController;
         private AccountManager _accountManager;
@@ -39,7 +39,7 @@ namespace CRM.Controllers
             _leadAssRepo = unitOfWork.LeadAssignmentRepository;
             _leadRepo = unitOfWork.LeadRepository;
             _salesRepo = unitOfWork.SalesPersonRepository;
-            _actionPermissionRepo = unitOfWork.ActionPermissionRepository;
+            _actionPermissionRepo = unitOfWork.ActionRepository;
 
             _emailSender = emailSender;
             _messageController = messageController;
@@ -58,6 +58,14 @@ namespace CRM.Controllers
             var leadAssignments = _leadAssRepo.GetByLead(id);
 
             return DataSourceLoader.Load(this.GetLeadAssignmentViewModels(leadAssignments), loadOptions);
+        }
+
+        [HttpGet]
+        public JsonResult GetByLeads([FromQuery(Name = "ids")] Guid[] ids)
+        {
+            var leadAssignments = _leadAssRepo.GetByLeads(ids.ToList());
+
+            return Json(this.GetLeadAssignmentViewModels(leadAssignments));
         }
 
         [HttpGet]
@@ -203,6 +211,7 @@ namespace CRM.Controllers
             // Actions of current status
             var actions = currentStatus.State.StateActions.Where(w => this.IsActionAllowed(w.Action.Id, _userRoleName)).Select(s => new ActionLeadAssignmentVM
             {
+                Id = s.ActionId,
                 LeadId = itemVM.LeadId,
                 PartnerBranchId = itemVM.PartnerBranchId,
                 LeadAssignmentId = itemVM.Id,
@@ -250,7 +259,7 @@ namespace CRM.Controllers
         protected bool IsActionAllowed(string actionId, string userRoleName)
         {
             if (_actionPermissions == null)
-                _actionPermissions = _actionPermissionRepo.Get();
+                _actionPermissions = _actionPermissionRepo.GetActionPermissions();
 
             var actionPermission = _actionPermissions.Where(w => w.ActionId == actionId && w.ApplicationRoleName == userRoleName).SingleOrDefault();
 

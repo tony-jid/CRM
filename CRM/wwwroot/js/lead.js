@@ -189,8 +189,9 @@
                 var actionInstance = e.selectedItem;
 
                 if (actionInstance.ActionTarget === action.targets.message) {
-                    var dataItems = lead.methods.getLeadDataItems(actionInstance.CustomerId);
-                    var email = lead.methods.getMessageRecipient(actionInstance.CustomerId, dataItems);
+                    //var dataItems = lead.methods.getLeadDataItems(actionInstance.CustomerId);
+                    //var email = lead.methods.getMessageRecipient(dataItems, actionInstance.CustomerId);
+                    var email = actionInstance.CustomerEmail;
 
                     var callback = function () { };
 
@@ -206,26 +207,63 @@
                     messageData.recipients.push(email);
                     
                     action.perform(action.sources.lead, actionInstance, messageData, callback);
-
-                    //lead.methods.loadDataSourceLeads().done(function (data) {
-                    //    var email = lead.methods.getMessageRecipient(actionInstance.CustomerId, data);
-                    //    //console.log(email);
-
-                    //    // creating dynamic data to support "Message Compose"
-                    //    var messageData = {
-                    //        recipients: []
-                    //    };
-                    //    messageData.recipients.push(email);
-
-                    //    action.perform(action.sources.lead, actionInstance, messageData);
-                    //});
                 } else {
                     action.perform(action.sources.lead, actionInstance);
                 }
 
                 e.component.reset();
             }
-        }
+        },
+        onGroupActionChanged: function (e_grid, e_selectBox) {
+            if (e_selectBox.selectedItem != null) {
+                var selectedAction = e_selectBox.selectedItem;
+                var selectedRows = e_grid.component.getSelectedRowsData();
+                //console.log(selectedAction);
+                //console.log(selectedRows);
+
+                if (selectedRows.length) {
+                    if (selectedAction.ActionTarget === action.targets.message) {
+                        var emails = [];
+                        var callback = function () { };
+
+                        if (selectedAction.ActionName === lead.actionNames.sendLeadMessage) {
+                            emails = lead.methods.getMessageRecipients(selectedRows, selectedAction.Id);
+                            callback = lead.callbacks.onSendLeadMessageSuccess;
+
+                            lead.methods.showMessageCompose(emails, selectedAction, callback);
+                        }
+                        else if (selectedAction.ActionName === lead.actionNames.sendLeadRequestInfo) {
+                            emails = lead.methods.getMessageRecipients(selectedRows, selectedAction.Id);
+                            callback = lead.callbacks.onSendLeadRequestInfoSuccess;
+
+                            lead.methods.showMessageCompose(emails, selectedAction, callback);
+                        }
+                        else if (selectedAction.ActionName === assignment.actionNames.sendAssignmentMessage) {
+                            // Sending message to partners
+                            callback = assignment.callbacks.onSendAssignmentMessageSuccess;
+
+                            ajax.callers.crm(
+                                ajax.controllers.assignment.name,
+                                ajax.controllers.assignment.actions.getByLeads,
+                                ajax.controllers.assignment.actions.getByLeads.params(lead.methods.getLeadIds(selectedRows)),
+                                function (response) {
+                                    // response = List of lead-assignments
+                                    //console.log(response);
+                                    emails = lead.methods.getMessageRecipients(response, selectedAction.Id);
+
+                                    lead.methods.showMessageCompose(emails, selectedAction, callback);
+                                }
+                            );
+                        }
+                    }
+                }
+                else {
+                    notification.alert.showWarning("No items selected!");
+                }
+
+                e_selectBox.component.reset();
+            }
+        },
     },
 
     methods: {
@@ -235,10 +273,53 @@
         getLeadDataItems: function (suffixId) {
             return dxGrid.options.dataItems(lead.instances.gridLeads(suffixId));
         },
-        getMessageRecipient: function (customerId, data) {
+        getMessageRecipients: function (data, actionId) {
+            var emails = [];
+            for (var i = 0; i < data.length; i++) {
+                for (var j = 0; j < data[i].Actions.length; j++) {
+                    // Adding email to the list only when the current status of an item has the selected action
+                    if (data[i].Actions[j].Id == actionId) {
+                        if (site.methods.isDefined(data[i].CustomerEmail)) {
+                            emails.push(data[i].CustomerEmail);
+                        }
+                        else {
+                            for (var k = 0; k < data[i].Actions[j].PartnerEmails.length; k++) {
+                                emails.push(data[i].Actions[j].PartnerEmails[k]);
+                            }
+                        }
+
+                        break;
+                    }
+                }
+            }
+
+            return emails;
+        },
+        getMessageRecipient: function (data, customerId) {
             for (var i = 0; i < data.length; i++) {
                 if (data[i].CustomerId === customerId)
                     return data[i].CustomerEmail;
+            }
+        },
+        getLeadIds: function (items) {
+            var ids = [];
+            for (var i = 0; i < items.length; i++) {
+                ids.push(items[i].Id);
+            }
+
+            return ids;
+        },
+        showMessageCompose: function (emails, selectedAction, callback) {
+            if (emails.length) {
+                // using dynamic data to support "Message Compose"
+                var messageData = {
+                    recipients: emails
+                };
+
+                action.perform(action.sources.lead, selectedAction, messageData, callback);
+            }
+            else {
+                notification.alert.showWarning("No recipients found!");
             }
         },
     },
@@ -260,6 +341,9 @@
                 );
                 dxGrid.toolbar.methods.addToolbarItem(e_grid,
                     dxGrid.toolbar.widgets.optionDateRange(e_grid, "CreatedOn", "Created...")
+                );
+                dxGrid.toolbar.methods.addToolbarItem(e_grid,
+                    dxGrid.toolbar.widgets.optionLeadGroupActions(e_grid, lead.handlers.onGroupActionChanged)
                 );
             }
         }

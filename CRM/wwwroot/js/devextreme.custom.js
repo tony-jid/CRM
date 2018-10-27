@@ -260,6 +260,45 @@
                     }
                 }
             },
+            optionLeadGroupActions: function (e_grid, onValueChanged) {
+                return {
+                    location: "before",
+                    widget: "dxSelectBox",
+                    options: {
+                        dataSource: DevExpress.data.AspNet.createStore({
+                            loadUrl: site.apis.leads.getGroupActions(),
+                            key: "Id",
+                            onBeforeSend: function (method, ajaxOptions) {
+                                ajaxOptions.xhrFields = { withCredentials: true };
+                            },
+                        }),
+                        width: 200,
+                        displayExpr: "GroupActionDisplayName",
+                        valueExpr: "Id",
+                        placeholder: "Actions..",
+                        itemTemplate: function (itemData, itemIndex, element) {
+                            element.append(
+                                $("<span>").addClass(itemData.Icon).addClass("text-primary")
+                            );
+                            element.append(" ");
+                            element.append(
+                                $("<span>").text(itemData.GroupActionDisplayName)
+                            );
+                        },
+                        onSelectionChanged: site.methods.isDefined(onValueChanged) ?
+                            function (e_selectBox) {
+                                if (e_selectBox.selectedItem !== null) {
+                                    onValueChanged(e_grid, e_selectBox);
+
+                                    e_selectBox.component.reset();
+                                }
+                            }
+                            : function (e_selectBox) {
+                                // handler must be bound by the caller
+                            }
+                    }
+                }
+            },
         },
 
         methods: {
