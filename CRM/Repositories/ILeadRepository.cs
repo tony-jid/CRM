@@ -17,6 +17,6 @@ namespace CRM.Repositories
 
         LeadState GetLeadCurrentStatus(Guid leadId);
 
-        void SetState(Guid leadId, EnumState state, EnumStateAction action, string userName);
+        void SetState(Guid leadId, EnumState state, EnumStateActionTaken action, string userName);
     }
 }

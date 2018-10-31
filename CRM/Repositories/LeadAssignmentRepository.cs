@@ -25,7 +25,7 @@ namespace CRM.Repositories
             {
                 var assignment = new LeadAssignment() { LeadId = viewModel.LeadId, PartnerBranchId = branchId };
                 _context.LeadAssignments.Add(assignment);
-                this.SetState(assignment.Id, EnumState.SLA1, EnumStateAction.Assigned, userName);
+                this.SetState(assignment.Id, EnumState.SLA1, EnumStateActionTaken.Assigned, userName);
             }
 
             //_context.SaveChanges(); // will be commit at Controller
@@ -95,14 +95,14 @@ namespace CRM.Repositories
         public void AcceptAssignment(LeadAssignmentResponseVM responseVM, string userName)
         {
             //var leadAssignment = this.Get(responseVM.LeadAssignmentId);
-            this.SetState(responseVM.LeadAssignmentId, responseVM.Action.NextStateId, EnumStateAction.Accepted, userName);
+            this.SetState(responseVM.LeadAssignmentId, responseVM.Action.NextStateId, EnumStateActionTaken.Accepted, userName);
 
         }
 
         public void RejectAssignment(LeadAssignmentResponseVM responseVM, string userName)
         {
             //var leadAssignment = this.Get(responseVM.LeadAssignmentId);
-            this.SetState(responseVM.LeadAssignmentId, responseVM.Action.NextStateId, EnumStateAction.Rejected, userName);
+            this.SetState(responseVM.LeadAssignmentId, responseVM.Action.NextStateId, EnumStateActionTaken.Rejected, userName);
         }
 
         public void CommentLeadAssignment(int leadAssignmentId, string comment, string userName)
@@ -115,7 +115,7 @@ namespace CRM.Repositories
             _context.Update(leadAssignment);
         }
 
-        public void SetState(int assignmentId, string stateId, EnumStateAction action, string userName)
+        public void SetState(int assignmentId, string stateId, EnumStateActionTaken action, string userName)
         {
             var itemState = new LeadAssignmentState
             {
@@ -129,7 +129,7 @@ namespace CRM.Repositories
             _context.LeadAssignmentStates.Add(itemState);
         }
 
-        public void SetState(int assignmentId, EnumState state, EnumStateAction action, string userName)
+        public void SetState(int assignmentId, EnumState state, EnumStateActionTaken action, string userName)
         {
             var itemState = new LeadAssignmentState
             {

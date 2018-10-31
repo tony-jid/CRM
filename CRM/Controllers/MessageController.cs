@@ -82,7 +82,7 @@ namespace CRM.Controllers
         [HttpPost]
         public JsonResult SendLeadMessage([FromBody]MessageViewModel data)
         {
-            _leadRepo.SetState(new Guid(data.LeadId), EnumState.S0, EnumStateAction.Messaged, User.Identity.Name);
+            _leadRepo.SetState(new Guid(data.LeadId), EnumState.S0, EnumStateActionTaken.Messaged, User.Identity.Name);
             _uow.Commit();
             _emailSender.SendEmailAsync(data.Recipients.Select(s => s.Email).ToArray(), data.Subject, data.Message);
 
@@ -92,7 +92,7 @@ namespace CRM.Controllers
         [HttpPost]
         public JsonResult SendLeadRequestInfo([FromBody]MessageViewModel data)
         {
-            _leadRepo.SetState(new Guid(data.LeadId), EnumState.SL4, EnumStateAction.Requested_Info, User.Identity.Name);
+            _leadRepo.SetState(new Guid(data.LeadId), EnumState.SL4, EnumStateActionTaken.Requested_Info, User.Identity.Name);
             _uow.Commit();
             _emailSender.SendEmailAsync(data.Recipients.Select(s => s.Email).ToArray(), data.Subject, data.Message);
 
@@ -102,7 +102,7 @@ namespace CRM.Controllers
         [HttpPost]
         public JsonResult SendAssignmentMessage([FromBody]MessageViewModel data)
         {
-            _leadAssignmentRepo.SetState(data.LeadAssignmentId, EnumState.S0, EnumStateAction.Messaged, User.Identity.Name);
+            _leadAssignmentRepo.SetState(data.LeadAssignmentId, EnumState.S0, EnumStateActionTaken.Messaged, User.Identity.Name);
             _uow.Commit();
             _emailSender.SendEmailAsync(data.Recipients.Select(s => s.Email).ToArray(), data.Subject, data.Message);
 

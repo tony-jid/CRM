@@ -204,5 +204,16 @@ namespace CRM.Repositories
                 return _actionRepositoryRepo;
             }
         }
+
+        private ReportRepository _reportRepository;
+        public ReportRepository ReportRepository
+        {
+            get
+            {
+                if (_reportRepository == null)
+                    _reportRepository = new ReportRepository(_context);
+                return _reportRepository;
+            }
+        }
     }
 }

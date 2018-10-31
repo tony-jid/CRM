@@ -1,0 +1,89 @@
+﻿
+@{
+    ViewData[nameof(EnumViewData.Title)] = "Invoices";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@(Html.DevExtreme().DataGrid<ReportInvoiceVM>()
+    .ID("gridReportInvoice")
+    .CommonConfigs()
+    .DataSource(d => d.Mvc()
+        .Controller(nameof(EnumController.Reports))
+        .LoadAction("GetInvoices")
+    )
+    .HeaderFilter(filter => filter.Visible(true))
+    .Selection(selection => selection.Mode(SelectionMode.Multiple).SelectAllMode(SelectAllMode.AllPages))
+    .Columns(col => {
+        col.AddFor(m => m.CustomerUnique)
+            .Caption("Customer")
+            .CellTemplate(new TemplateName("template-grid-report-invoice-column-customer"));
+        col.AddFor(m => m.LeadDetails)
+            .Caption("Lead")
+            .AllowHeaderFiltering(false)
+            .CellTemplate(new TemplateName("template-grid-report-invoice-column-lead-details"));
+        col.AddFor(m => m.LeadTypeName)
+            .Caption("Type")
+            .CellTemplate(new TemplateName("template-grid-report-invoice-column-lead-type"));
+        col.AddFor(m => m.PartnerName)
+            .Caption("Partner")
+            .CellTemplate(new TemplateName("template-grid-report-invoice-column-partner"));
+        col.AddFor(m => m.LeadTypePrice)
+            .Caption("Price")
+            .AllowHeaderFiltering(false)
+            .Format(Format.Currency);
+        col.AddFor(m => m.SubmittedDateTime)
+            .Caption("Submitted")
+            .CellTemplate(new TemplateName("template-grid-report-invoice-column-submitted"));
+        col.AddFor(m => m.AssignedDateTime)
+            .Caption("Assigned")
+            .CellTemplate(new TemplateName("template-grid-report-invoice-column-assigned"));
+        col.AddFor(m => m.AcceptedDateTime)
+            .Caption("Accepted")
+            .CellTemplate(new TemplateName("template-grid-report-invoice-column-accepted"));
+    })
+)
+
+@using (Html.DevExtreme().NamedTemplate("template-grid-report-invoice-column-customer"))
+{
+    <span><%= data.CustomerUnique %></span>
+}
+
+@using (Html.DevExtreme().NamedTemplate("template-grid-report-invoice-column-lead-details"))
+{
+    <span><%= data.LeadDetails %></span>
+}
+
+@using (Html.DevExtreme().NamedTemplate("template-grid-report-invoice-column-lead-type"))
+{
+    <div>
+        <img src="<%= data.LeadTypeImage %>" width="32" height="32" /> 
+        <%= data.LeadTypeName %>
+    </div>
+}
+}
+
+@using (Html.DevExtreme().NamedTemplate("template-grid-report-invoice-column-partner"))
+{
+    <img src="<%= data.PartnerLogo %>" class="grid-partner-logo" />
+    <b><%= data.PartnerName %></b>
+}
+
+@using (Html.DevExtreme().NamedTemplate("template-grid-report-invoice-column-status"))
+{
+    <span><%= data.StatusTag %></span>
+}
+
+@using (Html.DevExtreme().NamedTemplate("template-grid-report-invoice-column-submitted"))
+{
+    <span><%= data.SubmittedDateTimeString %></span>
+}
+
+@using (Html.DevExtreme().NamedTemplate("template-grid-report-invoice-column-assigned"))
+{
+    <span><%= data.AssignedDateTimeString %></span>
+}
+
+@using (Html.DevExtreme().NamedTemplate("template-grid-report-invoice-column-accepted"))
+{
+    <span><%= data.AcceptedDateTimeString %></span>
+}

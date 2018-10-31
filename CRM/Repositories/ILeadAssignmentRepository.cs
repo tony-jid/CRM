@@ -22,6 +22,6 @@ namespace CRM.Repositories
 
         void CommentLeadAssignment(int leadAssignmentId, string comment, string userName);
 
-        void SetState(int assignmentId, EnumState state, EnumStateAction action, string userName);
+        void SetState(int assignmentId, EnumState state, EnumStateActionTaken action, string userName);
     }
 }

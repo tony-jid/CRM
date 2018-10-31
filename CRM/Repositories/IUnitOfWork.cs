@@ -36,5 +36,7 @@ namespace CRM.Repositories
         ISalesPersonRepository SalesPersonRepository { get; }
 
         ActionRepository ActionRepository { get; }
+
+        ReportRepository ReportRepository { get; }
     }
 }
