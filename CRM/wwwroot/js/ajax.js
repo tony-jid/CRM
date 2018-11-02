@@ -29,15 +29,7 @@
                     type: 'GET',
                     name: 'GetByLeads',
                     params: function (leadIds) {
-                        var params = "";
-                        for (var i = 0; i < leadIds.length; i++) {
-                            if (params.length)
-                                params = params.concat("&");
-
-                            params = params.concat("ids=").concat(leadIds[i]);
-                        }
-
-                        return params;
+                        return ajax.methods.getListParams(leadIds);
                     }
                 },
                 assignPartners: {
@@ -74,6 +66,20 @@
                     alert('Request Status: ' + xhr.status + '; Error: ' + errorThrown + '; Status Text: ' + textStatus);
                 }
             });
+        },
+    },
+
+    methods: {
+        getListParams: function (listValue) {
+            var params = "";
+            for (var i = 0; i < listValue.length; i++) {
+                if (params.length)
+                    params = params.concat("&");
+
+                params = params.concat("ids=").concat(listValue[i]);
+            }
+
+            return params;
         },
     },
 };

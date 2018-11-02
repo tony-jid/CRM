@@ -4,14 +4,16 @@ using CRM.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CRM.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181102034142_Alter-invoice-action")]
+    partial class Alterinvoiceaction
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -58,8 +60,8 @@ namespace CRM.Data.Migrations
                         new { Id = "ALA1", ActionName = "CommentLead", ActionTarget = "Rating", ControllerName = "LeadAssignments", DisplayName = "Comment lead", Icon = "batch-icon batch-icon-speech-bubble-left-tip-text", IsGroupAction = false, NextStateId = "S0", RequestType = "Post" },
                         new { Id = "ALA2", ActionName = "Accept", ActionTarget = "Ajax", ControllerName = "LeadAssignments", DisplayName = "Accept lead", Icon = "batch-icon batch-icon-tick", IsGroupAction = false, NextStateId = "SLA2", RequestType = "Put" },
                         new { Id = "ALA3", ActionName = "Reject", ActionTarget = "Ajax", ControllerName = "LeadAssignments", DisplayName = "Reject lead", Icon = "batch-icon batch-icon-cross", IsGroupAction = false, NextStateId = "SLA3", RequestType = "Put" },
-                        new { Id = "ALA4", ActionName = "InvoiceByAssignments", ActionTarget = "Window", ControllerName = "Reports", DisplayName = "Get invoice", Icon = "fa fa-dollar", IsGroupAction = false, NextStateId = "SLA4", RequestType = "Get" },
-                        new { Id = "ALA5", ActionName = "InvoiceByAssignments", ActionTarget = "Window", ControllerName = "Reports", DisplayName = "Get invoice", Icon = "fa fa-dollar", IsGroupAction = false, NextStateId = "SLA5", RequestType = "Get" }
+                        new { Id = "ALA4", ActionName = "SendInvoice", ActionTarget = "Ajax", ControllerName = "LeadAssignments", DisplayName = "Send invoice", Icon = "fa fa-dollar", IsGroupAction = false, NextStateId = "SLA4", RequestType = "Post" },
+                        new { Id = "ALA5", ActionName = "SendInvoice", ActionTarget = "Ajax", ControllerName = "LeadAssignments", DisplayName = "Re-send invoice", Icon = "fa fa-dollar", IsGroupAction = false, NextStateId = "SLA5", RequestType = "Post" }
                     );
                 });
 

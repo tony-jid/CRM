@@ -20,6 +20,7 @@
         rejectLead: "Reject",
         sendAssignmentMessage: "SendAssignmentMessage",
         commentLead: "CommentLead",
+        invoiceByAssignments: "InvoiceByAssignments",
     },
 
     handlers: {
@@ -92,6 +93,14 @@
                         callback = assignment.callbacks.onCommentLeadSuccess;
 
                     action.perform(action.sources.assignment, actionInstance, actionInstance.Rating, callback);
+                }
+                else if (actionInstance.ActionTarget === action.targets.window) {
+                    if (actionInstance.ActionName === assignment.actionNames.invoiceByAssignments) {
+                        var leadAssignmentId = actionInstance.LeadAssignmentId;
+                        var params = ajax.methods.getListParams([leadAssignmentId]);
+
+                        window.open("/{0}/{1}?{2}".format(actionInstance.ControllerName, actionInstance.ActionName, params), "_blank");
+                    }
                 }
 
                 e.component.reset();

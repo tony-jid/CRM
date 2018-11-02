@@ -11,6 +11,7 @@
     actionNames: {
         sendLeadMessage: "SendLeadMessage",
         sendLeadRequestInfo: "SendLeadRequestInfo",
+        invoiceByLeads: "InvoiceByLeads",
     },
 
     templates: {
@@ -254,6 +255,13 @@
                                     lead.methods.showMessageCompose(emails, selectedAction, callback);
                                 }
                             );
+                        }
+                    }
+                    else if (selectedAction.ActionTarget === action.targets.window) {
+                        if (selectedAction.ActionName === lead.actionNames.invoiceByLeads) {
+                            var leadIds = lead.methods.getLeadIds(selectedRows);
+                            var params = ajax.methods.getListParams(leadIds);
+                            window.open("/{0}/{1}?{2}".format(selectedAction.ControllerName, selectedAction.ActionName, params), "_blank");
                         }
                     }
                 }
