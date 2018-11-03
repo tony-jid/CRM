@@ -103,7 +103,10 @@ namespace CRM.Data
                     new StateAction { StateId = "SLA3", ActionId = "ALA2" },
                     new StateAction { StateId = "SLA4", ActionId = "ALA0" },
                     new StateAction { StateId = "SLA4", ActionId = "ALA1" },
-                    new StateAction { StateId = "SLA4", ActionId = "ALA5" }
+                    new StateAction { StateId = "SLA4", ActionId = "ALA5" },
+                    new StateAction { StateId = "SLA5", ActionId = "ALA0" },
+                    new StateAction { StateId = "SLA5", ActionId = "ALA1" },
+                    new StateAction { StateId = "SLA5", ActionId = "ALA5" }
                 );
 
             // Action-Permissions Data

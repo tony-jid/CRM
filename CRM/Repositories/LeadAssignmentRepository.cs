@@ -129,6 +129,20 @@ namespace CRM.Repositories
             _context.LeadAssignmentStates.Add(itemState);
         }
 
+        public void SetState(int assignmentId, string stateId, string actionTaken, string userName)
+        {
+            var itemState = new LeadAssignmentState
+            {
+                LeadAssignmentId = assignmentId,
+                StateId = stateId,
+                Actor = userName,
+                Action = actionTaken,
+                ActionTimestamp = DateTime.Now
+            };
+
+            _context.LeadAssignmentStates.Add(itemState);
+        }
+
         public void SetState(int assignmentId, EnumState state, EnumStateActionTaken action, string userName)
         {
             var itemState = new LeadAssignmentState

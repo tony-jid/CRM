@@ -21,7 +21,8 @@
         )
         .SearchPanel(DXGridConfigs.ShowSearchPanel())
         .HeaderFilter(filter => filter.Visible(true))
-        .Selection(s => s.Mode(SelectionMode.Multiple).AllowSelectAll(true))
+        .Selection(s => s.Mode(SelectionMode.Multiple).SelectAllMode(SelectAllMode.AllPages))
+        .Pager(DXGridConfigs.PagerShowSelector())
         .Columns(c => {
             // Something wrong with using Guid as ValueExpr
             c.AddFor(m => m.CustomerId).Visible(false) // Edit only

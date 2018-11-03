@@ -22,6 +22,9 @@
         masterDetail: function (e) {
             return e.component.option("masterDetail");
         },
+        exportOptions: function (e) {
+            return e.component.getController("export");
+        },
         dataItems: function (component) { // component = instance
             return component.getDataSource().items();
         },

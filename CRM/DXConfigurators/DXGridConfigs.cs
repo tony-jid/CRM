@@ -88,6 +88,16 @@ namespace CRM.DXConfigurators
             };
         }
 
+        public static Action<DataGridPagerBuilder> PagerShowSelector()
+        {
+            return (pager) => {
+                pager.ShowPageSizeSelector(true);
+                pager.ShowInfo(true);
+                pager.Visible(true);
+                pager.AllowedPageSizes(new int[] { 10, 20, 50, 100 });
+            };
+        }
+
         public static Action<DataGridEditingBuilder<T>> Editing<T>(string popupTitle)
         {
             return (editing) => {

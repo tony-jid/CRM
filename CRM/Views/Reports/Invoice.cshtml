@@ -20,6 +20,7 @@
     )
     .HeaderFilter(filter => filter.Visible(true))
     .Selection(selection => selection.Mode(SelectionMode.Multiple).SelectAllMode(SelectAllMode.AllPages))
+    .Pager(DXGridConfigs.PagerShowSelector())
     .Export(export => export
         .Enabled(true)
         .AllowExportSelectedData(true)
@@ -63,6 +64,8 @@
     })
     .OnContentReady("reportInvoice.dxGrid.handlers.onContentReady")
     .OnToolbarPreparing("reportInvoice.dxGrid.handlers.onToolbarPreparing")
+    .OnExporting("reportInvoice.handlers.onInvoiceExporting")
+    .OnExported("reportInvoice.handlers.onInvoiceExported")
 )
 
 @using (Html.DevExtreme().NamedTemplate("template-grid-report-invoice-column-customer"))

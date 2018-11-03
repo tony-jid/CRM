@@ -38,6 +38,18 @@
                 },
             },
         },
+        reports: {
+            name: "reports",
+            actions: {
+                updateInvoicedLeadAssignmentStatus: {
+                    type: "PUT",
+                    name: "UpdateInvoicedLeadAssignmentStatus",
+                    params: function (leadAssignmentIds) {
+                        return ajax.methods.getListParams(leadAssignmentIds);
+                    },
+                },
+            },
+        },
     },
 
     callers: {
@@ -70,13 +82,16 @@
     },
 
     methods: {
-        getListParams: function (listValue) {
+        getListParams: function (listValue, paramName) {
             var params = "";
+            if (!site.methods.isDefined(paramName))
+                paramName = "ids";
+
             for (var i = 0; i < listValue.length; i++) {
                 if (params.length)
                     params = params.concat("&");
 
-                params = params.concat("ids=").concat(listValue[i]);
+                params = params.concat(paramName).concat("=").concat(listValue[i]);
             }
 
             return params;
