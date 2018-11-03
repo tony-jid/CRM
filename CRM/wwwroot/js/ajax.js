@@ -50,6 +50,15 @@
                 },
             },
         },
+        customers: {
+            name: "customers",
+            actions: {
+                GetForLookup: {
+                    type: "GET",
+                    name: "GetForLookup",
+                },
+            },
+        },
     },
 
     callers: {

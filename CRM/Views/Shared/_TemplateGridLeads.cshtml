@@ -24,17 +24,8 @@
         .Selection(s => s.Mode(SelectionMode.Multiple).SelectAllMode(SelectAllMode.AllPages))
         .Pager(DXGridConfigs.PagerShowSelector())
         .Columns(c => {
-            // Something wrong with using Guid as ValueExpr
-            c.AddFor(m => m.CustomerId).Visible(false) // Edit only
+            c.Add().DataField("CustomerId").Visible(false) // Edit only
                 .EditCellTemplate(new JS("lead.templates.lookupCustomer"));
-            //.Lookup(l => l
-            //    .DataSource(ds => ds.Mvc().Controller(nameof(EnumController.Customers))
-            //        .LoadAction("GetForLookup")
-            //        .Key("Id")
-            //    )
-            //    .DisplayExpr("CustomerUnique")
-            //    .ValueExpr("Id")
-            //);
             c.AddFor(m => m.LeadTypeId).Visible(false) // Edit only
                 .Lookup(l => l
                     .DataSource(ds => ds.Mvc().Controller(nameof(EnumController.LeadTypes))
@@ -117,6 +108,7 @@
             .Enabled(true)
             .Template(new TemplateName("masterdetail-template-grid-assignments"))
         )
+        .OnContentReady("lead.dxGrid.handlers.onContentReady")
         .OnToolbarPreparing("lead.dxGrid.handlers.onToolbarPreparing")
         .OnEditorPreparing("function(e) { if (e.dataField === 'CreatedOn') e.setValue(moment()); }")
     )

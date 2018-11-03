@@ -44,8 +44,10 @@ namespace CRM.Controllers
         [HttpGet]
         public object GetForLookup()
         {
-            return _cusRepo.Get().Select(s => new {
+            return _cusRepo.Get().Select(s => new
+            {
                 Id = s.Id,
+                Email = s.EMail,
                 CustomerUnique = String.Format("{0} ({1})", s.ContactName, s.EMail)
             });
         }

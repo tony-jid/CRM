@@ -1,4 +1,8 @@
 ﻿var lead = {
+    vars: {
+        dsLookupCustomers: undefined,
+    },
+
     ids: {
         customerId: "__customerId",
         gridLeads: "#gridLeads",
@@ -23,17 +27,31 @@
             
             $(cellElement).append("<div id='" + _cellId + "' />");
 
+            // *** DevExpress Issue ***
+            // Cannot use dxLookup with AspNetDataStore, it will get only single customer when initialize data entry for editing
+            // So, have to use LocalStore instead by load customer list once when the grid content is ready
+            //
+            /*var aspDataStore = DevExpress.data.AspNet.createStore({
+                loadUrl: site.apis.customers.getForLookup(),
+                onBeforeSend: function (method, ajaxOptions) {
+                    ajaxOptions.xhrFields = { withCredentials: true };
+                },
+                key: "Id"
+            });
+
+            var dataSource = new DevExpress.data.DataSource({
+                store: aspDataStore,
+                map: function (dataItem) {
+                    //dataItem.Id = dataItem.Id.valueOf();
+                    console.log(dataItem);
+                    return dataItem;
+                }
+            });*/
+
             $("#" + _cellId).dxLookup({
                 name: _cellId,
-                dataSource: DevExpress.data.AspNet.createStore({
-                    loadUrl: site.apis.customers.getForLookup(),
-                    onBeforeSend: function (method, ajaxOptions) {
-                        ajaxOptions.xhrFields = { withCredentials: true };
-                    },
-                    key: "Id"
-                }),
+                dataSource: lead.vars.dsLookupCustomers,
                 closeOnOutsideClick: true,
-                value: cellInfo.value,
                 placeholder: "Customer...",
                 displayExpr: "CustomerUnique",
                 valueExpr: "Id",
@@ -317,6 +335,21 @@
 
             return ids;
         },
+        getDsLookupCustomers: function () {
+            if (site.methods.isDefined(lead.vars.dsLookupCustomers)) {
+                return lead.vars.dsLookupCustomers;
+            } else {
+                ajax.callers.crm(
+                    ajax.controllers.customers.name,
+                    ajax.controllers.customers.actions.GetForLookup,
+                    {},
+                    function (response) {
+                        //console.log(response);
+                        lead.vars.dsLookupCustomers = response;
+                    }
+                );
+            }
+        },
         showMessageCompose: function (emails, selectedAction, callback) {
             if (emails.length) {
                 // using dynamic data to support "Message Compose"
@@ -336,6 +369,10 @@
     //
     dxGrid: {
         handlers: {
+            onContentReady: function (e_grid) {
+                dxGrid.handlers.onContentReady(e_grid);
+                lead.methods.getDsLookupCustomers();
+            },
             onToolbarPreparing: function(e_grid) {
                 dxGrid.handlers.onToolbarPreparing(e_grid);
                 dxGrid.toolbar.methods.addToolbarItem(e_grid,
