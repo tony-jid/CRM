@@ -1,6 +1,9 @@
-﻿
+﻿@model DashboardVM
+
 @{
     ViewData[nameof(EnumViewData.Title)] = nameof(EnumController.Dashboard);
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+
+@Html.Partial(nameof(EnumPartialPages._Dashboard_LeadOverview), Model)

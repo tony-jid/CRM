@@ -4,6 +4,18 @@
     },
 
     controllers: {
+        home: {
+            name: "Home",
+            actions: {
+                getChartLeadOverview: {
+                    type: "GET",
+                    name: "GetChartLeadOverview",
+                    params: function (dateStart, dateEnd) {
+                        return "dateStart=" + dateStart + "&dateEnd=" + dateEnd;
+                    }
+                },
+            },
+        },
         company: {
             name: 'Company',
             actions: {
@@ -65,12 +77,16 @@
         crm: function (ajaxController, ajaxAction, values, onSuccess) {
             var ajaxUrl = ajax.urls.crm.format(ajaxController, ajaxAction.name);
 
+            //console.log(values);
+
             var ajaxBodyData = "";
             if (ajaxAction.type === "GET") {
                 ajaxUrl = ajaxUrl.concat("?").concat(values);
             } else {
                 ajaxBodyData = JSON.stringify(values);
             }
+
+            //console.log(ajaxUrl);
 
             $.ajax({
                 url: ajaxUrl,

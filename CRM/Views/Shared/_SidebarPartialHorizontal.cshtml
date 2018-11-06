@@ -14,7 +14,7 @@
                 @if (!User.IsInRole(nameof(EnumApplicationRole.Partner)))
                 {
                     <li class="nav-item">
-                        <a class="nav-link @(pageName == nameof(EnumController.Dashboard) ? classActiveLink : "")" asp-controller="@(nameof(EnumController.Home))">
+                        <a class="nav-link @(pageName == nameof(EnumController.Dashboard) ? classActiveLink : "")" asp-controller="@(nameof(EnumController.Home))" asp-action="">
                             <i class="batch-icon batch-icon-browser-alt"></i>
                             Dashboard
                         </a>

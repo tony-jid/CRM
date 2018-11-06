@@ -4,8 +4,8 @@
     },
 
     items: {
-        getDateRange: function () {
-            return [
+        getDateRange: function (todayIncluded) {
+            var dateRange = [
                 {
                     text: "This Week", value: {
                         start: moment().startOf("isoWeek").format(dateHelper.formats.SHORT_MONTH_STR),
@@ -43,6 +43,19 @@
                     }
                 },
             ];
+
+            if (!site.methods.isDefined(todayIncluded))
+                todayIncluded = true;
+
+            if (todayIncluded)
+                dateRange.unshift({
+                    text: "Today", value: {
+                        start: moment().format(dateHelper.formats.SHORT_MONTH_STR),
+                        end: moment().format(dateHelper.formats.SHORT_MONTH_STR),
+                    }
+                });
+
+            return dateRange;
         },
     },
 }

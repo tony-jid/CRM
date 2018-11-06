@@ -21,5 +21,15 @@ namespace CRM.DXConfigurators
                 .DropDownButtonTemplate("<span class='batch-icon batch-icon-menu-pull-down text-danger' />")
                 .ItemTemplate("<span class='<%= Icon %> text-primary' /> <%= DisplayName %>");
         }
+
+        public static SelectBoxBuilder DateRangeCommonConfigs(this SelectBoxBuilder selectBox)
+        {
+            return selectBox
+                .DisplayExpr("text")
+                .ValueExpr("value")
+                .SearchEnabled(false)
+                .DataSource(new JS("dateHelper.items.getDateRange(false)"))
+                .DropDownButtonTemplate("<span class='batch-icon batch-icon-md batch-icon-calendar text-primary' />");
+        }
     }
 }

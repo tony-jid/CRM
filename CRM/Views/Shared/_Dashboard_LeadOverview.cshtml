@@ -1,0 +1,120 @@
+﻿<script type="text/javascript" src="~/js/data/chart.fields.js"></script>
+<script type="text/javascript" src="~/js/dashboard.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        
+    })
+</script>
+
+<div class="row">
+    <div class="col-xs-12 col-md-4 mb-5">
+	    <div class="card card-tile card-xs bg-primary bg-gradient text-center">
+		    <div class="card-body p-4">
+			    <div class="tile-left">
+				    <i class="batch-icon batch-icon-xxl batch-icon-podcast"></i>
+			    </div>
+			    <div class="tile-right">
+				    <div class="tile-number">@Model.TodayLeadsAmount</div>
+				    <div class="tile-description">Today's Leads</div>
+			    </div>
+		    </div>
+	    </div>
+    </div>
+    <div class="col-xs-12 col-md-4 mb-5">
+	    <div class="card card-tile card-xs bg-success bg-gradient text-center">
+		    <div class="card-body p-4">
+			    <div class="tile-left">
+				    <i class="batch-icon batch-icon-xxl batch-icon-podcast"></i>
+			    </div>
+			    <div class="tile-right">
+				    <div class="tile-number">@Model.TodayAcceptedLeadsAmount</div>
+				    <div class="tile-description">Today's Accepted Leads</div>
+			    </div>
+		    </div>
+	    </div>
+    </div>
+    <div class="col-xs-12 col-md-4 mb-5">
+	    <div class="card card-tile card-xs bg-danger bg-gradient text-center">
+		    <div class="card-body p-4">
+			    <div class="tile-left">
+				    <i class="batch-icon batch-icon-xxl batch-icon-podcast"></i>
+			    </div>
+			    <div class="tile-right">
+				    <div class="tile-number">@Model.TodayRejectedLeadsAmount</div>
+				    <div class="tile-description">Today's Rejected Leads</div>
+			    </div>
+		    </div>
+	    </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12 col-md-12 mb-5">
+		<div class="card">
+			<div class="card-header">
+				Leads Overview
+				<div class="header-btn-block">
+					<span class="data-range dropdown">
+                        @(Html.DevExtreme().SelectBox()
+                            .ID("selectBoxLeadOverview")
+                            .DateRangeCommonConfigs()
+                            .DeferRendering(false)
+                            .OnContentReady("dashboard.handlers.onSelectBoxLeadOverviewContentReady")
+                            .OnValueChanged("dashboard.handlers.onSelectBoxLeadOverviewChanged")
+                        )
+					</span>
+				</div>
+			</div>
+			<div class="card-body">
+				@(Html.DevExtreme().Chart()
+                    .ID("chartLeadOverview")
+                    .Palette(VizPalette.HarmonyLight)
+                    .CommonSeriesSettings(s => s
+                        .ArgumentField("argument")
+                        .Type(SeriesType.StackedArea)
+                    )
+                    .Title("From {dateStart} to {dateEnd}")
+                    .ArgumentAxis(a => a.ValueMarginsEnabled(false))
+                    .Export(e => e.Enabled(false))
+                    .CommonAxisSettings(s => s.AllowDecimals(false))
+                    .Legend(l => l
+                        .VerticalAlignment(VerticalEdge.Bottom)
+                        .HorizontalAlignment(HorizontalAlignment.Center)
+                    )
+                    .Tooltip(t => t
+                        .Enabled(true)
+                        .Shared(true)
+                        .CustomizeTooltip(@<text>
+                            function(info) {
+                                return {
+                                    html: "<div>" +
+                                    "<div class='tooltip-header'>" + info.argumentText + "</div>" +
+                                    "<div class='tooltip-body'>" + 
+                                    "<div class='series-name'>" + info.points[0].seriesName + " Leads : </div>" + 
+                                    "<div class='value-text text-right'>" + info.points[0].valueText + "</div>" + 
+                                    "<div class='series-name'>" + info.points[1].seriesName + " Leads : </div>" + 
+                                    "<div class='value-text text-right'>" + info.points[1].valueText + "</div>" + 
+                                    "<div class='series-name'>" + info.points[2].seriesName + " Leads : </div>" + 
+                                    "<div class='value-text text-right'>" + info.points[2].valueText + "</div>" + 
+                                    "</div>" + 
+                                    "</div>"
+                                };
+                            }
+                        </text>)
+                )
+                //.DataSource(d => d.Mvc()
+                //    .Controller(nameof(EnumController.Home))
+                //    .LoadAction("GetChartLeadOverview")
+                //    .LoadParams(
+                //        new { dateStart = new DateTime(2018, 10, 15)
+                //            , dateEnd = new DateTime(2018, 10, 21)
+                //        }
+                //    )
+                //)
+                //.OnDone("function(e) { console.log(e.component.getDataSource().items()); }")
+                )
+			</div>
+		</div>
+	</div>
+</div>

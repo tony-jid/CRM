@@ -25,7 +25,7 @@ namespace CRM.Controllers
     public class LeadsController : BaseController
     {
         private IUnitOfWork _uow;
-        private ILeadRepository _leadRepo;
+        private LeadRepository _leadRepo;
         private IPartnerRepository _partnerRepo;
         private ActionRepository _actionRepo;
 

@@ -17,7 +17,7 @@
             <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="navbar-dropdown-navbar-profile">
                 @if (SignInManager.IsSignedIn(User))
                 {
-                    <li><a class="dropdown-item" href="#">Profile</a></li>
+                    @*<li><a class="dropdown-item" href="#">Profile</a></li>*@
                     <li><a class="dropdown-item" asp-controller="Account" asp-action="ChangePassword">Change password</a></li>
                     <li><button type="submit" class="dropdown-item">LOG OUT</button></li>
 
@@ -27,7 +27,6 @@
                             <span class="badge badge-danger badge-pill float-right">3</span>
                         </a>
                     </li>*@
-                    @*<li><a class="dropdown-item" href="#">Logout</a></li>*@
                 }
                 else
                 {

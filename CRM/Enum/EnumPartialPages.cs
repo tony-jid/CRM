@@ -20,6 +20,8 @@ namespace CRM.Enum
         _Partial_Rating,
 
         _TemplateGridLeads,
-        _TemplateGridAssignments
+        _TemplateGridAssignments,
+
+        _Dashboard_LeadOverview
     }
 }
