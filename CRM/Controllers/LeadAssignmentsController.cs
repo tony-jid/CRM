@@ -20,19 +20,20 @@ namespace CRM.Controllers
     public class LeadAssignmentsController : BaseController
     {
         private IUnitOfWork _uow;
-        private ILeadRepository _leadRepo;
+        private LeadRepository _leadRepo;
         private ISalesPersonRepository _salesRepo;
         private ActionRepository _actionPermissionRepo;
         private LeadAssignmentRepository _leadAssRepo;
         private IEmailSender _emailSender;
         private MessageController _messageController;
+        private LeadsController _leadsController;
         private AccountManager _accountManager;
 
         private string _userRoleName;
         private IEnumerable<ActionPermission> _actionPermissions;
 
         public LeadAssignmentsController(IUnitOfWork unitOfWork, IEmailSender emailSender
-            , MessageController messageController
+            , MessageController messageController, LeadsController leadsController
             , UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, SignInManager<ApplicationUser> signInManager)
         {
             _uow = unitOfWork;
@@ -43,6 +44,7 @@ namespace CRM.Controllers
 
             _emailSender = emailSender;
             _messageController = messageController;
+            _leadsController = leadsController;
             _accountManager = new AccountManager(userManager, roleManager, signInManager, emailSender);
         }
 
@@ -93,7 +95,12 @@ namespace CRM.Controllers
             
             if (_uow.Commit())
             {
-                await _messageController.SendPartnerLeadAssigned(data.PartnerBranchIds, this.Url, this.Request);
+                var lead = _leadRepo.GetByUid(data.LeadId);
+                var leadVM = _leadsController.GetLeadViewModel(lead);
+                var details = MessageHelper.GetLeadDetails(leadVM);
+
+                // Passing customer's and lead's details to an email
+                await _messageController.SendPartnerLeadAssigned(data.PartnerBranchIds, this.Url, this.Request, details);
 
                 return Json(Ok());
             }
@@ -231,7 +238,7 @@ namespace CRM.Controllers
 
             // CreatedWhen
             var firstSssignedOn = item.LeadAssignmentStates.OrderBy(o => o.ActionTimestamp).FirstOrDefault();
-            itemVM.AssignedOn = firstSssignedOn.ActionTimestamp;
+            itemVM.AssignedOn = firstSssignedOn.ActionTimestamp.Date;
 
             // History
             var histories = item.LeadAssignmentStates

@@ -1,6 +1,6 @@
 ﻿var dateHelper = {
     formats: {
-        SHORT_MONTH_STR: "DD MMM YYYY",
+        SHORT_MONTH_STR: "D MMM YYYY",
     },
 
     items: {

@@ -205,7 +205,7 @@ namespace CRM.Controllers
         }
 
         [HttpPost]
-        public async Task SendPartnerLeadAssigned(List<Guid> branchIds, IUrlHelper url, HttpRequest httpRequest)
+        public async Task SendPartnerLeadAssigned(List<Guid> branchIds, IUrlHelper url, HttpRequest httpRequest, string leadDetails)
         {
             List<string> emails = new List<string>();
 
@@ -226,7 +226,7 @@ namespace CRM.Controllers
 
             var callbackLink = (url ?? this.Url).PartnerLeadAssignedCallbackLink((httpRequest != null) ? httpRequest.Scheme : this.Request.Scheme);
 
-            await _emailSender.SendPartnerLeadAssignedAsync(emails.ToArray(), callbackLink);
+            await _emailSender.SendPartnerLeadAssignedAsync(emails.ToArray(), callbackLink, leadDetails);
         }
     }
 }

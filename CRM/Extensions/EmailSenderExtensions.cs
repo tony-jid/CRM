@@ -33,10 +33,16 @@ namespace CRM.Services
                 $"The lead is {partnerReponseText} by {partnerName}. Please click <a href='{HtmlEncoder.Default.Encode(link)}'>here for details</a>.");
         }
 
-        public static Task SendPartnerLeadAssignedAsync(this IEmailSender emailSender, string[] email, string link)
+        public static Task SendPartnerLeadAssignedAsync(this IEmailSender emailSender, string[] email, string leadDetails)
         {
             return emailSender.SendEmailAsync(email, "Lead assignment notification",
-                $"Lead has been assigned to you. Please click <a href='{HtmlEncoder.Default.Encode(link)}'>here for details</a>.");
+                $"Lead has been assigned to you. Please see below for details.<br/>{leadDetails}");
+        }
+
+        public static Task SendPartnerLeadAssignedAsync(this IEmailSender emailSender, string[] email, string link, string leadDetails)
+        {
+            return emailSender.SendEmailAsync(email, "Lead assignment notification",
+                $"Lead has been assigned to you. Please see below for details.<br/>{leadDetails}<br/><a href='{HtmlEncoder.Default.Encode(link)}'>Click here for more details.</a>");
         }
     }
 }

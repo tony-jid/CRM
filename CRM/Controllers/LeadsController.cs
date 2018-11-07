@@ -129,7 +129,7 @@ namespace CRM.Controllers
                 return BadRequest(GetFullErrorMessage(this.ModelState));
         }
 
-        protected LeadVM GetLeadViewModel(Lead item)
+        public LeadVM GetLeadViewModel(Lead item)
         {
             var itemVM = new LeadVM();
             itemVM.Id = item.Id;
@@ -176,7 +176,7 @@ namespace CRM.Controllers
 
             // CreatedWhen
             var createdStatus = item.LeadStates.OrderBy(o => o.ActionTimestamp).FirstOrDefault();
-            itemVM.CreatedOn = createdStatus.ActionTimestamp;
+            itemVM.CreatedOn = createdStatus.ActionTimestamp.Date;
 
             // Histories
             var histories = item.LeadStates
@@ -189,7 +189,7 @@ namespace CRM.Controllers
             return itemVM;
         }
 
-        protected List<LeadVM> GetLeadViewModels(IEnumerable<Lead> leads)
+        public List<LeadVM> GetLeadViewModels(IEnumerable<Lead> leads)
         {
             List<LeadVM> leadVMs = new List<LeadVM>();
 

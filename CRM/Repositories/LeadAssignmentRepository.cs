@@ -25,7 +25,9 @@ namespace CRM.Repositories
             {
                 var assignment = new LeadAssignment() { LeadId = viewModel.LeadId, PartnerBranchId = branchId };
                 _context.LeadAssignments.Add(assignment);
-                this.SetState(assignment.Id, EnumState.SLA1, EnumStateActionTaken.Assigned, userName);
+
+                //this.SetState(assignment.Id, EnumState.SLA1, EnumStateActionTaken.Assigned, userName);
+                this.SetState(assignment.Id, EnumState.SLA2, EnumStateActionTaken.Assigned, userName);
             }
 
             //_context.SaveChanges(); // will be commit at Controller

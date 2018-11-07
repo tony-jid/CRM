@@ -220,7 +220,8 @@
                             onValueChanged
                             : function (e_selectBox) {
                                 if (e_selectBox.value != null) {
-                                    e_grid.component.filter([dataField, ">=", moment(e_selectBox.value.start)], [dataField, "<=", moment(e_selectBox.value.end)]);
+                                    //console.log(e_selectBox.value);
+                                    e_grid.component.filter([dataField, ">=", moment(e_selectBox.value.start, dateHelper.formats.SHORT_MONTH_STR)], [dataField, "<=", moment(e_selectBox.value.end, dateHelper.formats.SHORT_MONTH_STR)]);
                                 }
                                 else {
                                     e_grid.component.clearFilter();
