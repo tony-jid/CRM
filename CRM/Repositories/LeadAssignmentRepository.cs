@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CRM.Data;
 using CRM.Enum;
+using CRM.Helpers;
 using CRM.Models;
 using CRM.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
@@ -111,7 +112,7 @@ namespace CRM.Repositories
         {
             var leadAssignment = this.Get(leadAssignmentId);
             leadAssignment.Comment = comment;
-            leadAssignment.CommentedOn = DateTime.Now;
+            leadAssignment.CommentedOn = DateHelper.Now;
             leadAssignment.CommentedBy = userName;
 
             _context.Update(leadAssignment);
@@ -125,7 +126,7 @@ namespace CRM.Repositories
                 StateId = stateId,
                 Actor = userName,
                 Action = action.ToString(),
-                ActionTimestamp = DateTime.Now
+                ActionTimestamp = DateHelper.Now
             };
 
             _context.LeadAssignmentStates.Add(itemState);
@@ -139,7 +140,7 @@ namespace CRM.Repositories
                 StateId = stateId,
                 Actor = userName,
                 Action = actionTaken,
-                ActionTimestamp = DateTime.Now
+                ActionTimestamp = DateHelper.Now
             };
 
             _context.LeadAssignmentStates.Add(itemState);
@@ -153,7 +154,7 @@ namespace CRM.Repositories
                 StateId = state.ToString(),
                 Actor = userName,
                 Action = action.ToString(),
-                ActionTimestamp = DateTime.Now
+                ActionTimestamp = DateHelper.Now
             };
 
             _context.LeadAssignmentStates.Add(itemState);

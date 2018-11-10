@@ -22,7 +22,8 @@ namespace CRM.Helpers
         {
             if (commentedOn != DateTime.MinValue)
                 return String.Format(RatingHelper.RATING_TAG_FORMAT,
-                    String.Format(RatingHelper.RATING_LINE_FORMAT, comment, commentedBy, commentedOn.ToString(DateHelper.FORMAT_SHORT_MONTH_STR) + " at " + commentedOn.ToShortTimeString())
+                    String.Format(RatingHelper.RATING_LINE_FORMAT, comment, commentedBy
+                        , DateHelper.ConvertFromUtc(commentedOn).ToString(DateHelper.FORMAT_SHORT_MONTH_STR) + " at " + DateHelper.ConvertFromUtc(commentedOn).ToShortTimeString())
                 );
             else
                 return string.Empty;

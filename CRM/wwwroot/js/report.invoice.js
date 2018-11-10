@@ -84,13 +84,13 @@
             onToolbarPreparing: function (e_grid) {
                 dxGrid.handlers.onToolbarPreparing(e_grid);
                 dxGrid.toolbar.methods.addToolbarItem(e_grid,
-                    dxGrid.toolbar.widgets.optionDateRange(e_grid, "SubmittedDateTime", "Submitted On...")
+                    dxGrid.toolbar.widgets.optionDateRange(e_grid, "SubmittedDate", "Submitted...")
                 );
                 dxGrid.toolbar.methods.addToolbarItem(e_grid,
-                    dxGrid.toolbar.widgets.optionDateRange(e_grid, "AssignedDateTime", "Assigned On...")
+                    dxGrid.toolbar.widgets.optionDateRange(e_grid, "AssignedDate", "Assigned...")
                 );
                 dxGrid.toolbar.methods.addToolbarItem(e_grid,
-                    dxGrid.toolbar.widgets.optionDateRange(e_grid, "AcceptedDateTime", "Accepted On...")
+                    dxGrid.toolbar.widgets.optionDateRange(e_grid, "AcceptedDate", "Accepted...")
                 );
             },
         },

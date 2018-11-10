@@ -9,6 +9,7 @@ namespace CRM.Models.ViewModels
     {
         public Guid LeadId { get; set; }
         public string LeadDetails { get; set; }
+        public DateTime SubmittedDate { get { return SubmittedDateTime.Date; } }
         public DateTime SubmittedDateTime { get; set; }
         public string SubmittedDateTimeString { get; set; }
 
@@ -32,8 +33,10 @@ namespace CRM.Models.ViewModels
         public string PartnerAddress { get; set; }
 
         public int LeadAssignmentId { get; set; }
+        public DateTime AssignedDate { get { return AssignedDateTime.Date; } }
         public DateTime AssignedDateTime { get; set; }
         public string AssignedDateTimeString { get; set; }
+        public DateTime AcceptedDate { get { return AcceptedDateTime.Date; } }
         public DateTime AcceptedDateTime { get; set; }
         public string AcceptedDateTimeString { get; set; }
 

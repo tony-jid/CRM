@@ -20,7 +20,7 @@ namespace CRM.Helpers
 
         public static string GetHtmlHistoryLine(DateTime when, string action, string actor)
         {
-            return String.Format(HistoryHelper.HISTORY_LINE_FORMAT, when.ToShortDateString(), when.ToShortTimeString(), action.Replace("_", " "), actor);
+            return String.Format(HistoryHelper.HISTORY_LINE_FORMAT, when.ToString(DateHelper.FORMAT_SHORT_MONTH_STR), when.ToShortTimeString(), action.Replace("_", " "), actor);
         }
 
         public static string GetHtmlHistoryTag(List<string> historyLines)

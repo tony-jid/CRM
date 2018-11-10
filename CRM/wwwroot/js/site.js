@@ -4,7 +4,7 @@
 
 var site = {
     apis: {
-        crm: "https://localhost:44394/",
+        crm: "/",
         leadtypes: {
             get: function () {
                 return site.apis.crm.concat("leadtypes/get");

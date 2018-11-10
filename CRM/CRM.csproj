@@ -19,6 +19,12 @@
     <Compile Remove="Data\Migrations\20180727101129_test-IPerson.Designer.cs" />
     <Compile Remove="Data\Migrations\20181026130031_Update-StateAction-Data.cs" />
     <Compile Remove="Data\Migrations\20181026130031_Update-StateAction-Data.Designer.cs" />
+    <Compile Remove="Data\Migrations\20181108124535_Initial-Migration.cs" />
+    <Compile Remove="Data\Migrations\20181108124535_Initial-Migration.Designer.cs" />
+    <Compile Remove="Data\Migrations\20181108125548_Initial-Migration-1.cs" />
+    <Compile Remove="Data\Migrations\20181108125548_Initial-Migration-1.Designer.cs" />
+    <Compile Remove="Data\Migrations\20181109004322_Initial-Migration.cs" />
+    <Compile Remove="Data\Migrations\20181109004322_Initial-Migration.Designer.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="DevExtreme.AspNet.Core" Version="18.1.6" />

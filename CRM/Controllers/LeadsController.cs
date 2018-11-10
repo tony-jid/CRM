@@ -176,13 +176,13 @@ namespace CRM.Controllers
 
             // CreatedWhen
             var createdStatus = item.LeadStates.OrderBy(o => o.ActionTimestamp).FirstOrDefault();
-            itemVM.CreatedOn = createdStatus.ActionTimestamp.Date;
+            itemVM.CreatedOn = DateHelper.ConvertFromUtc(createdStatus.ActionTimestamp).Date;
 
             // Histories
             var histories = item.LeadStates
                 .OrderByDescending(o => o.ActionTimestamp)
                 //.Where(w => w.StateId != currentStatus.StateId) // *show all
-                .Select(s => HistoryHelper.GetHtmlHistoryLine(s.ActionTimestamp, s.Action.ToLower(), s.Actor));
+                .Select(s => HistoryHelper.GetHtmlHistoryLine(DateHelper.ConvertFromUtc(s.ActionTimestamp), s.Action.ToLower(), s.Actor));
 
             itemVM.History = HistoryHelper.GetHtmlHistoryTag(histories.ToList());
 

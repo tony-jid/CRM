@@ -15,7 +15,7 @@ namespace CRM.Controllers
     public class HookController : Controller
     {
         private IUnitOfWork _uow;
-        private ILeadRepository _leadRepo;
+        private LeadRepository _leadRepo;
         private ICustomerRepository _cusRepo;
         private MessageController _messageController;
 

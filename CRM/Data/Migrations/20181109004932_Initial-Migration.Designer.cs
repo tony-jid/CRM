@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CRM.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20181007122158_ApplicationUser-SalesPerson-Relationship")]
-    partial class ApplicationUserSalesPersonRelationship
+    [Migration("20181109004932_Initial-Migration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -34,7 +34,11 @@ namespace CRM.Data.Migrations
 
                     b.Property<string>("DisplayName");
 
+                    b.Property<string>("GroupActionDisplayName");
+
                     b.Property<string>("Icon");
+
+                    b.Property<bool>("IsGroupAction");
 
                     b.Property<string>("NextStateId");
 
@@ -47,14 +51,62 @@ namespace CRM.Data.Migrations
                     b.ToTable("Actions");
 
                     b.HasData(
-                        new { Id = "AL1", ActionName = "Send", ActionTarget = "Message", ControllerName = "Message", DisplayName = "Send message", Icon = "batch-icon batch-icon-envelope", NextStateId = "S0", RequestType = "Post" },
-                        new { Id = "AL2", ActionName = "Assignments", ActionTarget = "Window", ControllerName = "Leads", DisplayName = "Assign partners", Icon = "batch-icon batch-icon-user-alt-2", NextStateId = "SL2", RequestType = "Get" },
-                        new { Id = "AL3", ActionName = "Assignments", ActionTarget = "Window", ControllerName = "Leads", DisplayName = "Re-assign partners", Icon = "batch-icon batch-icon-user-alt-2", NextStateId = "SL3", RequestType = "Get" },
-                        new { Id = "ALA1", ActionName = "Comment", ActionTarget = "Message", ControllerName = "LeadAssignments", DisplayName = "Comment lead", Icon = "batch-icon batch-icon-speech-bubble-left-tip-text", NextStateId = "S0", RequestType = "Post" },
-                        new { Id = "ALA2", ActionName = "Accept", ActionTarget = "Ajax", ControllerName = "LeadAssignments", DisplayName = "Accept lead", Icon = "batch-icon batch-icon-tick", NextStateId = "SLA2", RequestType = "Put" },
-                        new { Id = "ALA3", ActionName = "Reject", ActionTarget = "Ajax", ControllerName = "LeadAssignments", DisplayName = "Reject lead", Icon = "batch-icon batch-icon-cross", NextStateId = "SLA3", RequestType = "Put" },
-                        new { Id = "ALA4", ActionName = "SendInvoice", ActionTarget = "Ajax", ControllerName = "LeadAssignments", DisplayName = "Send invoice", Icon = "fa fa-dollar", NextStateId = "SLA4", RequestType = "Post" },
-                        new { Id = "ALA5", ActionName = "ResendInvoice", ActionTarget = "Ajax", ControllerName = "LeadAssignments", DisplayName = "Re-send invoice", Icon = "fa fa-dollar", NextStateId = "SLA5", RequestType = "Post" }
+                        new { Id = "AL0", ActionName = "SendLeadMessage", ActionTarget = "Message", ControllerName = "Message", DisplayName = "Send message", GroupActionDisplayName = "Message customers", Icon = "batch-icon batch-icon-envelope", IsGroupAction = true, NextStateId = "S0", RequestType = "Post" },
+                        new { Id = "AL1", ActionName = "SendLeadRequestInfo", ActionTarget = "Message", ControllerName = "Message", DisplayName = "Request Info", GroupActionDisplayName = "Request info", Icon = "batch-icon batch-icon-envelope", IsGroupAction = true, NextStateId = "SL4", RequestType = "Post" },
+                        new { Id = "AL2", ActionName = "Assignments", ActionTarget = "Window", ControllerName = "Leads", DisplayName = "Assign partners", Icon = "batch-icon batch-icon-user-alt-2", IsGroupAction = false, NextStateId = "SL2", RequestType = "Get" },
+                        new { Id = "AL3", ActionName = "Assignments", ActionTarget = "Window", ControllerName = "Leads", DisplayName = "Re-assign partners", Icon = "batch-icon batch-icon-user-alt-2", IsGroupAction = false, NextStateId = "SL3", RequestType = "Get" },
+                        new { Id = "AL4", ActionName = "InvoiceByLeads", ActionTarget = "Window", ControllerName = "Reports", DisplayName = "Get invoices", GroupActionDisplayName = "Get invoices", Icon = "fa fa-dollar", IsGroupAction = true, NextStateId = "SLA4", RequestType = "Get" },
+                        new { Id = "ALA0", ActionName = "SendAssignmentMessage", ActionTarget = "Message", ControllerName = "Message", DisplayName = "Send message", GroupActionDisplayName = "Message partners", Icon = "batch-icon batch-icon-envelope", IsGroupAction = true, NextStateId = "S0", RequestType = "Post" },
+                        new { Id = "ALA1", ActionName = "CommentLead", ActionTarget = "Rating", ControllerName = "LeadAssignments", DisplayName = "Comment lead", Icon = "batch-icon batch-icon-speech-bubble-left-tip-text", IsGroupAction = false, NextStateId = "S0", RequestType = "Post" },
+                        new { Id = "ALA2", ActionName = "Accept", ActionTarget = "Ajax", ControllerName = "LeadAssignments", DisplayName = "Accept lead", Icon = "batch-icon batch-icon-tick", IsGroupAction = false, NextStateId = "SLA2", RequestType = "Put" },
+                        new { Id = "ALA3", ActionName = "Reject", ActionTarget = "Ajax", ControllerName = "LeadAssignments", DisplayName = "Reject lead", Icon = "batch-icon batch-icon-cross", IsGroupAction = false, NextStateId = "SLA3", RequestType = "Put" },
+                        new { Id = "ALA4", ActionName = "InvoiceByAssignments", ActionTarget = "Window", ControllerName = "Reports", DisplayName = "Get invoice", Icon = "fa fa-dollar", IsGroupAction = false, NextStateId = "SLA4", RequestType = "Get" },
+                        new { Id = "ALA5", ActionName = "InvoiceByAssignments", ActionTarget = "Window", ControllerName = "Reports", DisplayName = "Get invoice", Icon = "fa fa-dollar", IsGroupAction = false, NextStateId = "SLA5", RequestType = "Get" }
+                    );
+                });
+
+            modelBuilder.Entity("CRM.Models.ActionPermission", b =>
+                {
+                    b.Property<string>("ActionId");
+
+                    b.Property<string>("ApplicationRoleName");
+
+                    b.HasKey("ActionId", "ApplicationRoleName");
+
+                    b.ToTable("ActionPermissions");
+
+                    b.HasData(
+                        new { ActionId = "AL0", ApplicationRoleName = "Admin" },
+                        new { ActionId = "AL0", ApplicationRoleName = "Manager" },
+                        new { ActionId = "AL0", ApplicationRoleName = "Agent" },
+                        new { ActionId = "AL1", ApplicationRoleName = "Admin" },
+                        new { ActionId = "AL1", ApplicationRoleName = "Manager" },
+                        new { ActionId = "AL1", ApplicationRoleName = "Agent" },
+                        new { ActionId = "AL2", ApplicationRoleName = "Admin" },
+                        new { ActionId = "AL2", ApplicationRoleName = "Manager" },
+                        new { ActionId = "AL2", ApplicationRoleName = "Agent" },
+                        new { ActionId = "AL3", ApplicationRoleName = "Admin" },
+                        new { ActionId = "AL3", ApplicationRoleName = "Manager" },
+                        new { ActionId = "AL3", ApplicationRoleName = "Agent" },
+                        new { ActionId = "ALA0", ApplicationRoleName = "Admin" },
+                        new { ActionId = "ALA0", ApplicationRoleName = "Manager" },
+                        new { ActionId = "ALA0", ApplicationRoleName = "Agent" },
+                        new { ActionId = "ALA0", ApplicationRoleName = "Partner" },
+                        new { ActionId = "ALA1", ApplicationRoleName = "Partner" },
+                        new { ActionId = "ALA2", ApplicationRoleName = "Admin" },
+                        new { ActionId = "ALA2", ApplicationRoleName = "Manager" },
+                        new { ActionId = "ALA2", ApplicationRoleName = "Agent" },
+                        new { ActionId = "ALA2", ApplicationRoleName = "Partner" },
+                        new { ActionId = "ALA3", ApplicationRoleName = "Admin" },
+                        new { ActionId = "ALA3", ApplicationRoleName = "Manager" },
+                        new { ActionId = "ALA3", ApplicationRoleName = "Agent" },
+                        new { ActionId = "ALA3", ApplicationRoleName = "Partner" },
+                        new { ActionId = "ALA4", ApplicationRoleName = "Admin" },
+                        new { ActionId = "ALA4", ApplicationRoleName = "Manager" },
+                        new { ActionId = "ALA4", ApplicationRoleName = "Agent" },
+                        new { ActionId = "ALA5", ApplicationRoleName = "Admin" },
+                        new { ActionId = "ALA5", ApplicationRoleName = "Manager" },
+                        new { ActionId = "ALA5", ApplicationRoleName = "Agent" }
                     );
                 });
 
@@ -107,6 +159,30 @@ namespace CRM.Data.Migrations
                     b.HasIndex("OfficeId");
 
                     b.ToTable("Agents");
+                });
+
+            modelBuilder.Entity("CRM.Models.ApplicationRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken();
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256);
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles");
                 });
 
             modelBuilder.Entity("CRM.Models.ApplicationUser", b =>
@@ -168,6 +244,9 @@ namespace CRM.Data.Migrations
                     b.Property<string>("ABN")
                         .IsRequired();
 
+                    b.Property<string>("Email")
+                        .IsRequired();
+
                     b.Property<double>("GST");
 
                     b.Property<string>("Logo");
@@ -180,7 +259,7 @@ namespace CRM.Data.Migrations
                     b.ToTable("Company");
 
                     b.HasData(
-                        new { Id = 1, ABN = "65 626 309 073", GST = 10.0, Logo = "logo-dark.png", Name = "Comparison Advantage" }
+                        new { Id = 1, ABN = "65 626 309 073", Email = "leads@comparisonadvantage.com.au", GST = 0.1, Logo = "logo-dark.png", Name = "Comparison Advantage" }
                     );
                 });
 
@@ -277,11 +356,15 @@ namespace CRM.Data.Migrations
 
                     b.Property<string>("Comment");
 
+                    b.Property<string>("CommentedBy");
+
+                    b.Property<DateTime>("CommentedOn");
+
                     b.Property<Guid>("LeadId");
 
                     b.Property<Guid>("PartnerBranchId");
 
-                    b.Property<int>("Rating");
+                    b.Property<int>("Rate");
 
                     b.HasKey("Id");
 
@@ -481,6 +564,7 @@ namespace CRM.Data.Migrations
                     b.HasData(
                         new { Id = "S0", Name = "Unknown", Owner = "Unknown", Repeatable = false, Seq = 1 },
                         new { Id = "SL1", Name = "New", Owner = "Lead", Repeatable = false, Seq = 1 },
+                        new { Id = "SL4", Name = "Requested Info", Owner = "Lead", Repeatable = false, Seq = 1 },
                         new { Id = "SL2", Name = "Assigned", Owner = "Lead", Repeatable = false, Seq = 2 },
                         new { Id = "SL3", Name = "Re-assigned", Owner = "Lead", Repeatable = false, Seq = 3 },
                         new { Id = "SLA1", Name = "Considering", Owner = "LeadAssignment", Repeatable = false, Seq = 1 },
@@ -504,41 +588,34 @@ namespace CRM.Data.Migrations
                     b.ToTable("StateActions");
 
                     b.HasData(
+                        new { StateId = "SL1", ActionId = "AL0" },
                         new { StateId = "SL1", ActionId = "AL1" },
                         new { StateId = "SL1", ActionId = "AL2" },
-                        new { StateId = "SL2", ActionId = "AL1" },
+                        new { StateId = "SL4", ActionId = "AL0" },
+                        new { StateId = "SL4", ActionId = "AL1" },
+                        new { StateId = "SL4", ActionId = "AL2" },
+                        new { StateId = "SL2", ActionId = "AL0" },
                         new { StateId = "SL2", ActionId = "AL3" },
-                        new { StateId = "SL3", ActionId = "AL1" },
+                        new { StateId = "SL3", ActionId = "AL0" },
                         new { StateId = "SL3", ActionId = "AL3" },
-                        new { StateId = "SLA1", ActionId = "AL1" },
+                        new { StateId = "SLA1", ActionId = "ALA0" },
                         new { StateId = "SLA1", ActionId = "ALA1" },
                         new { StateId = "SLA1", ActionId = "ALA2" },
-                        new { StateId = "SLA1", ActionId = "ALA3" }
+                        new { StateId = "SLA1", ActionId = "ALA3" },
+                        new { StateId = "SLA2", ActionId = "ALA0" },
+                        new { StateId = "SLA2", ActionId = "ALA1" },
+                        new { StateId = "SLA2", ActionId = "ALA3" },
+                        new { StateId = "SLA2", ActionId = "ALA4" },
+                        new { StateId = "SLA3", ActionId = "ALA0" },
+                        new { StateId = "SLA3", ActionId = "ALA1" },
+                        new { StateId = "SLA3", ActionId = "ALA2" },
+                        new { StateId = "SLA4", ActionId = "ALA0" },
+                        new { StateId = "SLA4", ActionId = "ALA1" },
+                        new { StateId = "SLA4", ActionId = "ALA5" },
+                        new { StateId = "SLA5", ActionId = "ALA0" },
+                        new { StateId = "SLA5", ActionId = "ALA1" },
+                        new { StateId = "SLA5", ActionId = "ALA5" }
                     );
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken();
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(256);
-
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
-
-                    b.ToTable("AspNetRoles");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -633,6 +710,14 @@ namespace CRM.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
+            modelBuilder.Entity("CRM.Models.ActionPermission", b =>
+                {
+                    b.HasOne("CRM.Models.Action", "Action")
+                        .WithMany("ActionPermissions")
+                        .HasForeignKey("ActionId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
             modelBuilder.Entity("CRM.Models.Agent", b =>
                 {
                     b.HasOne("CRM.Models.ApplicationUser", "ApplicationUser")
@@ -672,7 +757,7 @@ namespace CRM.Data.Migrations
                     b.HasOne("CRM.Models.Customer", "Customer")
                         .WithMany("Leads")
                         .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("CRM.Models.LeadType", "LeadType")
                         .WithMany("Leads")
@@ -786,7 +871,7 @@ namespace CRM.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole")
+                    b.HasOne("CRM.Models.ApplicationRole")
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -810,7 +895,7 @@ namespace CRM.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole")
+                    b.HasOne("CRM.Models.ApplicationRole")
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);

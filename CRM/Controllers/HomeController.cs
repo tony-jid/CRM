@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using CRM.Enum;
 using CRM.Repositories;
 using CRM.Models.ViewModels;
+using CRM.Helpers;
 
 namespace CRM.Controllers
 {
@@ -30,9 +31,11 @@ namespace CRM.Controllers
                 return View("Dashboard", this.GetDashboardVM());
         }
 
+        [AllowAnonymous]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            //return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View();
         }
         
         [HttpGet]
@@ -54,9 +57,9 @@ namespace CRM.Controllers
 
             DashboardVM dashboardVM = new DashboardVM();
             //dashboardVM.TodayLeadsAmount = _leadRepo.GetTodayLeads().Count();
-            dashboardVM.TodayLeadsAmount = dashLeadVMs.Where(w => w.CreatedOn.Date == DateTime.Now.Date).Count();
-            dashboardVM.TodayAcceptedLeadsAmount = dashLeadVMs.Where(w => w.LeadStateType == nameof(EnumState.SLA2) && w.ActionTimestamp.Date == DateTime.Now.Date).Count();
-            dashboardVM.TodayRejectedLeadsAmount = dashLeadVMs.Where(w => w.LeadStateType == nameof(EnumState.SLA3) && w.ActionTimestamp.Date == DateTime.Now.Date).Count();
+            dashboardVM.TodayLeadsAmount = dashLeadVMs.Where(w => DateHelper.ConvertFromUtc(w.CreatedOn).Date == DateHelper.ConvertFromUtc(DateHelper.Now).Date).Count();
+            dashboardVM.TodayAcceptedLeadsAmount = dashLeadVMs.Where(w => w.LeadStateType == nameof(EnumState.SLA2) && DateHelper.ConvertFromUtc(w.ActionTimestamp).Date == DateHelper.ConvertFromUtc(DateHelper.Now).Date).Count();
+            dashboardVM.TodayRejectedLeadsAmount = dashLeadVMs.Where(w => w.LeadStateType == nameof(EnumState.SLA3) && DateHelper.ConvertFromUtc(w.ActionTimestamp).Date == DateHelper.ConvertFromUtc(DateHelper.Now).Date).Count();
 
             dashboardVM.DashboardLeadOverviewVMs = this.GetDashboardLeadOverview(dateStart, dateEnd);
 
@@ -111,19 +114,6 @@ namespace CRM.Controllers
             }
 
             return dashboardLeadOverviewVMs;
-        }
-
-        [HttpGet]
-        [AllowAnonymous]
-        public JsonResult GetDashboardTest()
-        {
-            var dateStart = new DateTime(2018, 10, 15);
-            var dateEnd = new DateTime(2018, 10, 21);
-            var result = this.GetDashboardVM(dateStart, dateEnd);
-
-            int days = dateEnd.Subtract(dateStart).Days;
-
-            return Json(result);
         }
     }
 }

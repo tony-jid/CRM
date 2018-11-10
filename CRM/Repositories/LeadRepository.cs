@@ -1,5 +1,6 @@
 ﻿using CRM.Data;
 using CRM.Enum;
+using CRM.Helpers;
 using CRM.Models;
 using CRM.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -71,7 +72,7 @@ namespace CRM.Repositories
         private List<Guid> GetTodayLeadIds()
         {
             return _context.LeadStates
-                .Where(w => w.StateId == nameof(EnumState.SL1) && w.ActionTimestamp.Date == DateTime.Now.Date)
+                .Where(w => w.StateId == nameof(EnumState.SL1) && DateHelper.ConvertFromUtc(w.ActionTimestamp).Date == DateHelper.ConvertFromUtc(DateHelper.Now).Date)
                 .Select(s => s.LeadId).ToList();
         }
 
@@ -80,8 +81,8 @@ namespace CRM.Repositories
         {
             var statusNewLeadVMs = _context.LeadStates
                 .Where(w => w.StateId == nameof(EnumState.SL1) && 
-                    (w.ActionTimestamp.Date >= dateStart.Date)
-                    && (w.ActionTimestamp.Date <= dateEnd.Date)
+                    (w.ActionTimestamp.Date >= DateHelper.ConvertToUtc(dateStart).Date)
+                    && (w.ActionTimestamp.Date <= DateHelper.ConvertToUtc(dateEnd).Date)
                 )
                 .Include(i => i.Lead).ThenInclude(i => i.LeadType)
                 .Select(s => new DashboardLeadVM() {
@@ -89,7 +90,7 @@ namespace CRM.Repositories
                     LeadTypeId = s.Lead.LeadTypeId,
                     LeadTypeName = s.Lead.LeadType.Name,
                     LeadStateType = s.StateId,
-                    CreatedOn = s.ActionTimestamp.Date
+                    CreatedOn = DateHelper.ConvertFromUtc(s.ActionTimestamp).Date
                 });
 
             List<DashboardLeadVM> adjustedStatusLeadVMs = new List<DashboardLeadVM>();
@@ -112,12 +113,12 @@ namespace CRM.Repositories
                     {
                         // If any of assignments is accepted, the lead is supposed to be accepted.
                         leadStateType = nameof(EnumState.SLA2);
-                        actionTimestamp = assignmentCurrentStatus.ActionTimestamp;
+                        actionTimestamp = DateHelper.ConvertFromUtc(assignmentCurrentStatus.ActionTimestamp);
                         break;
                     } else if (assignmentCurrentStatus.StateId == nameof(EnumState.SLA3))
                     {
                         leadStateType = nameof(EnumState.SLA3);
-                        actionTimestamp = assignmentCurrentStatus.ActionTimestamp;
+                        actionTimestamp = DateHelper.ConvertFromUtc(assignmentCurrentStatus.ActionTimestamp);
                     }
                 }
 
@@ -195,7 +196,7 @@ namespace CRM.Repositories
                 StateId = state.ToString(),
                 Actor = userName,
                 Action = action.ToString(),
-                ActionTimestamp = DateTime.Now
+                ActionTimestamp = DateHelper.Now
             };
 
             _context.LeadStates.Add(leadState);

@@ -49,6 +49,9 @@
             .Caption("Price")
             .AllowHeaderFiltering(false)
             .Format(Format.Currency);
+        col.AddFor(m => m.SubmittedDate).Visible(false);
+        col.AddFor(m => m.AssignedDate).Visible(false);
+        col.AddFor(m => m.AcceptedDate).Visible(false);
         col.AddFor(m => m.SubmittedDateTime)
             .Caption("Submitted")
             .CellTemplate(new TemplateName("template-grid-report-invoice-column-submitted"));

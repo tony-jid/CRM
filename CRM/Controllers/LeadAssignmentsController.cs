@@ -238,13 +238,13 @@ namespace CRM.Controllers
 
             // CreatedWhen
             var firstSssignedOn = item.LeadAssignmentStates.OrderBy(o => o.ActionTimestamp).FirstOrDefault();
-            itemVM.AssignedOn = firstSssignedOn.ActionTimestamp.Date;
+            itemVM.AssignedOn = DateHelper.ConvertFromUtc(firstSssignedOn.ActionTimestamp).Date;
 
             // History
             var histories = item.LeadAssignmentStates
                 .OrderByDescending(o => o.ActionTimestamp)
                 //.Where(w => w.StateId != currentStatus.StateId) // *show all
-                .Select(s => HistoryHelper.GetHtmlHistoryLine(s.ActionTimestamp, s.Action.ToLower(), s.Actor));
+                .Select(s => HistoryHelper.GetHtmlHistoryLine(DateHelper.ConvertFromUtc(s.ActionTimestamp), s.Action.ToLower(), s.Actor));
 
             itemVM.History = HistoryHelper.GetHtmlHistoryTag(histories.ToList());
 
