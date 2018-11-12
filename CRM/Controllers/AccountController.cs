@@ -128,6 +128,8 @@ namespace CRM.Controllers
 
             if (result.Succeeded)
             {
+                await _signInManager.SignOutAsync();
+
                 // Generate toek for resetting password
                 var resetPasswordCode = await _userManager.GeneratePasswordResetTokenAsync(user);
 

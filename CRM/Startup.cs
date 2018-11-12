@@ -131,20 +131,33 @@ namespace CRM
             }
 
             // Creating an account for administrator 
-            ApplicationUser admin = await userManager.FindByEmailAsync("thawatchai.j14@gmail.com");
+            ApplicationUser superAdmin = await userManager.FindByEmailAsync("thawatchai.j14@gmail.com");
 
-            if (admin == null)
+            if (superAdmin == null)
             {
-                admin = new ApplicationUser()
+                superAdmin = new ApplicationUser()
                 {
                     UserName = "thawatchai.j14@gmail.com",
                     Email = "thawatchai.j14@gmail.com",
                     EmailConfirmed = true,
                 };
+                await userManager.CreateAsync(superAdmin, "asdf!234");
+            }
+            await userManager.AddToRoleAsync(superAdmin, EnumApplicationRole.Admin.ToString());
+
+            ApplicationUser admin = await userManager.FindByEmailAsync("leads@comparisonadvantage.com.au");
+
+            if (admin == null)
+            {
+                admin = new ApplicationUser()
+                {
+                    UserName = "leads@comparisonadvantage.com.au",
+                    Email = "leads@comparisonadvantage.com.au",
+                    EmailConfirmed = true,
+                };
                 await userManager.CreateAsync(admin, "asdf!234");
             }
             await userManager.AddToRoleAsync(admin, EnumApplicationRole.Admin.ToString());
-
         }
     }
 }
