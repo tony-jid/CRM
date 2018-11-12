@@ -102,13 +102,13 @@
 							        </a>
                                 </div>
                             </text>);
-                        c.Add()
+                        @*c.Add()
                             .Width("60%")
                             .CellTemplate(@<text>
                                 <span class="badge badge-warning">Waiting <span class="badge badge-light">12</span></span>
                                 <span class="badge badge-success">Accepted <span class="badge badge-light">39</span></span>
                                 <span class="badge badge-danger">Rejected <span class="badge badge-light">14</span></span>
-                            </text>);
+                            </text>);*@
                     })
                     .Selection(DXGridConfigs.SelectionCheckBoxMode())
                     .OnToolbarPreparing("assignment.dxGrid.handlers.gridSearchBranchesOnToolbarPreparing")

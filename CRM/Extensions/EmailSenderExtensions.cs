@@ -23,14 +23,14 @@ namespace CRM.Services
 
         public static Task SendCompanyLeadHookedAsync(this IEmailSender emailSender, string email, string link)
         {
-            return emailSender.SendEmailAsync(email, "New lead submission link",
-                $"New lead has been submitted. Please click <a href='{HtmlEncoder.Default.Encode(link)}'>here for details</a>.");
+            return emailSender.SendEmailAsync(email, "New submission link",
+                $"Please click <a href='{HtmlEncoder.Default.Encode(link)}'>here for details</a>.");
         }
 
         public static Task SendCompanyPartnerResponseAsync(this IEmailSender emailSender, string email, string link, string partnerName, string partnerReponseText)
         {
             return emailSender.SendEmailAsync(email, $"Lead {partnerReponseText} by {partnerName}",
-                $"The lead is {partnerReponseText} by {partnerName}. Please click <a href='{HtmlEncoder.Default.Encode(link)}'>here for details</a>.");
+                $"Please click <a href='{HtmlEncoder.Default.Encode(link)}'>here for details</a>.");
         }
 
         public static Task SendPartnerLeadAssignedAsync(this IEmailSender emailSender, string[] email, string leadDetails)

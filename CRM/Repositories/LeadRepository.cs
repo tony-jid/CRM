@@ -80,9 +80,11 @@ namespace CRM.Repositories
         public IEnumerable<DashboardLeadVM> GetDashboardLeadVMs(DateTime dateStart, DateTime dateEnd)
         {
             var statusNewLeadVMs = _context.LeadStates
-                .Where(w => w.StateId == nameof(EnumState.SL1) && 
-                    (w.ActionTimestamp.Date >= DateHelper.ConvertToUtc(dateStart).Date)
-                    && (w.ActionTimestamp.Date <= DateHelper.ConvertToUtc(dateEnd).Date)
+                .Where(w => w.StateId == nameof(EnumState.SL1) &&
+                    //((w.ActionTimestamp.Date >= DateHelper.ConvertToUtc(dateStart).Date)
+                    //&& (w.ActionTimestamp.Date <= DateHelper.ConvertToUtc(dateEnd).Date))
+                    ((w.ActionTimestamp.Date >= dateStart.Date)
+                    && (w.ActionTimestamp.Date <= dateEnd.Date))
                 )
                 .Include(i => i.Lead).ThenInclude(i => i.LeadType)
                 .Select(s => new DashboardLeadVM() {
@@ -90,6 +92,7 @@ namespace CRM.Repositories
                     LeadTypeId = s.Lead.LeadTypeId,
                     LeadTypeName = s.Lead.LeadType.Name,
                     LeadStateType = s.StateId,
+                    ActionTimestamp = s.ActionTimestamp,
                     CreatedOn = DateHelper.ConvertFromUtc(s.ActionTimestamp).Date
                 });
 
@@ -101,7 +104,7 @@ namespace CRM.Repositories
                     .Include(i => i.LeadAssignmentStates);
 
                 string leadStateType = nameof(EnumState.SL1);
-                DateTime actionTimestamp = leadVM.CreatedOn;
+                DateTime actionTimestamp = leadVM.ActionTimestamp;
 
                 foreach (var assignment in assignments)
                 {
