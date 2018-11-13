@@ -35,7 +35,7 @@ namespace CRM.Services
             var client = new SendGridClient(_options.ApiKey);
             var msg = new SendGridMessage()
             {
-                From = new EmailAddress("thawatchai.j14@gmail.com", "Developer Tony"),
+                From = new EmailAddress(_options.Email, _options.Name),
                 Subject = subject,
                 PlainTextContent = message,
                 HtmlContent = message
