@@ -24,10 +24,12 @@ namespace CRM.Controllers
     public class MessageController : BaseController
     {
         private IUnitOfWork _uow;
+        private ICompanyRepository _companyRepo;
         private IMessageRepository _msgRepo;
         private IPartnerRepository _partnerRepo;
         private ILeadRepository _leadRepo;
         private ILeadAssignmentRepository _leadAssignmentRepo;
+        private ILeadTypeRepository _leadTypeRepo;
         private IEmailSender _emailSender;
         private AccountManager _accountManager;
 
@@ -35,10 +37,12 @@ namespace CRM.Controllers
             , UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, SignInManager<ApplicationUser> signInManager)
         {
             _uow = unitOfWork;
+            _companyRepo = unitOfWork.CompanyRepository;
             _msgRepo = unitOfWork.MessageRepository;
             _partnerRepo = unitOfWork.PartnerRepository;
             _leadRepo = unitOfWork.LeadRepository;
             _leadAssignmentRepo = unitOfWork.LeadAssignmentRepository;
+            _leadTypeRepo = unitOfWork.LeadTypeRepository;
 
             _emailSender = emailSender;
             _accountManager = new AccountManager(userManager, roleManager, signInManager, emailSender);
@@ -179,7 +183,11 @@ namespace CRM.Controllers
 
             var callbackLink = (url ?? this.Url).LeadHookedCallbackLink(leadId, (httpRequest != null) ? httpRequest.Scheme : this.Request.Scheme);
 
-            await _emailSender.SendCompanyLeadHookedAsync(company.Email, callbackLink);
+            var lead = _leadRepo.GetByUid(leadId);
+            string leadTypeName = _leadTypeRepo.Get(lead.LeadTypeId)?.Name.ToLower();
+            string subject = $"New {leadTypeName} lead link";
+
+            await _emailSender.SendCompanyLeadHookedAsync(subject, company.Email, callbackLink);
         }
 
         [HttpPost]
@@ -201,11 +209,15 @@ namespace CRM.Controllers
 
             var callbackLink = (url ?? this.Url).LeadHookedCallbackLink(leadId, (httpRequest != null) ? httpRequest.Scheme : this.Request.Scheme);
 
-            await _emailSender.SendCompanyPartnerResponseAsync(company.Email, callbackLink, partner.Name, responseText);
+            var lead = _leadRepo.GetByUid(leadId);
+            string leadTypeName = _leadTypeRepo.Get(lead.LeadTypeId)?.Name.ToLower();
+            string subject = $"Lead {leadTypeName} {responseText} by {partner.Name}";
+
+            await _emailSender.SendCompanyPartnerResponseAsync(subject, company.Email, callbackLink);
         }
 
         [HttpPost]
-        public async Task SendPartnerLeadAssigned(List<Guid> branchIds, IUrlHelper url, HttpRequest httpRequest, string leadDetails)
+        public async Task SendPartnerLeadAssigned(List<Guid> branchIds, IUrlHelper url, HttpRequest httpRequest, string leadDetails, string leadTypeName)
         {
             List<string> emails = new List<string>();
 
@@ -226,7 +238,9 @@ namespace CRM.Controllers
 
             var callbackLink = (url ?? this.Url).PartnerLeadAssignedCallbackLink((httpRequest != null) ? httpRequest.Scheme : this.Request.Scheme);
 
-            await _emailSender.SendPartnerLeadAssignedAsync(emails.ToArray(), callbackLink, leadDetails);
+            string subject = $"Lead {leadTypeName.ToLower()} from {_companyRepo.GetFirst()?.Name}";
+
+            await _emailSender.SendPartnerLeadAssignedAsync(subject, emails.ToArray(), callbackLink, leadDetails);
         }
     }
 }

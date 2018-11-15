@@ -100,7 +100,7 @@ namespace CRM.Controllers
                 var details = MessageHelper.GetLeadDetails(leadVM);
 
                 // Passing customer's and lead's details to an email
-                await _messageController.SendPartnerLeadAssigned(data.PartnerBranchIds, this.Url, this.Request, details);
+                await _messageController.SendPartnerLeadAssigned(data.PartnerBranchIds, this.Url, this.Request, details, leadVM.LeadTypeName);
 
                 return Json(Ok());
             }

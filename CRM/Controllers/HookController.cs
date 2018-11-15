@@ -60,7 +60,6 @@ namespace CRM.Controllers
             }
             catch (Exception e)
             {
-                int x = 0;
                 // logging here
             }
         }
