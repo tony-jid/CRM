@@ -28,7 +28,8 @@ namespace CRM.Services
 
         public async Task<IdentityResult> CreateAccountAsync(ApplicationUser user, string roleName)
         {
-            var result = await _userManager.CreateAsync(user, user.Email);
+            // Use "comparison1234" as default password
+            var result = await _userManager.CreateAsync(user, "comparison1234");
 
             if (result.Succeeded)
                 await _userManager.AddToRoleAsync(user, roleName);
