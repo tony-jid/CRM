@@ -29,7 +29,7 @@ namespace CRM.Repositories
 
         ICustomerRepository CustomerRepository { get; }
 
-        IPartnerRepository PartnerRepository { get; }
+        PartnerRepository PartnerRepository { get; }
 
         IPartnerBranchRepository PartnerBranchRepository { get; }
 

@@ -71,6 +71,15 @@
                 },
             },
         },
+        leadtypes: {
+            name: "leadtypes",
+            actions: {
+                Get: {
+                    type: "GET",
+                    name: "Get",
+                },
+            },
+        },
     },
 
     callers: {

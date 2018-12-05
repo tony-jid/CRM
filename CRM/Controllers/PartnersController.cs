@@ -27,7 +27,7 @@ namespace CRM.Controllers
     public class PartnersController : BaseController
     {
         private IUnitOfWork _uow;
-        private IPartnerRepository _partnerRepo;
+        private PartnerRepository _partnerRepo;
         private IPartnerBranchRepository _partnerBranchRepo;
         private IHostingEnvironment _hostingEnvironment;
         private AccountManager _accountManager;
@@ -194,15 +194,22 @@ namespace CRM.Controllers
                 Id = partner.Id,
                 Name = partner.Name,
                 Logo = partner.Logo,
-                Branches = partner.Branches,
-                PartnerServices = partner.PartnerServices,
+                //Branches = partner.Branches, *** This line yields extremely poor performance because it is not included in the main query
+                //PartnerServices = partner.PartnerServices,
                 Services = partner.PartnerServices != null ? partner.PartnerServices.Select(i => i.LeadTypeId).ToArray() : new int[] { }
             };
         }
 
-        private IEnumerable<PartnerVM> GetPartnerVMs(IEnumerable<Partner> partners)
+        private List<PartnerVM> GetPartnerVMs(IEnumerable<Partner> partners)
         {
-            return partners.Select(s => this.GetPartnerVM(s));
+            List<PartnerVM> partnerVMs = new List<PartnerVM>();
+
+            foreach (var item in partners)
+            {
+                partnerVMs.Add(this.GetPartnerVM(item));
+            }
+
+            return partnerVMs;
         }
 
         private void CreateLogoFromTempFile(Partner partner) {

@@ -158,9 +158,9 @@ namespace CRM.Repositories
             }
         }
 
-        private IPartnerRepository _partnerRepo;
+        private PartnerRepository _partnerRepo;
 
-        public IPartnerRepository PartnerRepository
+        public PartnerRepository PartnerRepository
         {
             get
             {

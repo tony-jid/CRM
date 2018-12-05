@@ -1,6 +1,11 @@
-﻿var partner = {
+﻿$(document).ready(function () {
+    partner.methods.setDsTagBoxLeadTypes();
+});
+
+var partner = {
     vars: {
-        selectedServices: []
+        selectedServices: [],
+        dsTagBoxLeadTypes: undefined
     },
 
     ids: {
@@ -24,13 +29,14 @@
             $(cellElement).append("<div id='" + _cellId + "' />");
 
             $("#" + _cellId).dxTagBox({
-                dataSource: DevExpress.data.AspNet.createStore({
-                    loadUrl: site.apis.leadtypes.get(),
-                    onBeforeSend: function (method, ajaxOptions) {
-                        ajaxOptions.xhrFields = { withCredentials: true };
-                    },
-                    key: "Id"
-                }),
+                dataSource: partner.methods.getDsTagBoxLeadTypes(),
+                //dataSource: DevExpress.data.AspNet.createStore({
+                //    loadUrl: site.apis.leadtypes.get(),
+                //    onBeforeSend: function (method, ajaxOptions) {
+                //        ajaxOptions.xhrFields = { withCredentials: true };
+                //    },
+                //    key: "Id"
+                //}),
                 value: cellInfo.value,
                 multiline: true,
                 searchEnabled: true,
@@ -98,6 +104,29 @@
     },
 
     methods: {
-
+        setDsTagBoxLeadTypes: function () {
+            ajax.callers.crm(
+                ajax.controllers.leadtypes.name,
+                ajax.controllers.leadtypes.actions.Get,
+                {},
+                function (response) {
+                    //console.log(response);
+                    partner.vars.dsTagBoxLeadTypes = response.data;
+                }
+            );
+        },
+        getDsTagBoxLeadTypes: function () {
+            if (site.methods.isDefined(partner.vars.dsTagBoxLeadTypes)) {
+                return partner.vars.dsTagBoxLeadTypes;
+            } else {
+                return DevExpress.data.AspNet.createStore({
+                    loadUrl: site.apis.leadtypes.get(),
+                    onBeforeSend: function (method, ajaxOptions) {
+                        ajaxOptions.xhrFields = { withCredentials: true };
+                    },
+                    key: "Id"
+                });
+            }
+        },
     },
 }
