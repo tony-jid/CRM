@@ -53,18 +53,18 @@
     <div class="col-xs-12 col-md-12 mb-5">
 		<div class="card">
 			<div class="card-header">
-				Leads Overview
-				<div class="header-btn-block">
-					<span class="data-range dropdown">
-                        @(Html.DevExtreme().SelectBox()
+                <div class="row">
+                    <div class="col-xs-12 col-sm-8">Leads Overview</div>
+                    <div class="col-xs-12 col-sm-4 btn-block">
+					    @(Html.DevExtreme().SelectBox()
                             .ID("selectBoxLeadOverview")
                             .DateRangeCommonConfigs()
                             .DeferRendering(false)
                             .OnContentReady("dashboard.handlers.onSelectBoxLeadOverviewContentReady")
                             .OnValueChanged("dashboard.handlers.onSelectBoxLeadOverviewChanged")
                         )
-					</span>
-				</div>
+                    </div>
+                </div>
 			</div>
 			<div class="card-body">
 				@(Html.DevExtreme().Chart()
