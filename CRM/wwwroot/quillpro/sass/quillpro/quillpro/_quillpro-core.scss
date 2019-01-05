@@ -4528,6 +4528,14 @@ canvas{
 	}
 }
 
+// XS to SM
+@media (max-width: 768px){
+    .navbar{
+	    padding: 1rem 1rem !important;
+        overflow: hidden;
+    }
+}
+
 // Medium devices (tablets, 768px and up)
 @media (min-width: 768px){
 	.navbar{

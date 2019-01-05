@@ -118,10 +118,11 @@ namespace CRM.DXConfigurators
                 popup.ShowTitle(true);
                 popup.DragEnabled(false);
                 popup.MaxHeight(maxHeight);
-                popup.Position(pos => pos
-                    .Of(new JS("window"))
-                    .Offset(0, 50)
-                );
+                popup.FullScreen(true);
+                //popup.Position(pos => pos
+                //    .Of(new JS("window"))
+                //    .Offset(0, 50)
+                //);
             };
         }
 

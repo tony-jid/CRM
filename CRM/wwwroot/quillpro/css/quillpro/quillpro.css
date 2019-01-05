@@ -4509,6 +4509,11 @@ input[type=date].valid, input[type=date]:focus.valid, input[type=datetime-local]
     width: 95%;
     margin-bottom: 3rem; } }
 
+@media (max-width: 768px) {
+  .navbar {
+    padding: 1rem 1rem !important;
+    overflow: hidden; } }
+
 @media (min-width: 768px) {
   .navbar .navbar-nav.navbar-profile .nav-item .nav-link.dropdown-toggle .profile-name {
     display: block; }
