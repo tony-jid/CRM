@@ -34,7 +34,8 @@
     .Columns(col => {
         col.AddFor(m => m.CustomerUnique)
             .Caption("Customer")
-            .CellTemplate(new TemplateName("template-grid-report-invoice-column-customer"));
+            .CellTemplate(new TemplateName("template-grid-report-invoice-column-customer"))
+            .HidingPriority(0);
         //col.AddFor(m => m.LeadDetails)
         //    .Caption("Lead")
         //    .AllowHeaderFiltering(false)
@@ -48,22 +49,27 @@
         col.AddFor(m => m.LeadTypePrice)
             .Caption("Price")
             .AllowHeaderFiltering(false)
-            .Format(Format.Currency);
+            .Format(Format.Currency)
+            .HidingPriority(4);
         col.AddFor(m => m.SubmittedDate).Visible(false);
         col.AddFor(m => m.AssignedDate).Visible(false);
         col.AddFor(m => m.AcceptedDate).Visible(false);
         col.AddFor(m => m.SubmittedDateTime)
             .Caption("Submitted")
-            .CellTemplate(new TemplateName("template-grid-report-invoice-column-submitted"));
+            .CellTemplate(new TemplateName("template-grid-report-invoice-column-submitted"))
+            .HidingPriority(1);
         col.AddFor(m => m.AssignedDateTime)
             .Caption("Assigned")
-            .CellTemplate(new TemplateName("template-grid-report-invoice-column-assigned"));
+            .CellTemplate(new TemplateName("template-grid-report-invoice-column-assigned"))
+            .HidingPriority(2);
         col.AddFor(m => m.AcceptedDateTime)
             .Caption("Accepted")
-            .CellTemplate(new TemplateName("template-grid-report-invoice-column-accepted"));
+            .CellTemplate(new TemplateName("template-grid-report-invoice-column-accepted"))
+            .HidingPriority(3);
         col.AddFor(m => m.CurrentStateName)
             .Caption("Status")
-            .CellTemplate(new TemplateName("template-grid-report-invoice-column-status"));
+            .CellTemplate(new TemplateName("template-grid-report-invoice-column-status"))
+            .HidingPriority(5);
     })
     .OnContentReady("reportInvoice.dxGrid.handlers.onContentReady")
     .OnToolbarPreparing("reportInvoice.dxGrid.handlers.onToolbarPreparing")
