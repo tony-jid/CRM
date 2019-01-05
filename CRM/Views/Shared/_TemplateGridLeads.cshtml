@@ -45,7 +45,7 @@
                 .FormItem(form => form.Visible(false))
                 .CellTemplate(new TemplateName("template-grid-leads-column-type"));
             c.AddFor(m => m.Details).Caption("Details") // Display & Edit
-                .Width("35%")
+                .Width("30%")
                 .AllowHeaderFiltering(false)
                 .AllowSorting(false)
                 .FormItem(i => i.Label(l => l.Location(FormLabelLocation.Top)))
@@ -79,7 +79,6 @@
                 .HidingPriority(2);
             c.Add() // Display only
                 .FormItem(form => form.Visible(false))
-                .Width("13%") // adding CustomerEmail here for text searching
                 .AllowHeaderFiltering(false)
                 .CellTemplate(new TemplateName("template-grid-leads-column-actions"))
                 .HidingPriority(1);
