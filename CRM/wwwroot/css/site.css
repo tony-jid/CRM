@@ -153,3 +153,9 @@ footer {
     line-height: 1.5;
     width: 30%;
 }
+
+@media screen and (max-width: 960px) {
+    .btn-lead-partner-selection {
+        font-size: 0.7em;
+    }
+}

@@ -25,19 +25,17 @@
                 @*Horizontal menu - Sidebar Section*@
                 @Html.Partial(nameof(EnumPartialPages._SidebarPartialHorizontal))
 
-                <main id="main-content" class="main-content p-5" role="main">
-                    <div class="row">
-                        <div class="col-md-12">
+                <main id="main-content" class="main-content p-3 p-md-5" role="main">
+                    <div class="row pt-5 pl-5 p-md-0">
+                        <div class="col-xs-12 pt-3 p-md-0">
                             <h1><b>@ViewData["Title"]</b></h1>
                         </div>
                     </div>
 
-                    <div>
-                        @RenderBody()
-                    </div>
+                    @RenderBody()
 
                     <div class="row mb-5">
-                        <div class="col-md-12">
+                        <div class="col-xs-12">
                             <footer>
                                 2018 &copy; Comparison Advantage. All rights reserved
                             </footer>

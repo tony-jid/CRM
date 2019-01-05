@@ -1,4 +1,7 @@
-﻿<nav class="navbar-sidebar-horizontal navbar navbar-expand-lg navbar-light bg-white fixed-top">
+﻿@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<nav class="navbar-sidebar-horizontal navbar navbar-expand-lg navbar-light bg-white fixed-top">
     <a class="navbar-brand" href="#">
         <img src="~/images/company/logo-dark.png" width="151" height="47" alt="">
     </a>
@@ -11,25 +14,8 @@
 
     <!-- Added Mobile-Only Menu -->
     <ul class="navbar-nav ml-auto mobile-only-control d-block d-sm-block d-md-block d-lg-none">
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" id="navbar-notification-search-mobile" data-toggle="dropdown" data-flip="false" aria-haspopup="true" aria-expanded="false">
-                <i class="batch-icon batch-icon-search"></i>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-fullscreen" aria-labelledby="navbar-notification-search-mobile">
-                <li>
-                    <form class="form-inline my-2 my-lg-0 no-waves-effect">
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Search for..." aria-label="Search for..." aria-describedby="basic-addon2">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary btn-gradient waves-effect waves-light" type="button">
-                                    <i class="batch-icon batch-icon-search"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </li>
-            </ul>
-        </li>
+        <!-- Account Management Links -->
+        @Html.Partial(nameof(EnumPartialPages._LoginPartial))
     </ul>
 
     <div class="collapse navbar-collapse" id="navbar-header-content">

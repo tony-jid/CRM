@@ -26,14 +26,17 @@
             c.AddFor(m => m.PartnerBranchAddress)
                 .AllowHeaderFiltering(false)
                 .AllowSorting(false)
-                .CellTemplate(new TemplateName("template-grid-assignment-column-branch-address")).Caption("");
+                .CellTemplate(new TemplateName("template-grid-assignment-column-branch-address")).Caption("")
+                .HidingPriority(1);
             c.AddFor(m => m.StatusName)
                 .CellTemplate(new TemplateName("template-grid-assignment-column-status")).Caption("Status");
             c.AddFor(m => m.AssignedOn)
-                .CellTemplate(new TemplateName("template-grid-assignment-column-assigned-on"));
+                .CellTemplate(new TemplateName("template-grid-assignment-column-assigned-on"))
+                .HidingPriority(2);
             c.Add()
                 .AllowHeaderFiltering(false)
-                .CellTemplate(new TemplateName("template-grid-assignment-column-action"));
+                .CellTemplate(new TemplateName("template-grid-assignment-column-action"))
+                .HidingPriority(0);
         })
         .Editing(e => e
             .Mode(GridEditMode.Popup)
@@ -71,16 +74,20 @@
                 .Width("35%")
                 .AllowHeaderFiltering(false)
                 .AllowSorting(false)
-                .CellTemplate(new TemplateName("template-grid-assignment-column-lead-details")).Caption("Details");
+                .CellTemplate(new TemplateName("template-grid-assignment-column-lead-details")).Caption("Details")
+                .HidingPriority(1);
             c.AddFor(m => m.CustomerUnique)
                 .Width("15%")
-                .CellTemplate(new TemplateName("template-grid-assignment-column-customer")).Caption("Customer");
+                .CellTemplate(new TemplateName("template-grid-assignment-column-customer")).Caption("Customer")
+                .HidingPriority(3);
             c.AddFor(m => m.StatusName)
                 .CellTemplate(new TemplateName("template-grid-assignment-column-status")).Caption("Status");
             c.AddFor(m => m.AssignedOn)
-                .CellTemplate(new TemplateName("template-grid-assignment-column-assigned-on"));
+                .CellTemplate(new TemplateName("template-grid-assignment-column-assigned-on"))
+                .HidingPriority(2);
             c.Add()
-                .CellTemplate(new TemplateName("template-grid-assignment-column-action"));
+                .CellTemplate(new TemplateName("template-grid-assignment-column-action"))
+                .HidingPriority(0);
         })
         .OnRowRemoved("function(e) { assignment.methods.refreshGridSearchBranches(); }")
         .OnToolbarPreparing("assignment.dxGrid.handlers.gridAssignmentsByPartnerOnToolbarPreparing")

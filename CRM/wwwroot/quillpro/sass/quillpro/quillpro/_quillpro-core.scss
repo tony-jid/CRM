@@ -3310,7 +3310,7 @@ input[type=date].valid, input[type=date]:focus.valid, input[type=datetime-local]
 				padding: 0 1rem 0 0;
 				margin: 0;
 				.profile-name{
-					display: none;
+					/*display: none; Removing this to display loged-in Username*/
 					font-weight: 400;
 					float: left !important;
 					margin-top: 1.3rem !important;

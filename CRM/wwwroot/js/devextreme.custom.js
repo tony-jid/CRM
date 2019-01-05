@@ -139,9 +139,12 @@
                 return {
                     location: "before",
                     widget: "dxButton",
+                    showText: "inMenu",
+                    locateInMenu: "auto",
                     options: {
                         icon: "batch-icon batch-icon-marquee-download",
                         hint: "Expand all",
+                        text: "Expand all",
                         onClick: function () {
                             dxGrid.methods.expandAll(e);
                         }
@@ -152,9 +155,12 @@
                 return {
                     location: "before",
                     widget: "dxButton",
+                    showText: "inMenu",
+                    locateInMenu: "auto",
                     options: {
                         icon: "batch-icon batch-icon-marquee-upload",
                         hint: "Collapse all",
+                        text: "Collapse all",
                         onClick: function () {
                             dxGrid.methods.collapseAll(e);
                         }
@@ -165,8 +171,12 @@
                 return {
                     location: "after",
                     widget: "dxButton",
+                    showText: "inMenu",
+                    locateInMenu: "auto",
                     options: {
                         icon: "refresh",
+                        hint: "Refresh data",
+                        text: "Refresh data",
                         onClick: function () {
                             e.component.refresh();
                         }
@@ -179,6 +189,8 @@
                 return {
                     location: "before",
                     widget: "dxSelectBox",
+                    showText: "inMenu",
+                    locateInMenu: "auto",
                     options: {
                         width: 200,
                         //items: [{
@@ -211,6 +223,8 @@
                 return {
                     location: "before",
                     widget: "dxSelectBox",
+                    showText: "inMenu",
+                    locateInMenu: "auto",
                     options: {
                         width: 200,
                         items: dateItems,
@@ -245,6 +259,8 @@
                 return {
                     location: "before",
                     widget: "dxSelectBox",
+                    showText: "inMenu",
+                    locateInMenu: "auto",
                     options: {
                         width: 150,
                         items: textValues,
@@ -268,6 +284,8 @@
                 return {
                     location: "before",
                     widget: "dxSelectBox",
+                    showText: "inMenu",
+                    locateInMenu: "auto",
                     options: {
                         dataSource: DevExpress.data.AspNet.createStore({
                             loadUrl: site.apis.leads.getGroupActions(),
@@ -325,6 +343,8 @@
 
                 if (searchPanel.length) {
                     searchPanel[0].location = "before";
+                    searchPanel[0].showText = "inMenu";
+                    searchPanel[0].locateInMenu = "auto";
                 }
             },
             resetTotalCount: function (e, id) {

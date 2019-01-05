@@ -50,7 +50,8 @@
                 .AllowSorting(false)
                 .FormItem(i => i.Label(l => l.Location(FormLabelLocation.Top)))
                 .CellTemplate(new TemplateName("template-grid-leads-column-details"))
-                .EditCellTemplate(new JS("lead.templates.editorDetails"));
+                .EditCellTemplate(new JS("lead.templates.editorDetails"))
+                .HidingPriority(0);
             c.AddFor(m => m.StatusName).Caption("Status") // Display only
                 .Width("10%")
                 .FormItem(form => form.Visible(false))
@@ -74,12 +75,14 @@
                 .DataField("CreatedOn").DataType(GridColumnDataType.Date)
                 .Width("15%")
                 .FormItem(form => form.Visible(false))
-                .CellTemplate(new TemplateName("template-grid-leads-column-created-on"));
+                .CellTemplate(new TemplateName("template-grid-leads-column-created-on"))
+                .HidingPriority(2);
             c.Add() // Display only
                 .FormItem(form => form.Visible(false))
                 .Width("13%") // adding CustomerEmail here for text searching
                 .AllowHeaderFiltering(false)
-                .CellTemplate(new TemplateName("template-grid-leads-column-actions"));
+                .CellTemplate(new TemplateName("template-grid-leads-column-actions"))
+                .HidingPriority(1);
         })
         .Editing(e => e
             .Mode(GridEditMode.Popup)
@@ -153,7 +156,8 @@
                 .AllowSorting(false)
                 .FormItem(i => i.Label(l => l.Location(FormLabelLocation.Top)))
                 .CellTemplate(new TemplateName("template-grid-leads-column-details"))
-                .EditCellTemplate(new JS("lead.templates.editorDetails"));
+                .EditCellTemplate(new JS("lead.templates.editorDetails"))
+                .HidingPriority(1);
             c.AddFor(m => m.StatusName).Caption("Status")
                 .FormItem(form => form.Visible(false))
                 .CellTemplate(new TemplateName("template-grid-leads-column-status"));
@@ -162,12 +166,14 @@
                 .DataField("CreatedOn").DataType(GridColumnDataType.Date)
                 .Width("15%")
                 .FormItem(form => form.Visible(false))
-                .CellTemplate(new TemplateName("template-grid-leads-column-created-on"));
+                .CellTemplate(new TemplateName("template-grid-leads-column-created-on"))
+                .HidingPriority(2);
             c.Add()
                 .Width("15%")
                 .AllowHeaderFiltering(false)
                 .FormItem(form => form.Visible(false))
-                .CellTemplate(new TemplateName("template-grid-leads-column-actions"));
+                .CellTemplate(new TemplateName("template-grid-leads-column-actions"))
+                .HidingPriority(0);
         })
         .SearchPanel(DXGridConfigs.ShowSearchPanel())
         .Editing(e => e

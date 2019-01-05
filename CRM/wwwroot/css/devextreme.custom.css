@@ -36,11 +36,24 @@
     text-align: center;
     color: #fff;
 }
-
-.count {
+.informer .count {
     padding-top: 15px;
     line-height: 27px;
     font-size: 28px;
     font-weight: normal;
     font-family: "Helvetica Neue", "Segoe UI", Helvetica, Verdana, sans-serif;
+}
+@media screen and (max-width: 767px) {
+    .informer {
+        height: 35px;
+        width: 75px;
+    }
+    .informer .count {
+        padding-top: 7px;
+        line-height: 13px;
+    }
+
+    .dx-datagrid-search-panel {
+        margin-left: 0px;
+    }
 }

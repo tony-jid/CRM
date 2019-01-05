@@ -20,7 +20,8 @@ namespace CRM.Controllers
 {
     [Authorize(Roles = nameof(EnumApplicationRole.Admin) 
         + "," + nameof(EnumApplicationRole.Manager)
-        + "," + nameof(EnumApplicationRole.Agent))]
+        + "," + nameof(EnumApplicationRole.Agent)
+        + "," + nameof(EnumApplicationRole.Partner))]
     public class LeadTypesController : BaseController
     {
         private IUnitOfWork _uow;
@@ -49,6 +50,9 @@ namespace CRM.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = nameof(EnumApplicationRole.Admin)
+            + "," + nameof(EnumApplicationRole.Manager)
+            + "," + nameof(EnumApplicationRole.Agent))]
         public IActionResult Post(string values)
         {
             var model = new LeadType();
@@ -69,6 +73,9 @@ namespace CRM.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = nameof(EnumApplicationRole.Admin)
+            + "," + nameof(EnumApplicationRole.Manager)
+            + "," + nameof(EnumApplicationRole.Agent))]
         public IActionResult UploadImage()
         {
             try
@@ -90,6 +97,9 @@ namespace CRM.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = nameof(EnumApplicationRole.Admin)
+            + "," + nameof(EnumApplicationRole.Manager)
+            + "," + nameof(EnumApplicationRole.Agent))]
         public IActionResult Put(int key, string values)
         {
             var model = _leadTypeRepo.Get(key);
@@ -118,6 +128,9 @@ namespace CRM.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Roles = nameof(EnumApplicationRole.Admin)
+            + "," + nameof(EnumApplicationRole.Manager)
+            + "," + nameof(EnumApplicationRole.Agent))]
         public IActionResult Delete(int key)
         {
             var model = _leadTypeRepo.Get(key);
