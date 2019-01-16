@@ -66,6 +66,12 @@ namespace CRM.Controllers
 
         private Customer CreateCustomerEntity(HookVM data)
         {
+            if (String.IsNullOrEmpty(data.ContactName.Trim()))
+                data.ContactName = "Unknown";
+
+            if (String.IsNullOrEmpty(data.ContactNumber.Trim()))
+                data.ContactNumber = "0";
+
             return new Customer {
                 ContactName = data.ContactName
                 , BusinessName = data.BusinessName

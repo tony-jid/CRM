@@ -75,8 +75,7 @@
                 .DataField("CreatedOn").DataType(GridColumnDataType.Date)
                 .Width("15%")
                 .FormItem(form => form.Visible(false))
-                .CellTemplate(new TemplateName("template-grid-leads-column-created-on"))
-                .HidingPriority(2);
+                .CellTemplate(new TemplateName("template-grid-leads-column-created-on"));
             c.Add() // Display only
                 .FormItem(form => form.Visible(false))
                 .AllowHeaderFiltering(false)

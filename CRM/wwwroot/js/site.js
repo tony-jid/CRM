@@ -10,22 +10,22 @@ var site = {
                 return site.apis.crm.concat("leadtypes/get");
             },
             uploadImage: function () {
-                return site.apis.crm.concat("leadtypes/uploadImage/");
+                return site.apis.crm.concat("leadtypes/uploadImage");
             },
         },
         partners: {
             uploadLogo: function () {
-                return site.apis.crm.concat("partners/uploadLogo/");
+                return site.apis.crm.concat("partners/uploadLogo");
             },
         },
         customers: {
             getForLookup: function () {
-                return site.apis.crm.concat("customers/getForLookup/");
+                return site.apis.crm.concat("customers/getForLookup");
             },
         },
         leads: {
             getGroupActions: function () {
-                return site.apis.crm.concat("leads/getGroupActions/");
+                return site.apis.crm.concat("leads/getGroupActions");
             },
         },
     },

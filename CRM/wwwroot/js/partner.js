@@ -78,7 +78,8 @@ var partner = {
                         var fileName = _cellId.concat("_" + e.value[0].name);
 
                         cellInfo.setValue(fileName);
-                        e.component.option('uploadUrl', site.apis.partners.uploadLogo() + "?fileName=" + fileName); // reset url along with unique fileName
+                        var uploadUrl = site.apis.partners.uploadLogo() + "?fileName=" + fileName;
+                        e.component.option('uploadUrl', uploadUrl); // reset url along with unique fileName
                     }
                 },
             });

@@ -27,7 +27,7 @@ namespace CRM.Repositories
 
         ILeadTypeRepository LeadTypeRepository { get; }
 
-        ICustomerRepository CustomerRepository { get; }
+        CustomerRepository CustomerRepository { get; }
 
         PartnerRepository PartnerRepository { get; }
 

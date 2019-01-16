@@ -18,7 +18,7 @@ namespace CRM.Controllers
     public class CustomersController : BaseController
     {
         private IUnitOfWork _uow;
-        private ICustomerRepository _cusRepo;
+        private CustomerRepository _cusRepo;
 
         public CustomersController(IUnitOfWork unitOfWork)
         {

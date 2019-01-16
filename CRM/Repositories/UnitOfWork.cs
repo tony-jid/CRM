@@ -147,9 +147,9 @@ namespace CRM.Repositories
             }
         }
 
-        private ICustomerRepository _cusRepo;
+        private CustomerRepository _cusRepo;
 
-        public ICustomerRepository CustomerRepository
+        public CustomerRepository CustomerRepository
         {
             get {
                 if (_cusRepo == null)
